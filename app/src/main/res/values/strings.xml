@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Ninder</string>
+
+    <string name="cart">Cart</string>
+    <string name="label_dislike">No</string>
+    <string name="label_like">Yes</string>
+</resources>
