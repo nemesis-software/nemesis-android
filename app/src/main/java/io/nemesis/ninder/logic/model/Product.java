@@ -1,21 +1,24 @@
 package io.nemesis.ninder.logic.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by bobi on 11/23/2015.
  */
-public class Product {
+public class Product implements Parcelable {
 
 //    private Object testAttribute;
     private List<Image> images = new ArrayList<Image>();
-    private Integer averageRating;
-    private Integer numberOfReviews;
+    private int averageRating;
+    private int numberOfReviews;
 //    private List<Object> reviews = new ArrayList<Object>();
     private String name;
     private Price price;
-    private Object imageUrl;
+    private String imageUrl;
     private String variantType;
     private String description;
     private String code;
@@ -59,6 +62,55 @@ public class Product {
 //        this.potentialPromotions = potentialPromotions;
 //    }
 
+    // start Parcelable
+    protected Product(Parcel in) {
+        images = in.createTypedArrayList(Image.CREATOR);
+        averageRating = in.readInt();
+        numberOfReviews = in.readInt();
+        name = in.readString();
+        price = in.readParcelable(Price.class.getClassLoader());
+        imageUrl = in.readString();
+        variantType = in.readString();
+        description = in.readString();
+        code = in.readString();
+        discountedPrice = in.readParcelable(Price.class.getClassLoader());
+        variantOptions = in.createTypedArrayList(VariantOption.CREATOR);
+        url = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedList(images);
+        dest.writeInt(averageRating);
+        dest.writeInt(numberOfReviews);
+        dest.writeString(name);
+        dest.writeParcelable(price, flags);
+        dest.writeString(imageUrl);
+        dest.writeString(variantType);
+        dest.writeString(description);
+        dest.writeString(code);
+        dest.writeParcelable(discountedPrice, flags);
+        dest.writeTypedList(variantOptions);
+        dest.writeString(url);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Product> CREATOR = new Creator<Product>() {
+        @Override
+        public Product createFromParcel(Parcel in) {
+            return new Product(in);
+        }
+
+        @Override
+        public Product[] newArray(int size) {
+            return new Product[size];
+        }
+    };
+    // start Parcelable
     /**
      * @return The discountedPrice
      */
@@ -244,14 +296,14 @@ public class Product {
     /**
      * @return The imageUrl
      */
-    public Object getImageUrl() {
+    public String getImageUrl() {
         return imageUrl;
     }
 
     /**
      * @param imageUrl The imageUrl
      */
-    public void setImageUrl(Object imageUrl) {
+    public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
 

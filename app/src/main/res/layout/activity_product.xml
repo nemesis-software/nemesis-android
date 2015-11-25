@@ -13,6 +13,8 @@
         android:layout_margin="10dp">
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/product_name"
             android:text="NEW! Snowflake babydoll"
             style="@style/ProductTitleTextView"/>
@@ -33,6 +35,8 @@
             <TextView
                 android:id="@+id/product_price"
                 android:text="199$"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 style="@style/PriceTextView"
                 android:layout_alignParentStart="true"/>
 
@@ -40,12 +44,16 @@
                 android:id="@+id/product_sale_price"
                 android:text="SALE$79"
                 style="@style/PriceTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/product_price"
                 android:textColor="@color/red"
                 android:layout_marginStart="@dimen/text_view_margin"/>
 
             <ImageView
                 android:id="@+id/image_like"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 style="@style/CustomImageButton"
                 android:layout_alignParentEnd="true"
                 android:src="@drawable/heart"/>
@@ -54,6 +62,8 @@
                 android:id="@+id/count_like"
                 android:text="344"
                 style="@style/PriceTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_toStartOf="@id/image_like"
                 android:textColor="@color/red"
                 android:layout_marginEnd="@dimen/text_view_margin"/>
@@ -61,6 +71,8 @@
         </RelativeLayout>
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             style="@style/CustomTextView"
             android:text="@string/label_description"
             android:layout_marginTop="@dimen/activity_vertical_margin" />
@@ -74,6 +86,8 @@
 
         <ImageButton
             android:id="@+id/button_checkmark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             style="@style/CustomImageButton"
             android:layout_marginTop="10dp"
             android:layout_gravity="center_horizontal"

@@ -65,7 +65,6 @@ public class NemesisFacadeImpl implements ProductFacade {
         retrofitRestClient.getApiService().getProductListAsync(query, new Callback<List<Product>>() {
             @Override
             public void success(List<Product> products, Response response) {
-                    Log.d("getProductsAsync", "success: response.getStatus()==" + response.getStatus());
                 if (response.getStatus() == 200) {
                     if (null != callback) {
                         callback.onSuccess(products);
@@ -89,6 +88,7 @@ public class NemesisFacadeImpl implements ProductFacade {
     @Override
     public void like(Product product, VariantOption variant) {
         Toast.makeText(mContext, "Like", Toast.LENGTH_SHORT).show();
+        addToWishlist(product, variant);
     }
 
     @Override

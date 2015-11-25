@@ -27,8 +27,6 @@ import io.nemesis.ninder.logic.model.Product;
 
 public class MainActivity extends Activity {
 
-    private static final String TAG = "MainActivity";
-
     private ImageButton btnNope;
     private ImageButton btnLike;
     private ImageButton btnInfo;
@@ -60,7 +58,9 @@ public class MainActivity extends Activity {
 
             @Override
             public void onRightCardExit(Object dataObject) {
-                like();
+                if (dataObject instanceof Product) {
+                    like((Product) dataObject);
+                }
             }
 
             @Override
@@ -84,7 +84,6 @@ public class MainActivity extends Activity {
                 info();
             }
         });
-
 
         btnNope = (ImageButton) findViewById(R.id.button_nope);
         btnNope.setOnClickListener(new View.OnClickListener() {
@@ -123,17 +122,17 @@ public class MainActivity extends Activity {
     }
 
     private void info() {
+        Product item = mAdapter.getItem(0);
         Intent intent = new Intent(this, ProductActivity.class);
+        intent.putExtra(ProductActivity.EXTRA_ITEM, item);
         startActivity(intent);
     }
 
-    private void like() {
-        ((NinderApplication) getApplication()).getProductFacade().like(null, null);
+    private void like(Product product) {
+        ((NinderApplication) getApplication()).getProductFacade().like(product, null);
     }
 
     private class CardAdapter extends BaseAdapter {
-
-        private static final String TAG = "CardAdapter";
 
         final ArrayList<Product> list = new ArrayList<Product>();
 
@@ -143,8 +142,6 @@ public class MainActivity extends Activity {
 
         public void addMoreData() {
             //TODO update the size and the page
-
-            Log.d(TAG, "addMoreData() called with: " + "");
             ((NinderApplication) getApplication()).getProductFacade().getProductsAsync(10, 0, new ProductFacade.AsyncCallback() {
                 @Override
                 public void onSuccess(List<Product> products) {
@@ -160,12 +157,10 @@ public class MainActivity extends Activity {
         }
 
         public void pop() {
-            Log.d(TAG, "pop() called with: " + "");
             //remove first
             list.remove(0);
             notifyDataSetChanged();
             if (list.size() < 4) {
-                Log.d(TAG, "list.size:" + list.size());
                 addMoreData();
             }
         }
@@ -188,7 +183,6 @@ public class MainActivity extends Activity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
-            Log.d(TAG, "getView() called with: " + "position = [" + position + "], convertView = [" + convertView + "], parent = [" + parent + "]");
             View rowView = convertView;
             // reuse views
             if (rowView == null) {

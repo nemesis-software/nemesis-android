@@ -9,6 +9,7 @@ import io.nemesis.ninder.R;
 
 public class ProductActivity extends Activity {
 
+    public static final String EXTRA_ITEM = "item";
     private ImageButton btnCheckmark;
 
     @Override
@@ -24,7 +25,6 @@ public class ProductActivity extends Activity {
                 finish();
             }
         });
-
 
     }
 }

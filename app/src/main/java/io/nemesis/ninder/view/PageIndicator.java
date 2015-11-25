@@ -13,9 +13,6 @@ import io.nemesis.ninder.R;
 
 public class PageIndicator extends View {
 
-    private static final String TAG = "ArticlePageIndicator";
-    private static final boolean DEBUG = false;
-
     private Paint black;
     private Paint white;
 
@@ -91,10 +88,6 @@ public class PageIndicator extends View {
 
         int hMode = MeasureSpec.getMode(heightMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);
-
-        if (DEBUG) {
-            Log.d(TAG, String.format("onMeasure width:%d height:%d", width, height));
-        }
 
         // I do want vertical padding on both before first and after last element
         int requiredWidth = (circleDiameter * maxDots) + ((maxDots + 2) * vPading);

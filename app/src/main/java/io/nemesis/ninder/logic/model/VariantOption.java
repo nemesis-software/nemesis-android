@@ -1,22 +1,69 @@
 package io.nemesis.ninder.logic.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by bobi on 11/23/2015.
  */
-public class VariantOption {
+public class VariantOption implements Parcelable {
 
     private Stock stock;
-    private Object url;
+    private String url;
     private Price price;
-    private Object discount;
-    private Object discountedPrice;
+    private Discount discount;
+    private Price discountedPrice;
     private List<VariantOptionQualifier> variantOptionQualifiers = new ArrayList<VariantOptionQualifier>();
     private String code;
     private Image picture;
     private List<Image> images = new ArrayList<Image>();
+
+    // start Parcelable
+    protected VariantOption(Parcel in) {
+        stock = in.readParcelable(Stock.class.getClassLoader());
+        url = in.readString();
+        price = in.readParcelable(Price.class.getClassLoader());
+        discount = in.readParcelable(Discount.class.getClassLoader());
+        discountedPrice = in.readParcelable(Price.class.getClassLoader());
+        variantOptionQualifiers = in.createTypedArrayList(VariantOptionQualifier.CREATOR);
+        code = in.readString();
+        picture = in.readParcelable(Image.class.getClassLoader());
+        images = in.createTypedArrayList(Image.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(stock, flags);
+        dest.writeString(url);
+        dest.writeParcelable(price, flags);
+        dest.writeParcelable(discount, flags);
+        dest.writeParcelable(discountedPrice, flags);
+        dest.writeTypedList(variantOptionQualifiers);
+        dest.writeString(code);
+        dest.writeParcelable(picture, flags);
+        dest.writeTypedList(images);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<VariantOption> CREATOR = new Creator<VariantOption>() {
+        @Override
+        public VariantOption createFromParcel(Parcel in) {
+            return new VariantOption(in);
+        }
+
+        @Override
+        public VariantOption[] newArray(int size) {
+            return new VariantOption[size];
+        }
+    };
+    // end Parcelable
 
     /**
      * @return The stock
@@ -35,14 +82,14 @@ public class VariantOption {
     /**
      * @return The url
      */
-    public Object getUrl() {
+    public String getUrl() {
         return url;
     }
 
     /**
      * @param url The url
      */
-    public void setUrl(Object url) {
+    public void setUrl(String url) {
         this.url = url;
     }
 
@@ -70,21 +117,21 @@ public class VariantOption {
     /**
      * @param discount The discount
      */
-    public void setDiscount(Object discount) {
+    public void setDiscount(Discount discount) {
         this.discount = discount;
     }
 
     /**
      * @return The discountedPrice
      */
-    public Object getDiscountedPrice() {
+    public Price getDiscountedPrice() {
         return discountedPrice;
     }
 
     /**
      * @param discountedPrice The discountedPrice
      */
-    public void setDiscountedPrice(Object discountedPrice) {
+    public void setDiscountedPrice(Price discountedPrice) {
         this.discountedPrice = discountedPrice;
     }
 
@@ -143,4 +190,5 @@ public class VariantOption {
     public void setImages(List<Image> images) {
         this.images = images;
     }
+
 }
