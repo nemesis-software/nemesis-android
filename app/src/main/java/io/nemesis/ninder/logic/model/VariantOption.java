@@ -15,7 +15,7 @@ public class VariantOption {
     private Object discountedPrice;
     private List<VariantOptionQualifier> variantOptionQualifiers = new ArrayList<VariantOptionQualifier>();
     private String code;
-    private Picture picture;
+    private Image picture;
     private List<Image> images = new ArrayList<Image>();
 
     /**
@@ -119,14 +119,14 @@ public class VariantOption {
     /**
      * @return The picture
      */
-    public Picture getPicture() {
+    public Image getPicture() {
         return picture;
     }
 
     /**
      * @param picture The picture
      */
-    public void setPicture(Picture picture) {
+    public void setPicture(Image picture) {
         this.picture = picture;
     }
 

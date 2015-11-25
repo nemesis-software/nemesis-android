@@ -4,4 +4,12 @@
     <string name="cart">Cart</string>
     <string name="label_dislike">No</string>
     <string name="label_like">Yes</string>
+
+    <!--base url-->
+    <string name="rest_api_base_url">https://solar.cfapps.io/en/GB</string>
+    <!--<string name="rest_api_base_url">http://solarapparel.com/en/GB</string>-->
+    <!--<string name="rest_api_base_url">https://solar.cfapps.io/api/c/womens</string>-->
+    <!--<string name="rest_api_base_url">http://192.168.10.104:21421</string>-->
+    <!--initial list of items to display-->
+
 </resources>

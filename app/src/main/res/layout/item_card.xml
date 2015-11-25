@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
              android:layout_width="250dp"
-             android:layout_height="170dp"
+             android:layout_height="370dp"
              android:layout_gravity="center">
+
+    <ImageView
+        android:id="@+id/image_product"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
 
     <TextView
         android:id="@+id/label_product"
@@ -11,7 +16,9 @@
         android:background="@color/grey_light"
         android:gravity="center"
         android:textColor="@color/grey_dark"
-        android:textSize="40sp"/>
+        android:textSize="40sp"
+        android:layout_below="@+id/image_product"
+        />
 
     <TextView
         android:id="@+id/item_swipe_dislike_indicator"
@@ -31,4 +38,4 @@
         android:alpha="0"
         android:textColor="@color/purple_dark"/>
 
-</FrameLayout>
+</RelativeLayout>

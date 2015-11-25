@@ -2,32 +2,37 @@ package io.nemesis.ninder.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.nemesis.ninder.NinderApplication;
 import io.nemesis.ninder.R;
+import io.nemesis.ninder.logic.ProductFacade;
 import io.nemesis.ninder.logic.model.Product;
 
 public class MainActivity extends Activity {
 
+    private static final String TAG = "MainActivity";
 
     private ImageButton btnNope;
     private ImageButton btnLike;
     private ImageButton btnInfo;
     private SwipeFlingAdapterView flingContainer;
     private CardAdapter mAdapter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +131,9 @@ public class MainActivity extends Activity {
 
     private class CardAdapter extends BaseAdapter {
 
-        ArrayList<Product> list = new ArrayList<Product>();
+        private static final String TAG = "CardAdapter";
+
+        final ArrayList<Product> list = new ArrayList<Product>();
 
         public CardAdapter() {
             addMoreData();
@@ -134,14 +141,31 @@ public class MainActivity extends Activity {
 
         public void addMoreData() {
             //TODO update the size and the page
-            list.addAll(((NinderApplication) getApplication()).getProductFacade().getProducts(10, 0));
-            notifyDataSetChanged();
+
+            Log.d(TAG, "addMoreData() called with: " + "");
+            ((NinderApplication) getApplication()).getProductFacade().getProductsAsync(10, 0, new ProductFacade.AsyncCallback() {
+                @Override
+                public void onSuccess(List<Product> products) {
+                    list.addAll(products);
+                    notifyDataSetChanged();
+                }
+
+                @Override
+                public void onFail(Exception e) {
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
         public void pop() {
+            Log.d(TAG, "pop() called with: " + "");
             //remove first
             list.remove(0);
             notifyDataSetChanged();
+            if (list.size() < 4) {
+                Log.d(TAG, "list.size:" + list.size());
+                addMoreData();
+            }
         }
 
         @Override
@@ -161,6 +185,8 @@ public class MainActivity extends Activity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+
+            Log.d(TAG, "getView() called with: " + "position = [" + position + "], convertView = [" + convertView + "], parent = [" + parent + "]");
             View rowView = convertView;
             // reuse views
             if (rowView == null) {
@@ -171,18 +197,28 @@ public class MainActivity extends Activity {
                 viewHolder.text = (TextView) rowView.findViewById(R.id.label_product);
                 viewHolder.label_like = rowView.findViewById(R.id.item_swipe_like_indicator);
                 viewHolder.label_dislike = rowView.findViewById(R.id.item_swipe_dislike_indicator);
+                viewHolder.image = (ImageView) rowView.findViewById(R.id.image_product);
 
                 rowView.setTag(viewHolder);
             }
 
             // fill data
             ViewHolder holder = (ViewHolder) rowView.getTag();
-            String s = getItem(position).getName();
+            Product item = getItem(position);
+            String s = item.getName();
+            Log.d(TAG, "getView: itemName at position: " + s);
             holder.text.setText(s);
+
+            Picasso picasso = Picasso.with(getApplicationContext());
+            picasso.cancelRequest(holder.image);
+            picasso.load(item.getImages().get(0).getUrl())
+                    .placeholder(R.drawable.placeholder)
+                    .error(R.drawable.image_err_placeholder)
+                    .into(holder.image);
+
             //reset old data
             holder.label_like.setAlpha(0f);
             holder.label_dislike.setAlpha(0f);
-
 
             return rowView;
         }
@@ -191,6 +227,7 @@ public class MainActivity extends Activity {
             public TextView text;
             public View label_like;
             public View label_dislike;
+            public ImageView image;
         }
     }
 }
