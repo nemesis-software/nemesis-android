@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.security.auth.callback.Callback;
 
 import io.nemesis.ninder.logic.model.Product;
+import retrofit.http.EncodedPath;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.POST;
@@ -35,10 +36,10 @@ public interface RestApi {
     void getProductListAsync(@QueryMap Map<String, String> query, retrofit.Callback<List<Product>> callback);
 
     @GET("/api/{productURL}")
-    Product getProductDetail(@Path("productURL") String url);
+    Product getProductDetail(@Path(value="productURL", encode=false) String url);
 
     @GET("/api{productURL}")
-    void getProductDetailAsync(@Path("productURL") String url, retrofit.Callback<Product> callback);
+    void getProductDetailAsync(@Path(value="productURL", encode=false) String url, retrofit.Callback<Product> callback);
 
     @FormUrlEncoded
     @POST("/wishlist/entry/add")
