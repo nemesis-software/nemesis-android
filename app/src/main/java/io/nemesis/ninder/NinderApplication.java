@@ -2,6 +2,9 @@ package io.nemesis.ninder;
 
 import android.app.Application;
 
+import com.squareup.picasso.LruCache;
+import com.squareup.picasso.Picasso;
+
 import io.nemesis.ninder.logic.NemesisFacadeImpl;
 import io.nemesis.ninder.logic.ProductFacade;
 
@@ -18,6 +21,10 @@ public class NinderApplication extends Application {
         super.onCreate();
 
         //init stuff here
+        Picasso.Builder builder = new Picasso.Builder(this);
+        builder.loggingEnabled(true);
+        Picasso.setSingletonInstance(builder.build());
+
         mProductFacade = new NemesisFacadeImpl(this);
     }
 
