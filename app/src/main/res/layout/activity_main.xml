@@ -9,47 +9,42 @@
     android:id="@+id/container"
     tools:context=".MainActivity">
 
-    <FrameLayout
+    <com.lorentzos.flingswipe.SwipeFlingAdapterView
+        android:id="@+id/swipecards"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
-
-        <com.lorentzos.flingswipe.SwipeFlingAdapterView
-            android:id="@+id/swipecards"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            swipecards:rotation_degrees="16"
-            swipecards:max_visible="4"
-            swipecards:min_adapter_stack="6" />
-
-    </FrameLayout>
+        android:layout_weight="3"
+        swipecards:rotation_degrees="16"
+        swipecards:max_visible="4"
+        swipecards:min_adapter_stack="6"
+        />
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="82dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:layout_margin="10dp"
-        android:orientation="horizontal">
+        >
 
         <ImageButton
             android:id="@+id/button_info"
             style="@style/CustomImageButton"
             android:layout_centerInParent="true"
-            android:src="@drawable/info"
+            android:src="@drawable/info_button"
             android:layout_marginEnd="30dp"
-            android:layout_marginStart="30dp"/>
+            android:layout_marginStart="30dp"
+            />
 
         <ImageButton
             android:id="@+id/button_nope"
             style="@style/CustomImageButton"
             android:layout_toStartOf="@id/button_info"
-            android:src="@drawable/nope"/>
+            android:src="@drawable/nope_button"/>
 
         <ImageButton
             android:id="@+id/button_like"
             style="@style/CustomImageButton"
             android:layout_toEndOf="@id/button_info"
-            android:src="@drawable/like"/>
+            android:src="@drawable/like_button"/>
     </RelativeLayout>
-
-
 </LinearLayout>

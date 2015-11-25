@@ -1,6 +1,7 @@
 package io.nemesis.ninder.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -122,7 +123,8 @@ public class MainActivity extends Activity {
     }
 
     private void info() {
-        Toast.makeText(this, "info", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, ProductActivity.class);
+        startActivity(intent);
     }
 
     private void like() {
@@ -194,7 +196,9 @@ public class MainActivity extends Activity {
                 rowView = inflater.inflate(R.layout.item_card, parent, false);
 
                 ViewHolder viewHolder = new ViewHolder();
-                viewHolder.text = (TextView) rowView.findViewById(R.id.label_product);
+                viewHolder.product_subname = (TextView) rowView.findViewById(R.id.product_item_sub_name);
+                viewHolder.product_itemname = (TextView) rowView.findViewById(R.id.product_item_name);
+//                viewHolder.text = (TextView) rowView.findViewById(R.id.label_product);
                 viewHolder.label_like = rowView.findViewById(R.id.item_swipe_like_indicator);
                 viewHolder.label_dislike = rowView.findViewById(R.id.item_swipe_dislike_indicator);
                 viewHolder.image = (ImageView) rowView.findViewById(R.id.image_product);
@@ -205,9 +209,9 @@ public class MainActivity extends Activity {
             // fill data
             ViewHolder holder = (ViewHolder) rowView.getTag();
             Product item = getItem(position);
-            String s = item.getName();
-            Log.d(TAG, "getView: itemName at position: " + s);
-            holder.text.setText(s);
+//            holder.text.setText(s);
+            holder.product_itemname.setText(item.getName());
+            holder.product_subname.setText(item.getVariantType());
 
             Picasso picasso = Picasso.with(getApplicationContext());
             picasso.cancelRequest(holder.image);
@@ -224,7 +228,9 @@ public class MainActivity extends Activity {
         }
 
         class ViewHolder {
-            public TextView text;
+            public TextView product_subname;
+            public TextView product_itemname;
+//            public TextView text;
             public View label_like;
             public View label_dislike;
             public ImageView image;
