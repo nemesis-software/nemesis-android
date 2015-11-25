@@ -4,4 +4,6 @@
     <string name="cart">Cart</string>
     <string name="label_dislike">No</string>
     <string name="label_like">Yes</string>
+    <string name="label_description">Description</string>
+    <string name="product_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sollicitudin, magna et bibendum lobortis, tellus purus iaculis augue, nec gravida orci nibh quis orci. Maecenas efficitur dignissim velit et tristique. Vestibulum tempus arcu mi, nec convallis augue accumsan scelerisque. Suspendisse potenti. </string>
 </resources>

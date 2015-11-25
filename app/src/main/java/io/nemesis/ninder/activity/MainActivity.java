@@ -1,6 +1,7 @@
 package io.nemesis.ninder.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -117,7 +118,8 @@ public class MainActivity extends Activity {
     }
 
     private void info() {
-        Toast.makeText(this, "info", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, ProductActivity.class);
+        startActivity(intent);
     }
 
     private void like() {

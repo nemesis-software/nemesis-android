@@ -24,4 +24,32 @@
         <item name="android:layout_gravity">center_vertical</item>
     </style>
 
+    <style name="CustomTextView" parent="android:Widget.Material.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="ProductTitleTextView" parent="android:Widget.Material.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/purple_dark</item>
+        <item name="android:textSize">@dimen/text_view_18_text_size</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:layout_marginBottom">@dimen/text_view_margin</item>
+        <item name="android:layout_marginTop">@dimen/text_view_margin</item>
+    </style>
+
+    <style name="PriceTextView" parent="android:Widget.Material.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/purple_dark</item>
+        <item name="android:textSize">@dimen/text_view_16_text_size</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+
 </resources>
