@@ -12,12 +12,6 @@
         android:id="@+id/container"
         android:layout_margin="10dp">
 
-        <ViewPager
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/pager"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
-
         <TextView
             android:id="@+id/product_name"
             android:text="NEW! Snowflake babydoll"
@@ -50,19 +44,19 @@
                 android:textColor="@color/red"
                 android:layout_marginStart="@dimen/text_view_margin"/>
 
+            <ImageView
+                android:id="@+id/image_like"
+                style="@style/CustomImageButton"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/heart"/>
+
             <TextView
                 android:id="@+id/count_like"
                 android:text="344"
                 style="@style/PriceTextView"
-                android:layout_toStartOf="@id/button_like"
+                android:layout_toStartOf="@id/image_like"
                 android:textColor="@color/red"
                 android:layout_marginEnd="@dimen/text_view_margin"/>
-
-            <ImageButton
-                android:id="@+id/button_like"
-                style="@style/CustomImageButton"
-                android:layout_alignParentEnd="true"
-                android:src="@drawable/heart"/>
 
         </RelativeLayout>
 
@@ -81,9 +75,9 @@
         <ImageButton
             android:id="@+id/button_checkmark"
             style="@style/CustomImageButton"
-            android:src="@drawable/checkmark"
-            android:layout_margin="10dp"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/checkmark_button"/>
 
     </LinearLayout>
 
