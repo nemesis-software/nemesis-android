@@ -40,7 +40,7 @@ public class GalleryPageAdapter extends FragmentStatePagerAdapter {
         Bundle args = new Bundle();
         args.putString(GalleryPageFragment.IMAGE_URI, image.getUrl());
         args.putInt(GalleryPageFragment.IMAGE_ERROR_RES_ID, imageErrorPlaceholder);
-        args.putInt(GalleryPageFragment.IMAGE_ERROR_RES_ID, imagePlaceholder);
+        args.putInt(GalleryPageFragment.IMAGE_PLACEHOLDER_RES_ID, imagePlaceholder);
         galleryPageFragment.setArguments(args);
 
         return galleryPageFragment;

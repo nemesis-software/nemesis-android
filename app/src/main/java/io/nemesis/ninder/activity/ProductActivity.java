@@ -42,10 +42,10 @@ public class ProductActivity extends Activity {
 
     // init activity_product with selected product
     private void initProductView(Product product) {
-//        galleryPageAdapter = new GalleryPageAdapter(getFragmentManager(), product.getImages());
-//
-//        ViewPager productViewPager = (ViewPager) findViewById(R.id.pager);
-//        productViewPager.setAdapter(galleryPageAdapter);
+        galleryPageAdapter = new GalleryPageAdapter(getFragmentManager(), product.getImages());
+
+        ViewPager productViewPager = (ViewPager) findViewById(R.id.pager);
+        productViewPager.setAdapter(galleryPageAdapter);
 
         TextView productNameView = (TextView) findViewById(R.id.product_name);
         productNameView.setText(product.getName());

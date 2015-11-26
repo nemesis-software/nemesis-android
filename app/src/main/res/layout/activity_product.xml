@@ -10,8 +10,15 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:id="@+id/container"
-        android:layout_margin="10dp">
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="200dp"
+        android:layout_marginStart="200dp">
 
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pager"
+            android:layout_width="wrap_content"
+            android:layout_height="500dp"/>
 
         <TextView
             android:id="@+id/product_name"
