@@ -4,6 +4,7 @@
     <string name="cart">Cart</string>
     <string name="label_dislike">No</string>
     <string name="label_like">Yes</string>
+    <string name="label_sale">Sale</string>
 
     <!--base url-->
     <string name="rest_api_base_url">https://solar.cfapps.io/en/GB</string>

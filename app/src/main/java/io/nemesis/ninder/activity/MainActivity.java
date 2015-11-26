@@ -1,6 +1,7 @@
 package io.nemesis.ninder.activity;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -128,7 +129,13 @@ public class MainActivity extends Activity {
         Product item = mAdapter.getItem(0);
         Intent intent = new Intent(this, ProductActivity.class);
         intent.putExtra(ProductActivity.EXTRA_ITEM, item);
-        startActivity(intent);
+
+        //create transition
+        ImageView productImageView = (ImageView) findViewById(R.id.image_product);
+        ActivityOptions options = ActivityOptions.
+                makeSceneTransitionAnimation(this, productImageView, "images");
+
+        startActivity(intent, options.toBundle());
     }
 
     private void like(Product product) {

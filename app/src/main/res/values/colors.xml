@@ -7,6 +7,7 @@
     <color name="grey_light">#dedddc</color>
     <color name="grey">#aaa9a9</color>
     <color name="grey_dark">#8b8b8b</color>
+    <color name="shadow_grey">#a0dedddc</color>
     <color name="black">#000000</color>
     <color name="purple_dark">#181226</color>
     <color name="red">#e61a0f</color>
