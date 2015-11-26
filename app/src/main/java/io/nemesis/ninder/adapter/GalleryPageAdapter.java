@@ -34,7 +34,6 @@ public class GalleryPageAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-
         Image image = data.get(position);
         GalleryPageFragment galleryPageFragment = new GalleryPageFragment();
 
