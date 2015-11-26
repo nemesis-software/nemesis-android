@@ -12,16 +12,16 @@ import io.nemesis.ninder.R;
 
 public class PageIndicator extends View {
 
-    private Paint black;
-    private Paint white;
+    private final Paint black;
+    private final Paint white;
 
     private int maxDots;
     private int currentDot;
-    private int dotRadius;
-    private int hPading;
-    private int vPading;
+    private final int dotRadius;
+    private final int hPading;
+    private final int vPading;
     private int rows;
-    private int circleDiameter;
+    private final int circleDiameter;
 
     private final static boolean HIDE_SINGLE_DOT = true; //do not show if single dot
 
