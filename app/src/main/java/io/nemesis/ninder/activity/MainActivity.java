@@ -22,6 +22,7 @@ import java.util.List;
 import io.nemesis.ninder.NinderApplication;
 import io.nemesis.ninder.R;
 import io.nemesis.ninder.logic.ProductFacade;
+import io.nemesis.ninder.logic.model.Image;
 import io.nemesis.ninder.logic.model.Product;
 
 public class MainActivity extends Activity {
@@ -81,7 +82,8 @@ public class MainActivity extends Activity {
         flingContainer.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
-                info();
+                if (flingContainer.isEnabled())
+                    info();
             }
         });
 
@@ -159,6 +161,8 @@ public class MainActivity extends Activity {
                         public void onFail(Exception e) {
                             if (e instanceof ProductFacade.EndOfQueueException) {
                                 endOfQueueReached = true;
+                                flingContainer.setEnabled(false);
+//                                flingContainer.setVisibility(View.GONE);
                             }
                             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
@@ -223,16 +227,16 @@ public class MainActivity extends Activity {
             // XXX from mail conversations we know the initial call
             // will return two images and the large one will be second
             // TODO: 11/26/15 iterate the images and find the one we need in case the model changes
-            String imgUrl = item.getImages().get(1).getUrl();
+//            String imgUrl = item.getImages().get(1).getUrl();
 
-//            String imgUrl = item.getImages().get(0).getUrl();
-//
-//            for (Image image : item.getImages()) {
-//                if ("picture".equalsIgnoreCase(image.getFormat())) {
-//                    imgUrl = image.getUrl();
-//                    break;
-//                }
-//            }
+            String imgUrl = item.getImages().get(0).getUrl();
+
+            for (Image image : item.getImages()) {
+                if ("picture".equalsIgnoreCase(image.getFormat())) {
+                    imgUrl = image.getUrl();
+                    break;
+                }
+            }
 
             picasso.load(imgUrl)
                     .placeholder(R.drawable.placeholder)

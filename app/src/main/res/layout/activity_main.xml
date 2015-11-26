@@ -9,15 +9,32 @@
     android:id="@+id/container"
     tools:context=".MainActivity">
 
-    <com.lorentzos.flingswipe.SwipeFlingAdapterView
-        android:id="@+id/swipecards"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3"
-        swipecards:rotation_degrees="16"
-        swipecards:max_visible="4"
-        swipecards:min_adapter_stack="6"
-        />
+        android:layout_weight="5"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/rounded_rectangle_light"
+            android:text="You Have Finished Your Queue!"
+            android:gravity="center"
+            android:textAppearance="@style/TextAppearance.Header.Large"
+            android:layout_margin="@dimen/activity_vertical_margin_x2"
+            />
+        <com.lorentzos.flingswipe.SwipeFlingAdapterView
+            android:id="@+id/swipecards"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            swipecards:rotation_degrees="16"
+            swipecards:max_visible="4"
+            swipecards:min_adapter_stack="6"
+            android:background="@drawable/swipecards_background"
+            />
+            <!--android:layout_marginTop="@dimen/activity_vertical_margin"-->
+            <!--android:layout_marginBottom="@dimen/activity_vertical_margin"-->
+    </FrameLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"

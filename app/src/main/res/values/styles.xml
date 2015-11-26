@@ -44,4 +44,11 @@
         <item name="android:layout_centerVertical">true</item>
     </style>
 
+    <style name="TextAppearance.Header.Large" parent="android:TextAppearance.Large">
+        <item name="android:textColor">@color/purple_dark</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+
 </resources>
