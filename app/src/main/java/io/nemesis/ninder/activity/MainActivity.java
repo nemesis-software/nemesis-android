@@ -135,12 +135,8 @@ public class MainActivity extends Activity {
         Intent intent = new Intent(this, ProductActivity.class);
         intent.putExtra(ProductActivity.EXTRA_ITEM, item);
 
-        //create transition
-        ImageView productImageView = (ImageView) findViewById(R.id.image_product);
-        ActivityOptions options = ActivityOptions.
-                makeSceneTransitionAnimation(this, productImageView, "images");
-
-        startActivity(intent, options.toBundle());
+        startActivity(intent);
+        //overridePendingTransition(0, R.anim.scale_to_center);
     }
 
     private void like(Product product) {

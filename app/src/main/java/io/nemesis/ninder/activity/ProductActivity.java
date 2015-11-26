@@ -29,6 +29,7 @@ public class ProductActivity extends Activity {
             @Override
             public void onClick(View view) {
                 finish();
+                overridePendingTransition(R.anim.scale_from_center, R.anim.scale_to_center);
             }
         });
 
