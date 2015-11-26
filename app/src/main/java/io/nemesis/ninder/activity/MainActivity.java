@@ -1,6 +1,7 @@
 package io.nemesis.ninder.activity;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -119,7 +120,7 @@ public class MainActivity extends Activity {
 
     private void info() {
         Intent intent = new Intent(this, ProductActivity.class);
-        startActivity(intent);
+        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
     }
 
     private void like() {

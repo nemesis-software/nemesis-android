@@ -13,4 +13,7 @@
     <!-- Font size-->
     <dimen name="text_view_18_text_size">18sp</dimen>
     <dimen name="text_view_16_text_size">16sp</dimen>
+
+    <dimen name="button_elevation">2dp</dimen>
+    <dimen name="button_press_elevation">6dp</dimen>
 </resources>
