@@ -18,6 +18,7 @@
             android:layout_height="match_parent"
             android:scaleType="fitCenter"
             android:transitionName="images"
+            android:contentDescription="@string/cd_product_photo"
             />
             <!--android:background="@color/purple_dark"-->
 
@@ -57,7 +58,6 @@
 
     <TextView
         android:id="@+id/product_item_sub_name"
-        android:text="Dream Angels"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -72,7 +72,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="3"
-        android:text="NEW! Snowflake babydoll"
         android:gravity="center"
         android:layout_gravity="center"
         style="@style/ProductTitleTextView"

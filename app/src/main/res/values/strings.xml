@@ -15,4 +15,11 @@
     <!--initial list of items to display-->
     <string name="label_description">Description</string>
     <string name="product_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sollicitudin, magna et bibendum lobortis, tellus purus iaculis augue, nec gravida orci nibh quis orci. Maecenas efficitur dignissim velit et tristique. Vestibulum tempus arcu mi, nec convallis augue accumsan scelerisque. Suspendisse potenti. </string>
+    <string name="end_of_product_queue_notification_text">You Have Finished Your Queue!</string>
+    <string name="cd_product_gallery_image">Product Gallery Image</string>
+    <string name="cd_product_photo">Product Photo</string>
+    <string name="cd_like_btn">Like</string>
+    <string name="cd_info_btn">Info</string>
+    <string name="cd_dislike_btn">Dislike</string>
+    <string name="cd_done_btn">Done</string>
 </resources>

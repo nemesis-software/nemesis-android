@@ -35,13 +35,13 @@ public interface ProductFacade {
 
     interface EnquiryCallback {
         /**
-         * only called when {@link #enquireAsync(Product)} fetched new data
+         * only called when {@link #enquireAsync(Product, EnquiryCallback)} fetched new data
          * @param products data retrieved by the call
          */
         void onSuccess(Product products);
 
         /**
-         * called when {@link #enquireAsync(Product)} fetched no data, regardless the cause
+         * called when {@link #enquireAsync(Product, EnquiryCallback)} fetched no data, regardless the cause
          * @param e Exception object containing the cause of the fail.
          */
         void onFail(Exception e);

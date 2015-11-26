@@ -33,7 +33,7 @@ public class NemesisFacadeImpl implements ProductFacade {
     private static final int DEFAULT_PRODUCT_PAGE_SIZE = 8;
     private static final int DEFAULT_PRODUCT_PAGE_NUMBER = 0;
 
-    private ConcurrentHashMap<Object, Object> enquiries;
+    private final ConcurrentHashMap<Object, Object> enquiries;
 
     private final Context mContext;
     // TODO will i need to create 2 instances. One for retrieving data and one to add to wishlist in order not to block execution queues?
@@ -138,8 +138,8 @@ public class NemesisFacadeImpl implements ProductFacade {
             } else {
                 enquireAsync(product, new EnquiryCallback() {
                     @Override
-                    public void onSuccess(Product products) {
-                        String code = product.getVariantOptions().get(0).getCode();
+                    public void onSuccess(Product prod) {
+                        String code = prod.getVariantOptions().get(0).getCode();
 
                         retrofitRestClient.getApiService().addToWishlistAsync(code, TEST_USER_ID, new Callback<Void>() {
                             @Override
