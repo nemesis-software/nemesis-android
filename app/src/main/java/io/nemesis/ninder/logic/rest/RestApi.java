@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.nemesis.ninder.logic.model.Product;
+import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.POST;
@@ -36,11 +37,11 @@ public interface RestApi {
     @GET("/api{productURL}")
     void getProductDetailAsync(@Path(value="productURL", encode=false) String url, retrofit.Callback<Product> callback);
 
+    // XXX service methods: Must have either a return type or Callback as last argument.
+    // XXX java.lang.NullPointerException: Attempt to invoke interface method
+    // 'void retrofit.Callback.failure(retrofit.RetrofitError)' on a null object reference
+    // async methods cannot set null callbacks if the caller does not care about the result of the call
     @FormUrlEncoded
     @POST("/wishlist/entry/add")
-    void addToWishlist(@QueryMap Map<String, String> query);
-
-    @FormUrlEncoded
-    @POST("/wishlist/entry/add")
-    void addToWishlistAsync(@QueryMap Map<String, String> query, retrofit.Callback<Void> callback);
+    void addToWishlistAsync(@Field("productId") String productId, @Field("userId") String userId, retrofit.Callback<Void> callback);
 }

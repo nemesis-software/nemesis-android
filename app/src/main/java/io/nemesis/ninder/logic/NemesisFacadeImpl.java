@@ -112,11 +112,18 @@ public class NemesisFacadeImpl implements ProductFacade {
                     if (response.getStatus() == 200) {
                         String code = product.getVariantOptions().get(0).getCode();
 
-                        Map<String, String> query = new HashMap<>();
-                        query.put(QUERY_PRODUCT_ID, String.valueOf(code));
-                        query.put(QUERY_USER_ID, String.valueOf(TEST_USER_ID));
+                        retrofitRestClient.getApiService().addToWishlistAsync(code, TEST_USER_ID, new Callback<Void>() {
+                            @Override
+                            public void success(Void aVoid, Response response) {
+                                // don't care
+                            }
 
-                        retrofitRestClient.getApiService().addToWishlist(query);
+                            @Override
+                            public void failure(RetrofitError error) {
+                                // notify
+                                Log.e("add to wishlist:", error.getMessage());
+                            }
+                        });
                     } else {
                         Log.e("addToWishlist", "bad response: " + response.getStatus());
                     }
@@ -129,12 +136,18 @@ public class NemesisFacadeImpl implements ProductFacade {
             });
         } else {
             String code = variant.getCode();
+            retrofitRestClient.getApiService().addToWishlistAsync(code, TEST_USER_ID, new Callback<Void>() {
+                @Override
+                public void success(Void aVoid, Response response) {
+                    // don't care
+                }
 
-            Map<String, String> query = new HashMap<>();
-            query.put(QUERY_PRODUCT_ID, String.valueOf(code));
-            query.put(QUERY_USER_ID, String.valueOf(TEST_USER_ID));
-
-            retrofitRestClient.getApiService().addToWishlist(query);
+                @Override
+                public void failure(RetrofitError error) {
+                    // notify
+                    Log.e("add to wishlist:", error.getMessage());
+                }
+            });
         }
     }
 }

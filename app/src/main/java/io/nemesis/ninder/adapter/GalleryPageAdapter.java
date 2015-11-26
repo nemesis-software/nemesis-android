@@ -17,9 +17,9 @@ import io.nemesis.ninder.logic.model.Image;
  */
 public class GalleryPageAdapter extends FragmentStatePagerAdapter {
 
-    private List<Image> data;
-    private int imageErrorPlaceholder;
-    private int imagePlaceholder;
+    private final List<Image> data;
+    private final int imageErrorPlaceholder;
+    private final int imagePlaceholder;
 
     public GalleryPageAdapter(FragmentManager fm, List<Image> data) {
         this(fm, data, R.drawable.image_err_placeholder, R.drawable.placeholder);

@@ -11,7 +11,7 @@ import io.nemesis.ninder.logic.model.VariantOption;
  */
 public interface ProductFacade {
 
-    public class EndOfQueueException extends Exception {
+    class EndOfQueueException extends Exception {
         public EndOfQueueException(String details) {
             super(details);
         }
@@ -20,7 +20,7 @@ public interface ProductFacade {
     interface AsyncCallback {
         /**
          * only called when {@link #getProductsAsync} fetched new data
-         * @param products
+         * @param products data retrived by the call
          */
         void onSuccess(List<Product> products);
 
@@ -47,7 +47,7 @@ public interface ProductFacade {
      *
      * @return List of retrieved items.
      */
-    public List<Product> getProducts(int size, int page);
+    List<Product> getProducts(int size, int page);
 
     /**
      * Retrieves a Product list of size up to {@code size} Products
@@ -70,7 +70,7 @@ public interface ProductFacade {
      * @param product Product
      * @param variant Products Variation
      */
-    public void like(Product product, VariantOption variant);
+    void like(Product product, VariantOption variant);
 
     /**
      * The user disapproved your product! Do not bother him with more of the same.
@@ -78,7 +78,7 @@ public interface ProductFacade {
      * @param product Product
      * @param variant Products Variation
      */
-    public void dislike(Product product, VariantOption variant);
+    void dislike(Product product, VariantOption variant);
 
     /**
      * Add a product to users wishlist
@@ -86,5 +86,5 @@ public interface ProductFacade {
      * @param product Product
      * @param variant Products Variation
      */
-    public void addToWishlist(Product product, VariantOption variant);
+    void addToWishlist(Product product, VariantOption variant);
 }
