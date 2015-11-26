@@ -34,6 +34,8 @@ public class MainActivity extends Activity {
     private SwipeFlingAdapterView flingContainer;
     private CardAdapter mAdapter;
 
+    private Toast toast;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +56,9 @@ public class MainActivity extends Activity {
 
             @Override
             public void onLeftCardExit(Object dataObject) {
-                dislike();
+                if (dataObject instanceof Product) {
+                    dislike((Product) dataObject);
+                }
             }
 
             @Override
@@ -120,8 +124,9 @@ public class MainActivity extends Activity {
         return true;
     }
 
-    private void dislike() {
-        ((NinderApplication) getApplication()).getProductFacade().dislike(null, null);
+    private void dislike(Product product) {
+        showToast(Toast.makeText(this, R.string.label_dislike, Toast.LENGTH_SHORT));
+        ((NinderApplication) getApplication()).getProductFacade().dislike(product, null);
     }
 
     private void info() {
@@ -139,7 +144,18 @@ public class MainActivity extends Activity {
     }
 
     private void like(Product product) {
+        showToast(Toast.makeText(this, R.string.label_like, Toast.LENGTH_SHORT));
         ((NinderApplication) getApplication()).getProductFacade().like(product, null);
+    }
+
+    private void showToast(Toast toast) {
+        if (null != toast) {
+            if (null != this.toast) {
+                this.toast.cancel();
+            }
+            this.toast = toast;
+            this.toast.show();
+        }
     }
 
     private class CardAdapter extends BaseAdapter {
