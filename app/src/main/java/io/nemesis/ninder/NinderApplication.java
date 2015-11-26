@@ -2,7 +2,6 @@ package io.nemesis.ninder;
 
 import android.app.Application;
 
-import com.squareup.picasso.LruCache;
 import com.squareup.picasso.Picasso;
 
 import io.nemesis.ninder.logic.NemesisFacadeImpl;

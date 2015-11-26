@@ -29,6 +29,7 @@ public class Product implements Parcelable {
 //    private Discount discount;
     private List<VariantOption> variantOptions = new ArrayList<VariantOption>();
     private String url;
+    private String uid;
 //    private List<Category> categories = new ArrayList<Category>();
 //    private Boolean purchasable;
 //    private Stock stock;
@@ -76,6 +77,7 @@ public class Product implements Parcelable {
         discountedPrice = in.readParcelable(Price.class.getClassLoader());
         variantOptions = in.createTypedArrayList(VariantOption.CREATOR);
         url = in.readString();
+        uid = in.readString();
     }
 
     @Override
@@ -92,6 +94,7 @@ public class Product implements Parcelable {
         dest.writeParcelable(discountedPrice, flags);
         dest.writeTypedList(variantOptions);
         dest.writeString(url);
+        dest.writeString(uid);
     }
 
     @Override
@@ -110,7 +113,8 @@ public class Product implements Parcelable {
             return new Product[size];
         }
     };
-    // start Parcelable
+    // end Parcelable
+
     /**
      * @return The discountedPrice
      */
@@ -389,5 +393,13 @@ public class Product implements Parcelable {
      */
     public void setAverageRating(Integer averageRating) {
         this.averageRating = averageRating;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getUid() {
+        return uid;
     }
 }

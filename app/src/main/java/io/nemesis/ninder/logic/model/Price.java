@@ -3,8 +3,6 @@ package io.nemesis.ninder.logic.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.math.BigDecimal;
-
 /**
  * Created by bobi on 11/23/2015.
  */

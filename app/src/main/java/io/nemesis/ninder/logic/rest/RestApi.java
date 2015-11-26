@@ -3,10 +3,7 @@ package io.nemesis.ninder.logic.rest;
 import java.util.List;
 import java.util.Map;
 
-import javax.security.auth.callback.Callback;
-
 import io.nemesis.ninder.logic.model.Product;
-import retrofit.http.EncodedPath;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.POST;
@@ -22,14 +19,12 @@ public interface RestApi {
     // Users define the concrete execution by setting a return type (synchronous) or not (asynchronous) to service methods.
 
     @GET("/api/c/womens")
-//    @GET("/sal")
     List<Product> getProductList();
 
     @GET("/api/c/womens")
     List<Product> getProductList(@QueryMap Map<String, String> query);
 
     @GET("/api/c/womens")
-//    @GET("/sal")
     void getProductListAsync(retrofit.Callback<List<Product>> callback);
 
     @GET("/api/c/womens")

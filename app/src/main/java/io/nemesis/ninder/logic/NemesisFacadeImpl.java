@@ -32,11 +32,11 @@ public class NemesisFacadeImpl implements ProductFacade {
     private static final int DEFAULT_PRODUCT_PAGE_SIZE = 8;
     private static final int DEFAULT_PRODUCT_PAGE_NUMBER = 0;
 
-    private Context mContext;
+    private final Context mContext;
     // TODO will i need to create 2 instances. One for retrieving data and one to add to wishlist in order not to block execution queues?
-    private NemesisRetrofitRestClient retrofitRestClient;
+    private final NemesisRetrofitRestClient retrofitRestClient;
 
-    int dummyCount = 0;
+//    int dummyCount = 0;
 
     public NemesisFacadeImpl(Context context) {
         mContext = context.getApplicationContext();
@@ -46,28 +46,30 @@ public class NemesisFacadeImpl implements ProductFacade {
     @Override
     public List<Product> getProducts(int size, int page) {
 
-        // TODO: 11/25/15
-//        Map<String, String> query = new HashMap<>();
-//        query.put(QUERY_PAGE_INDEX, String.valueOf(page));
-//        query.put(QUERY_PAGE_SIZE, String.valueOf(size));
+        Map<String, String> query = new HashMap<>();
+        query.put(QUERY_PAGE_INDEX, String.valueOf(page));
+        query.put(QUERY_PAGE_SIZE, String.valueOf(size));
 
-        return retrofitRestClient.getApiService().getProductList();
+        return retrofitRestClient.getApiService().getProductList(query);
     }
 
     @Override
     public void getProductsAsync(int size, int page, final AsyncCallback callback) {
 
-        // TODO: 11/25/15
         Map<String, String> query = new HashMap<>();
-        query.put(QUERY_PAGE_INDEX, String.valueOf(++dummyCount));
-//        query.put(QUERY_PAGE_SIZE, String.valueOf(size));
+        query.put(QUERY_PAGE_INDEX, String.valueOf(page));
+        query.put(QUERY_PAGE_SIZE, String.valueOf(size));
 
         retrofitRestClient.getApiService().getProductListAsync(query, new Callback<List<Product>>() {
             @Override
             public void success(List<Product> products, Response response) {
                 if (response.getStatus() == 200) {
                     if (null != callback) {
-                        callback.onSuccess(products);
+                        if (products.size() == 0) {
+                            callback.onFail(new EndOfQueueException("End of queue reached"));
+                        } else {
+                            callback.onSuccess(products);
+                        }
                     }
                 } else {
                     if (null != callback) {
@@ -93,6 +95,7 @@ public class NemesisFacadeImpl implements ProductFacade {
 
     @Override
     public void dislike(Product product, VariantOption variant) {
+        // XXX adopt https://dev.mysql.com/doc/refman/5.7/en/blackhole-storage-engine.html
         Toast.makeText(mContext, "Dislike", Toast.LENGTH_SHORT).show();
     }
 

@@ -25,7 +25,7 @@ import retrofit.converter.GsonConverter;
  */
 public class NemesisRetrofitRestClient {
 
-    public class ItemTypeAdapterFactory implements TypeAdapterFactory {
+    private class ItemTypeAdapterFactory implements TypeAdapterFactory {
 
         public <T> TypeAdapter<T> create(Gson gson, final TypeToken<T> type) {
 
@@ -70,7 +70,7 @@ public class NemesisRetrofitRestClient {
         }
     }
 
-    private RestApi apiService;
+    private final RestApi apiService;
 
     public NemesisRetrofitRestClient(Context context) {
 

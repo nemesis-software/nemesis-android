@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -67,7 +65,8 @@ public class MainActivity extends Activity {
 
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
-                mAdapter.addMoreData();
+                if (itemsInAdapter < 6 && !mAdapter.isEndOfQueueReached()) // min adapter stack from SwipeFlingAdapterView configuration
+                    mAdapter.addMoreData();
             }
 
             @Override
@@ -124,6 +123,7 @@ public class MainActivity extends Activity {
     }
 
     private void info() {
+        // XXX view info for the top item in the queue
         Product item = mAdapter.getItem(0);
         Intent intent = new Intent(this, ProductActivity.class);
         intent.putExtra(ProductActivity.EXTRA_ITEM, item);
@@ -143,6 +143,9 @@ public class MainActivity extends Activity {
     private class CardAdapter extends BaseAdapter {
 
         final ArrayList<Product> list = new ArrayList<Product>();
+        private int badgeNumber = 0;
+        private final int badgeSize = 10;
+        boolean endOfQueueReached = false;
 
         public CardAdapter() {
             addMoreData();
@@ -150,27 +153,33 @@ public class MainActivity extends Activity {
 
         public void addMoreData() {
             //TODO update the size and the page
-            ((NinderApplication) getApplication()).getProductFacade().getProductsAsync(10, 0, new ProductFacade.AsyncCallback() {
-                @Override
-                public void onSuccess(List<Product> products) {
-                    list.addAll(products);
-                    notifyDataSetChanged();
-                }
+            ((NinderApplication) getApplication()).getProductFacade().getProductsAsync(badgeSize, badgeNumber,
+                    new ProductFacade.AsyncCallback() {
+                        @Override
+                        public void onSuccess(List<Product> products) {
+                            list.addAll(products);
+                            notifyDataSetChanged();
+                            badgeNumber++;
+                        }
 
-                @Override
-                public void onFail(Exception e) {
-                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
+                        @Override
+                        public void onFail(Exception e) {
+                            if (e instanceof ProductFacade.EndOfQueueException) {
+                                endOfQueueReached = true;
+                            }
+                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
+
+        public boolean isEndOfQueueReached() {
+            return endOfQueueReached;
         }
 
         public void pop() {
             //remove first
             list.remove(0);
             notifyDataSetChanged();
-            if (list.size() < 4) {
-                addMoreData();
-            }
         }
 
         @Override
@@ -217,7 +226,22 @@ public class MainActivity extends Activity {
 
             Picasso picasso = Picasso.with(getApplicationContext());
             picasso.cancelRequest(holder.image);
-            picasso.load(item.getImages().get(0).getUrl())
+
+            // XXX from mail conversations we know the initial call
+            // will return two images and the large one will be second
+            // TODO: 11/26/15 iterate the images and find the one we need in case the model changes
+            String imgUrl = item.getImages().get(1).getUrl();
+
+//            String imgUrl = item.getImages().get(0).getUrl();
+//
+//            for (Image image : item.getImages()) {
+//                if ("picture".equalsIgnoreCase(image.getFormat())) {
+//                    imgUrl = image.getUrl();
+//                    break;
+//                }
+//            }
+
+            picasso.load(imgUrl)
                     .placeholder(R.drawable.placeholder)
                     .error(R.drawable.image_err_placeholder)
                     .into(holder.image);
@@ -232,7 +256,7 @@ public class MainActivity extends Activity {
         class ViewHolder {
             public TextView product_subname;
             public TextView product_itemname;
-//            public TextView text;
+            //            public TextView text;
             public View label_like;
             public View label_dislike;
             public ImageView image;
