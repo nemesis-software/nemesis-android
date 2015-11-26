@@ -169,7 +169,6 @@ public class MainActivity extends Activity {
                             if (e instanceof ProductFacade.EndOfQueueException) {
                                 endOfQueueReached = true;
                                 flingContainer.setEnabled(false);
-//                                flingContainer.setVisibility(View.GONE);
                             }
                             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                         }

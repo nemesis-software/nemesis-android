@@ -20,7 +20,7 @@ public interface ProductFacade {
     interface AsyncCallback {
         /**
          * only called when {@link #getProductsAsync} fetched new data
-         * @param products data retrived by the call
+         * @param products data retrieved by the call
          */
         void onSuccess(List<Product> products);
 
@@ -29,6 +29,20 @@ public interface ProductFacade {
          * @param e Exception object containing the cause of the fail.
          *          if this is instance of EndOfQueueException, callers exceeded the range of items they can view
          *          and going further incrementing the starting index will never return new content.
+         */
+        void onFail(Exception e);
+    }
+
+    interface EnquiryCallback {
+        /**
+         * only called when {@link #enquireAsync(Product)} fetched new data
+         * @param products data retrieved by the call
+         */
+        void onSuccess(Product products);
+
+        /**
+         * called when {@link #enquireAsync(Product)} fetched no data, regardless the cause
+         * @param e Exception object containing the cause of the fail.
          */
         void onFail(Exception e);
     }
@@ -87,4 +101,16 @@ public interface ProductFacade {
      * @param variant Products Variation
      */
     void addToWishlist(Product product, VariantOption variant);
+
+    /**
+     * retrieve additional details about a product
+     * @param product
+     */
+    Product enquire(Product product);
+
+    /**
+     * retrieve additional details about a product
+     * @param product
+     */
+    void enquireAsync(Product product, EnquiryCallback callback);
 }

@@ -7,6 +7,7 @@ import android.widget.Toast;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import io.nemesis.ninder.logic.model.Product;
 import io.nemesis.ninder.logic.model.VariantOption;
@@ -32,17 +33,21 @@ public class NemesisFacadeImpl implements ProductFacade {
     private static final int DEFAULT_PRODUCT_PAGE_SIZE = 8;
     private static final int DEFAULT_PRODUCT_PAGE_NUMBER = 0;
 
+    private ConcurrentHashMap<Object, Object> enquiries;
+
     private final Context mContext;
     // TODO will i need to create 2 instances. One for retrieving data and one to add to wishlist in order not to block execution queues?
     private final NemesisRetrofitRestClient retrofitRestClient;
 
-//    int dummyCount = 0;
-
     public NemesisFacadeImpl(Context context) {
         mContext = context.getApplicationContext();
         retrofitRestClient = new NemesisRetrofitRestClient(mContext);
+        enquiries = new ConcurrentHashMap<>();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Product> getProducts(int size, int page) {
 
@@ -53,6 +58,9 @@ public class NemesisFacadeImpl implements ProductFacade {
         return retrofitRestClient.getApiService().getProductList(query);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void getProductsAsync(int size, int page, final AsyncCallback callback) {
 
@@ -87,29 +95,50 @@ public class NemesisFacadeImpl implements ProductFacade {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void like(Product product, VariantOption variant) {
-        Toast.makeText(mContext, "Like", Toast.LENGTH_SHORT).show();
         addToWishlist(product, variant);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void dislike(Product product, VariantOption variant) {
-        // XXX adopt https://dev.mysql.com/doc/refman/5.7/en/blackhole-storage-engine.html
-        Toast.makeText(mContext, "Dislike", Toast.LENGTH_SHORT).show();
+        if (null != product.getUid())
+            enquiries.remove(product.getUid());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addToWishlist(final Product product, final VariantOption variant) {
         Toast.makeText(mContext, "addToWishlist", Toast.LENGTH_SHORT).show();
 
         if (null == variant || StringUtils.isEmpty(variant.getCode())) {
 
-            retrofitRestClient.getApiService().getProductDetailAsync(product.getUrl(), new Callback<Product>() {
-                @Override
-                public void success(Product product, Response response) {
+            Product productDetails = (Product) enquiries.get(product.getUid());
+            if (null != productDetails) {
+                retrofitRestClient.getApiService().addToWishlistAsync(productDetails.getCode(), TEST_USER_ID, new Callback<Void>() {
+                    @Override
+                    public void success(Void aVoid, Response response) {
+                        // don't care
+                    }
 
-                    if (response.getStatus() == 200) {
+                    @Override
+                    public void failure(RetrofitError error) {
+                        // notify
+                        Log.e("add to wishlist:", error.getMessage());
+                    }
+                });
+            } else {
+                enquireAsync(product, new EnquiryCallback() {
+                    @Override
+                    public void onSuccess(Product products) {
                         String code = product.getVariantOptions().get(0).getCode();
 
                         retrofitRestClient.getApiService().addToWishlistAsync(code, TEST_USER_ID, new Callback<Void>() {
@@ -124,16 +153,14 @@ public class NemesisFacadeImpl implements ProductFacade {
                                 Log.e("add to wishlist:", error.getMessage());
                             }
                         });
-                    } else {
-                        Log.e("addToWishlist", "bad response: " + response.getStatus());
                     }
-                }
 
-                @Override
-                public void failure(RetrofitError error) {
-                    error.printStackTrace();
-                }
-            });
+                    @Override
+                    public void onFail(Exception e) {
+                        Log.e("addToWishlist", e.getMessage());
+                    }
+                });
+            }
         } else {
             String code = variant.getCode();
             retrofitRestClient.getApiService().addToWishlistAsync(code, TEST_USER_ID, new Callback<Void>() {
@@ -149,5 +176,51 @@ public class NemesisFacadeImpl implements ProductFacade {
                 }
             });
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Product enquire(Product product) {
+        // TODO verify that product.uid and productDetail.uid mach
+        // TODO verify that product does have uid value
+        Product productDetail = retrofitRestClient.getApiService().getProductDetail(product.getUrl());
+        enquiries.put(product.getUid(), productDetail);
+        return productDetail;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void enquireAsync(Product product, final EnquiryCallback callback) {
+        retrofitRestClient.getApiService().getProductDetailAsync(product.getUrl(), new Callback<Product>() {
+            @Override
+            public void success(Product product, Response response) {
+                if (response.getStatus() == 200) {
+
+                    // TODO verify that product.uid and productDetail.uid mach
+                    // TODO verify that product does have uid value
+                    Product productDetail = retrofitRestClient.getApiService().getProductDetail(product.getUrl());
+                    enquiries.put(product.getUid(), productDetail);
+
+                    if (null != callback) {
+                        callback.onSuccess(product);
+                    }
+                } else {
+                    if (null != callback) {
+                        callback.onFail(new Exception("Bad response code:" + response.getStatus()));
+                    }
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (null != callback) {
+                    callback.onFail(error);
+                }
+            }
+        });
     }
 }
