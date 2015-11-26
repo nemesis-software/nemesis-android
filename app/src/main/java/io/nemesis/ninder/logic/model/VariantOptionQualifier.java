@@ -1,9 +1,12 @@
 package io.nemesis.ninder.logic.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by bobi on 11/23/2015.
  */
-public class VariantOptionQualifier {
+public class VariantOptionQualifier implements Parcelable {
 
     private String qualifier;
     private String name;
@@ -11,6 +14,38 @@ public class VariantOptionQualifier {
     private Object image;
     private Object colorHex;
 
+    // start Parcelable
+    // TODO: 11/25/15 image and colorHex
+    protected VariantOptionQualifier(Parcel in) {
+        qualifier = in.readString();
+        name = in.readString();
+        value = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(qualifier);
+        dest.writeString(name);
+        dest.writeString(value);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<VariantOptionQualifier> CREATOR = new Creator<VariantOptionQualifier>() {
+        @Override
+        public VariantOptionQualifier createFromParcel(Parcel in) {
+            return new VariantOptionQualifier(in);
+        }
+
+        @Override
+        public VariantOptionQualifier[] newArray(int size) {
+            return new VariantOptionQualifier[size];
+        }
+    };
+    // end Parcelable
     /**
      * @return The qualifier
      */
@@ -80,4 +115,5 @@ public class VariantOptionQualifier {
     public void setColorHex(Object colorHex) {
         this.colorHex = colorHex;
     }
+
 }

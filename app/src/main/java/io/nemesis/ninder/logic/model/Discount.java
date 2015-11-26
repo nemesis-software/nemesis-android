@@ -1,14 +1,51 @@
 package io.nemesis.ninder.logic.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by bobi on 11/23/2015.
  */
-public class Discount {
+public class Discount implements Parcelable {
 
     private String currencyIso;
-    private Double value;
+    private double value;
     private String priceType;
     private String formattedValue;
+
+    // start Parcelable
+    protected Discount(Parcel in) {
+        currencyIso = in.readString();
+        value = in.readDouble();
+        priceType = in.readString();
+        formattedValue = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(currencyIso);
+        dest.writeDouble(value);
+        dest.writeString(priceType);
+        dest.writeString(formattedValue);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Discount> CREATOR = new Creator<Discount>() {
+        @Override
+        public Discount createFromParcel(Parcel in) {
+            return new Discount(in);
+        }
+
+        @Override
+        public Discount[] newArray(int size) {
+            return new Discount[size];
+        }
+    };
+    // end Parcelable
 
     /**
      * @return The currencyIso

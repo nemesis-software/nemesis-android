@@ -11,7 +11,14 @@ import io.nemesis.ninder.logic.model.VariantOption;
  */
 public interface ProductFacade {
 
+    interface AsyncCallback {
+        void onSuccess(List<Product> products);
+        void onFail(Exception e);
+    }
+
     public List<Product> getProducts(int size, int page);
+
+    void getProductsAsync(int size, int page, AsyncCallback callback);
 
     public void like(Product product, VariantOption variant);
 

@@ -4,32 +4,36 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.nemesis.ninder.NinderApplication;
 import io.nemesis.ninder.R;
+import io.nemesis.ninder.logic.ProductFacade;
 import io.nemesis.ninder.logic.model.Product;
 
 public class MainActivity extends Activity {
-
 
     private ImageButton btnNope;
     private ImageButton btnLike;
     private ImageButton btnInfo;
     private SwipeFlingAdapterView flingContainer;
     private CardAdapter mAdapter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +60,9 @@ public class MainActivity extends Activity {
 
             @Override
             public void onRightCardExit(Object dataObject) {
-                like();
+                if (dataObject instanceof Product) {
+                    like((Product) dataObject);
+                }
             }
 
             @Override
@@ -80,7 +86,6 @@ public class MainActivity extends Activity {
                 info();
             }
         });
-
 
         btnNope = (ImageButton) findViewById(R.id.button_nope);
         btnNope.setOnClickListener(new View.OnClickListener() {
@@ -119,17 +124,25 @@ public class MainActivity extends Activity {
     }
 
     private void info() {
+        Product item = mAdapter.getItem(0);
         Intent intent = new Intent(this, ProductActivity.class);
-        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+        intent.putExtra(ProductActivity.EXTRA_ITEM, item);
+
+        //create transition
+        ImageView productImageView = (ImageView) findViewById(R.id.image_product);
+        ActivityOptions options = ActivityOptions.
+                makeSceneTransitionAnimation(this, productImageView, "images");
+
+        startActivity(intent, options.toBundle());
     }
 
-    private void like() {
-        ((NinderApplication) getApplication()).getProductFacade().like(null, null);
+    private void like(Product product) {
+        ((NinderApplication) getApplication()).getProductFacade().like(product, null);
     }
 
     private class CardAdapter extends BaseAdapter {
 
-        ArrayList<Product> list = new ArrayList<Product>();
+        final ArrayList<Product> list = new ArrayList<Product>();
 
         public CardAdapter() {
             addMoreData();
@@ -137,14 +150,27 @@ public class MainActivity extends Activity {
 
         public void addMoreData() {
             //TODO update the size and the page
-            list.addAll(((NinderApplication) getApplication()).getProductFacade().getProducts(10, 0));
-            notifyDataSetChanged();
+            ((NinderApplication) getApplication()).getProductFacade().getProductsAsync(10, 0, new ProductFacade.AsyncCallback() {
+                @Override
+                public void onSuccess(List<Product> products) {
+                    list.addAll(products);
+                    notifyDataSetChanged();
+                }
+
+                @Override
+                public void onFail(Exception e) {
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
         public void pop() {
             //remove first
             list.remove(0);
             notifyDataSetChanged();
+            if (list.size() < 4) {
+                addMoreData();
+            }
         }
 
         @Override
@@ -164,6 +190,7 @@ public class MainActivity extends Activity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+
             View rowView = convertView;
             // reuse views
             if (rowView == null) {
@@ -171,29 +198,44 @@ public class MainActivity extends Activity {
                 rowView = inflater.inflate(R.layout.item_card, parent, false);
 
                 ViewHolder viewHolder = new ViewHolder();
-                viewHolder.text = (TextView) rowView.findViewById(R.id.label_product);
+                viewHolder.product_subname = (TextView) rowView.findViewById(R.id.product_item_sub_name);
+                viewHolder.product_itemname = (TextView) rowView.findViewById(R.id.product_item_name);
+//                viewHolder.text = (TextView) rowView.findViewById(R.id.label_product);
                 viewHolder.label_like = rowView.findViewById(R.id.item_swipe_like_indicator);
                 viewHolder.label_dislike = rowView.findViewById(R.id.item_swipe_dislike_indicator);
+                viewHolder.image = (ImageView) rowView.findViewById(R.id.image_product);
 
                 rowView.setTag(viewHolder);
             }
 
             // fill data
             ViewHolder holder = (ViewHolder) rowView.getTag();
-            String s = getItem(position).getName();
-            holder.text.setText(s);
+            Product item = getItem(position);
+//            holder.text.setText(s);
+            holder.product_itemname.setText(item.getName());
+            holder.product_subname.setText(item.getVariantType());
+
+            Picasso picasso = Picasso.with(getApplicationContext());
+            picasso.cancelRequest(holder.image);
+            picasso.load(item.getImages().get(0).getUrl())
+                    .placeholder(R.drawable.placeholder)
+                    .error(R.drawable.image_err_placeholder)
+                    .into(holder.image);
+
             //reset old data
             holder.label_like.setAlpha(0f);
             holder.label_dislike.setAlpha(0f);
-
 
             return rowView;
         }
 
         class ViewHolder {
-            public TextView text;
+            public TextView product_subname;
+            public TextView product_itemname;
+//            public TextView text;
             public View label_like;
             public View label_dislike;
+            public ImageView image;
         }
     }
 }

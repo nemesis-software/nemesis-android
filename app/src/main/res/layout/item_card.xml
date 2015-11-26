@@ -1,56 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="250dp"
-    android:layout_height="300dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layout_gravity="center"
+    android:layout_marginTop="@dimen/activity_vertical_margin"
+    android:layout_marginBottom="@dimen/activity_vertical_margin"
+    android:background="@color/white_dusty"
     android:orientation="vertical">
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="170dp"
+        android:layout_height="0dp"
+        android:layout_weight="7"
         android:layout_gravity="center">
 
-        <TextView
-            android:id="@+id/label_product"
+        <ImageView
+            android:id="@+id/image_product"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/grey_light"
-            android:gravity="center"
-            android:textColor="@color/grey_dark"
-            android:textSize="40sp"/>
+            android:scaleType="fitCenter"
+            android:transitionName="images"
+            />
 
         <TextView
             android:id="@+id/item_swipe_dislike_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/label_dislike"
+            android:layout_margin="@dimen/text_view_margin"
             android:layout_gravity="end"
             android:alpha="0"
-            android:textColor="@color/red"/>
+            android:textColor="@color/red"
+            android:textSize="14sp"
+            />
 
         <TextView
             android:id="@+id/item_swipe_like_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
+            android:layout_margin="@dimen/text_view_margin"
             android:text="@string/label_like"
             android:alpha="0"
-            android:textColor="@color/purple_dark"/>
+            android:textColor="@color/purple_dark"
+            android:textSize="14sp"
+            />
     </FrameLayout>
+
+    <!--<TextView-->
+        <!--android:id="@+id/label_product"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:background="@color/grey_light"-->
+        <!--android:gravity="center"-->
+        <!--android:textColor="@color/grey_dark"-->
+        <!--android:textSize="40sp"/>-->
 
     <TextView
         android:id="@+id/product_item_sub_name"
         android:text="Dream Angels"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:textAllCaps="true"
+        android:gravity="center"
         android:layout_gravity="center"
-        android:layout_marginTop="@dimen/text_view_margin"/>
+        android:layout_marginTop="@dimen/text_view_margin"
+        />
 
     <TextView
         android:id="@+id/product_item_name"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"
         android:text="NEW! Snowflake babydoll"
+        android:gravity="center"
+        android:layout_gravity="center"
         style="@style/ProductTitleTextView"
-        android:layout_gravity="center"/>
+        />
 
 </LinearLayout>
