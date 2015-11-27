@@ -1,69 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:background="@color/white_dusty"
-    android:orientation="vertical">
+    android:background="@android:color/transparent"
+    >
 
-    <FrameLayout
+    <ImageView
+        android:id="@+id/image_product"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="11"
-        android:layout_gravity="center">
-
-        <ImageView
-            android:id="@+id/image_product"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitCenter"
-            android:contentDescription="@string/cd_product_photo"
-            />
-
-        <TextView
-            android:id="@+id/item_swipe_dislike_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/label_no"
-            android:layout_margin="@dimen/text_view_margin"
-            android:layout_gravity="end"
-            android:alpha="0"
-            android:textColor="@color/red"
-            android:textSize="14sp"
-            />
-
-        <TextView
-            android:id="@+id/item_swipe_like_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:layout_margin="@dimen/text_view_margin"
-            android:text="@string/label_yes"
-            android:alpha="0"
-            android:textColor="@color/purple_dark"
-            android:textSize="14sp"
-            />
-    </FrameLayout>
-
-    <TextView
-        android:id="@+id/product_item_sub_name"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:textAllCaps="true"
-        android:gravity="center"
-        android:layout_gravity="center"
-        android:layout_marginTop="@dimen/text_view_margin"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/cd_product_photo"
+        android:background="@android:color/transparent"
         />
 
-    <TextView
-        android:id="@+id/product_item_name"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3"
-        android:gravity="center"
-        android:layout_gravity="center"
-        style="@style/ProductTitleTextView"
-        />
-
-</LinearLayout>
+</FrameLayout>

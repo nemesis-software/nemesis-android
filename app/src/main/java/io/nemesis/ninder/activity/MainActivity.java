@@ -41,6 +41,8 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getActionBar().setDisplayHomeAsUpEnabled(false);
+
         //add the view via xml or programmatically
         flingContainer = (SwipeFlingAdapterView) findViewById(R.id.swipecards);
 
@@ -78,9 +80,16 @@ public class MainActivity extends Activity {
             public void onScroll(float scrollProgressPercent) {
                 View view = flingContainer.getSelectedView();
                 if (view != null) {
-                    view.findViewById(R.id.item_swipe_dislike_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
-                    view.findViewById(R.id.item_swipe_like_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
-                    view.findViewById(R.id.product_item_name).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : scrollProgressPercent);
+//                    view.findViewById(R.id.item_swipe_dislike_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
+//                    view.findViewById(R.id.item_swipe_like_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
+                    if (scrollProgressPercent == 0) {
+                        findViewById(R.id.product_item_name).setAlpha(new Float(100));
+                        findViewById(R.id.product_item_sub_name).setAlpha(new Float(100));
+                    } else {
+                        findViewById(R.id.product_item_name).setAlpha(scrollProgressPercent < 0 ? scrollProgressPercent : -scrollProgressPercent);
+                        findViewById(R.id.product_item_sub_name).setAlpha(scrollProgressPercent < 0 ? scrollProgressPercent : -scrollProgressPercent);
+
+                    }
                 }
             }
         });
@@ -126,7 +135,7 @@ public class MainActivity extends Activity {
     }
 
     private void dislike(ProductWrapper product) {
-        showToast(Toast.makeText(this, R.string.label_dislike, Toast.LENGTH_SHORT));
+        //showToast(Toast.makeText(this, R.string.label_dislike, Toast.LENGTH_SHORT));
         ((NinderApplication) getApplication()).getProductFacade().dislike(product.getProduct(), null);
     }
 
@@ -145,7 +154,7 @@ public class MainActivity extends Activity {
     }
 
     private void like(ProductWrapper product) {
-        showToast(Toast.makeText(this, R.string.label_like, Toast.LENGTH_SHORT));
+        //showToast(Toast.makeText(this, R.string.label_like, Toast.LENGTH_SHORT));
         ((NinderApplication) getApplication()).getProductFacade().like(product.getProduct(), null);
     }
 
@@ -175,19 +184,37 @@ public class MainActivity extends Activity {
             ((NinderApplication) getApplication()).getProductFacade().getProductsAsync(badgeSize, badgeNumber,
                     new ProductFacade.AsyncCallback() {
                         @Override
-                        public void onSuccess(List<ProductWrapper> products) {
-                            list.addAll(products);
-                            notifyDataSetChanged();
-                            badgeNumber++;
+                        public void onSuccess(final List<ProductWrapper> products) {
+                            MainActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    list.addAll(products);
+                                    notifyDataSetChanged();
+                                    badgeNumber++;
+                                }
+                            });
+//                            list.addAll(products);
+//                            notifyDataSetChanged();
+//                            badgeNumber++;
                         }
 
                         @Override
-                        public void onFail(Exception e) {
-                            if (e instanceof ProductFacade.EndOfQueueException) {
-                                endOfQueueReached = true;
-                                flingContainer.setEnabled(false);
-                            }
-                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                        public void onFail(final Exception e) {
+                            MainActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (e instanceof ProductFacade.EndOfQueueException) {
+                                        endOfQueueReached = true;
+                                        flingContainer.setEnabled(false);
+                                    }
+                                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+//                            if (e instanceof ProductFacade.EndOfQueueException) {
+//                                endOfQueueReached = true;
+//                                flingContainer.setEnabled(false);
+//                            }
+//                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
         }
@@ -227,10 +254,10 @@ public class MainActivity extends Activity {
                 rowView = inflater.inflate(R.layout.item_card, parent, false);
 
                 ViewHolder viewHolder = new ViewHolder();
-                viewHolder.product_subname = (TextView) rowView.findViewById(R.id.product_item_sub_name);
-                viewHolder.product_itemname = (TextView) rowView.findViewById(R.id.product_item_name);
-                viewHolder.label_like = rowView.findViewById(R.id.item_swipe_like_indicator);
-                viewHolder.label_dislike = rowView.findViewById(R.id.item_swipe_dislike_indicator);
+                viewHolder.product_subname = (TextView) findViewById(R.id.product_item_sub_name);
+                viewHolder.product_itemname = (TextView) findViewById(R.id.product_item_name);
+//                viewHolder.label_like = rowView.findViewById(R.id.item_swipe_like_indicator);
+//                viewHolder.label_dislike = rowView.findViewById(R.id.item_swipe_dislike_indicator);
                 viewHolder.image = (ImageView) rowView.findViewById(R.id.image_product);
 
                 rowView.setTag(viewHolder);
@@ -240,7 +267,9 @@ public class MainActivity extends Activity {
             ViewHolder holder = (ViewHolder) rowView.getTag();
             ProductWrapper item = getItem(position);
             holder.product_itemname.setText(item.getName());
+            holder.product_itemname.setAlpha(new Float(100));
             holder.product_subname.setText(item.getVariantType());
+            holder.product_subname.setAlpha(new Float(100));
 
             Picasso picasso = Picasso.with(getApplicationContext());
             picasso.cancelRequest(holder.image);
@@ -255,8 +284,8 @@ public class MainActivity extends Activity {
                     .into(holder.image);
 
             //reset old data
-            holder.label_like.setAlpha(0f);
-            holder.label_dislike.setAlpha(0f);
+//            holder.label_like.setAlpha(0f);
+//            holder.label_dislike.setAlpha(0f);
 
             return rowView;
         }

@@ -13,6 +13,8 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import io.nemesis.ninder.R;
 import io.nemesis.ninder.logic.model.Product;
@@ -80,10 +82,15 @@ public class NemesisRetrofitRestClient {
                 .registerTypeAdapterFactory(new ItemTypeAdapterFactory())
                 .create();
 
+
+        ExecutorService executorService = Executors.newFixedThreadPool(6);
+        ExecutorService executorService1 = Executors.newFixedThreadPool(1);
+
         RestAdapter adapter = new RestAdapter.Builder()
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setEndpoint(context.getString(R.string.rest_api_base_url))
                 .setConverter(new GsonConverter(gson))
+                .setExecutors(executorService, executorService1)
                 .build();
 
         apiService = adapter.create(RestApi.class);

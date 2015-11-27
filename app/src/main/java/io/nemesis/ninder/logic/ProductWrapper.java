@@ -67,7 +67,7 @@ public class ProductWrapper {
 
     private final NemesisFacadeImpl api;
     private volatile Product pojo;
-    private final List<Image> galleryImages;
+    private volatile List<Image> galleryImages;
     private volatile Image photo;
 
     ProductWrapper(Product product, NemesisFacadeImpl api) {

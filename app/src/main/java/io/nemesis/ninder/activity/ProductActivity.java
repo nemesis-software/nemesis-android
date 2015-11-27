@@ -9,12 +9,15 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.util.List;
+
 import io.nemesis.ninder.NinderApplication;
 import io.nemesis.ninder.R;
 import io.nemesis.ninder.adapter.GalleryPageAdapter;
 import io.nemesis.ninder.logic.NemesisFacadeImpl;
 import io.nemesis.ninder.logic.ProductFacade;
 import io.nemesis.ninder.logic.ProductWrapper;
+import io.nemesis.ninder.logic.model.Image;
 import io.nemesis.ninder.logic.model.Product;
 
 public class ProductActivity extends Activity {
@@ -36,7 +39,11 @@ public class ProductActivity extends Activity {
                 finish();
             }
         });
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
         Product product = (Product)getIntent().getParcelableExtra(EXTRA_ITEM);
         if (product != null) {
             ProductFacade productFacade = ((NinderApplication) getApplication()).getProductFacade();
@@ -45,7 +52,12 @@ public class ProductActivity extends Activity {
                 wrapped.enquireDetails(new ProductFacade.EnquiryCallback() {
                     @Override
                     public void onSuccess(Product products) {
-                        initProductView(wrapped);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                initProductView(wrapped);
+                            }
+                        });
                     }
 
                     @Override
