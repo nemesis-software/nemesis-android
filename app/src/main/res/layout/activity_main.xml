@@ -105,6 +105,7 @@
             swipecards:max_visible="4"
             swipecards:min_adapter_stack="6"
             android:transitionName="images"
+            android:background="@android:color/transparent"
             />
     </FrameLayout>
 
