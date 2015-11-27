@@ -13,14 +13,57 @@ import io.nemesis.ninder.logic.model.VariantOption;
  * @author ivanpetkov
  * @since 11/27/15
  */
-public class ProductWrapper extends Observable  {
+public class ProductWrapper {
+
+    public static class ProductState {
+        private int status;
+        private Product data;
+        private List<ProductFacade.EnquiryCallback> observers = new ArrayList<>();
+        private Exception lastError;
+
+        public void addObserver(ProductFacade.EnquiryCallback callback) {
+            if (status == 1) {
+                callback.onSuccess(data);
+            } else if (status == -1) {
+                callback.onFail(lastError);
+            }
+        }
+
+        public void onDetailsFetched(Product product) {
+            status = 1;
+            this.data = product;
+            notifySuccess();
+        }
+
+        public void onDetailsFetchFailed(Exception err) {
+            status = -1;
+            this.lastError = err;
+            notifyFail();
+        }
+
+        public void onEnquiry() {
+            status = 0;
+        }
+
+        private void notifyFail() {
+            for (ProductFacade.EnquiryCallback cb : observers) {
+                cb.onFail(lastError);
+            }
+        }
+
+        private void notifySuccess() {
+            for (ProductFacade.EnquiryCallback cb : observers) {
+                cb.onSuccess(data);
+            }
+        }
+    }
 
     private final NemesisFacadeImpl api;
     private volatile Product pojo;
     private volatile List<Image> galleryImages;
     private volatile Image photo;
 
-    public ProductWrapper(Product product, NemesisFacadeImpl api) {
+    ProductWrapper(Product product, NemesisFacadeImpl api) {
         this.pojo = product;
         this.api = api;
 
@@ -116,8 +159,8 @@ public class ProductWrapper extends Observable  {
             public void onSuccess(Product product) {
                 pojo = product;
                 sortImages();
-                setChanged();
-                notifyObservers();
+//                setChanged();
+//                notifyObservers();
             }
 
             @Override

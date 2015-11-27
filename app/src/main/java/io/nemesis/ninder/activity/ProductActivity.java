@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -29,13 +30,24 @@ public class ProductActivity extends Activity {
             @Override
             public void onClick(View view) {
                 finish();
-                overridePendingTransition(R.anim.scale_from_center, R.anim.scale_to_center);
             }
         });
 
         Product product = (Product)getIntent().getParcelableExtra(EXTRA_ITEM);
         if (product != null) {
             initProductView(product);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // app icon in action bar clicked; goto parent activity.
+                this.finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 

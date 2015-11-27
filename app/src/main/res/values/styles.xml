@@ -12,7 +12,9 @@
         <item name="android:actionBarStyle">@style/CustomActionBar</item>
         <!-- enable window content transitions -->
         <item name="android:windowContentTransitions">true</item>
-        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
+        <item name="android:windowSharedElementReenterTransition">@null</item>
+        <item name="android:windowReenterTransition">@null</item>
+        <item name="android:windowAllowReturnTransitionOverlap">false</item>
     </style>
 
     <style name="CustomActionBar" parent="android:Widget.Material.Light.ActionBar.Solid">

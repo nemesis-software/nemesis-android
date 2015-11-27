@@ -35,7 +35,7 @@ public class NemesisFacadeImpl implements ProductFacade {
     private static final int DEFAULT_PRODUCT_PAGE_SIZE = 8;
     private static final int DEFAULT_PRODUCT_PAGE_NUMBER = 0;
 
-    private final ConcurrentHashMap<Object, Object> enquiries;
+    private final ConcurrentHashMap<String, ProductWrapper.ProductState> enquiries;
 
     private final Context mContext;
     // TODO will i need to create 2 instances. One for retrieving data and one to add to wishlist in order not to block execution queues?
@@ -185,7 +185,10 @@ public class NemesisFacadeImpl implements ProductFacade {
         }
     }
 
+    @Deprecated
     /**
+     * only Use {@link #enquireAsync(Product, EnquiryCallback)}
+     *
      * {@inheritDoc}
      */
     @Override
@@ -193,7 +196,7 @@ public class NemesisFacadeImpl implements ProductFacade {
         // TODO verify that product.uid and productDetail.uid mach
         // TODO verify that product does have uid value
         Product productDetail = retrofitRestClient.getApiService().getProductDetail(product.getUrl());
-        enquiries.put(product.getUid(), productDetail);
+//        enquiries.put(product.getUid(), productDetail);
         return productDetail;
     }
 
@@ -201,19 +204,30 @@ public class NemesisFacadeImpl implements ProductFacade {
      * {@inheritDoc}
      */
     @Override
-    public void enquireAsync(Product product, final EnquiryCallback callback) {
+    public void enquireAsync(final Product product, final EnquiryCallback callback) {
+
+        ProductWrapper.ProductState state = enquiries.get(product.getUid());
+        if(null == state) {
+            // create state and add
+            state = new ProductWrapper.ProductState();
+            enquiries.put(product.getUid(), state);
+        } else {
+            if (null != callback) {
+                state.addObserver(callback);
+            }
+        }
+
+        state.onEnquiry();
         retrofitRestClient.getApiService().getProductDetailAsync(product.getUrl(), new Callback<Product>() {
             @Override
-            public void success(Product product, Response response) {
+            public void success(Product prod, Response response) {
                 if (response.getStatus() == 200) {
 
-                    // TODO verify that product.uid and productDetail.uid mach
-                    // TODO verify that product does have uid value
-//                    Product productDetail = retrofitRestClient.getApiService().getProductDetail(product.getUrl());
-                    enquiries.put(product.getUid(), product);
+                    ProductWrapper.ProductState productState = enquiries.get(product.getUid());
+                    productState.onDetailsFetched(prod);
 
                     if (null != callback) {
-                        callback.onSuccess(product);
+                        callback.onSuccess(prod);
                     }
                 } else {
                     if (null != callback) {
@@ -229,5 +243,9 @@ public class NemesisFacadeImpl implements ProductFacade {
                 }
             }
         });
+    }
+
+    ProductWrapper wrap(Product product) {
+        return new ProductWrapper(product, this);
     }
 }
