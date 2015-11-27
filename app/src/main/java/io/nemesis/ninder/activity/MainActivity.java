@@ -5,7 +5,6 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -27,21 +26,17 @@ import io.nemesis.ninder.logic.ProductWrapper;
 import io.nemesis.ninder.logic.model.Product;
 
 public class MainActivity extends Activity {
-
-    private ImageButton btnNope;
-    private ImageButton btnLike;
-    private ImageButton btnInfo;
     private SwipeFlingAdapterView flingContainer;
     private CardAdapter mAdapter;
-
-    private Toast toast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getActionBar().setDisplayHomeAsUpEnabled(false);
+        if (getActionBar() != null) {
+            getActionBar().setDisplayHomeAsUpEnabled(false);
+        }
 
         //add the view via xml or programmatically
         flingContainer = (SwipeFlingAdapterView) findViewById(R.id.swipecards);
@@ -84,8 +79,8 @@ public class MainActivity extends Activity {
 //                    view.findViewById(R.id.item_swipe_dislike_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
 //                    view.findViewById(R.id.item_swipe_like_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
                     if (scrollProgressPercent == 0) {
-                        findViewById(R.id.product_item_name).setAlpha(new Float(100));
-                        findViewById(R.id.product_item_sub_name).setAlpha(new Float(100));
+                        findViewById(R.id.product_item_name).setAlpha(1.0f);
+                        findViewById(R.id.product_item_sub_name).setAlpha(1.0f);
                     } else {
                         findViewById(R.id.product_item_name).setAlpha(scrollProgressPercent < 0 ? scrollProgressPercent : -scrollProgressPercent);
                         findViewById(R.id.product_item_sub_name).setAlpha(scrollProgressPercent < 0 ? scrollProgressPercent : -scrollProgressPercent);
@@ -103,7 +98,7 @@ public class MainActivity extends Activity {
             }
         });
 
-        btnNope = (ImageButton) findViewById(R.id.button_nope);
+        ImageButton btnNope = (ImageButton) findViewById(R.id.button_nope);
         btnNope.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,7 +106,7 @@ public class MainActivity extends Activity {
             }
         });
 
-        btnLike = (ImageButton) findViewById(R.id.button_like);
+        ImageButton btnLike = (ImageButton) findViewById(R.id.button_like);
         btnLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -119,7 +114,7 @@ public class MainActivity extends Activity {
             }
         });
 
-        btnInfo = (ImageButton) findViewById(R.id.button_info);
+        ImageButton btnInfo = (ImageButton) findViewById(R.id.button_info);
         btnInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -128,15 +123,7 @@ public class MainActivity extends Activity {
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
     private void dislike(ProductWrapper product) {
-        //showToast(Toast.makeText(this, R.string.label_dislike, Toast.LENGTH_SHORT));
         ((NinderApplication) getApplication()).getProductFacade().dislike(product.getProduct(), null);
     }
 
@@ -155,18 +142,7 @@ public class MainActivity extends Activity {
     }
 
     private void like(ProductWrapper product) {
-        //showToast(Toast.makeText(this, R.string.label_like, Toast.LENGTH_SHORT));
         ((NinderApplication) getApplication()).getProductFacade().like(product.getProduct(), null);
-    }
-
-    private void showToast(Toast toast) {
-        if (null != toast) {
-            if (null != this.toast) {
-                this.toast.cancel();
-            }
-            this.toast = toast;
-            this.toast.show();
-        }
     }
 
     private class CardAdapter extends BaseAdapter {
