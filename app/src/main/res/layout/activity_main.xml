@@ -22,6 +22,7 @@
             android:gravity="center"
             android:textAppearance="@style/TextAppearance.Header.Large"
             android:layout_margin="@dimen/activity_vertical_margin_x2"
+            android:visibility="gone"
             />
         <com.lorentzos.flingswipe.SwipeFlingAdapterView
             android:id="@+id/swipecards"
@@ -31,6 +32,7 @@
             swipecards:max_visible="4"
             swipecards:min_adapter_stack="6"
             android:background="@drawable/swipecards_background"
+            android:transitionName="images"
             />
             <!--android:layout_marginTop="@dimen/activity_vertical_margin"-->
             <!--android:layout_marginBottom="@dimen/activity_vertical_margin"-->

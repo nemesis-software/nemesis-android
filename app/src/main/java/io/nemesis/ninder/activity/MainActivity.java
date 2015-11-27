@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -136,8 +137,11 @@ public class MainActivity extends Activity {
         Intent intent = new Intent(this, ProductActivity.class);
         intent.putExtra(ProductActivity.EXTRA_ITEM, item);
 
-        startActivity(intent);
-        //overridePendingTransition(0, R.anim.scale_to_center);
+        //create transition
+        ActivityOptions options = ActivityOptions.
+                makeSceneTransitionAnimation(this, flingContainer, "images");
+
+        startActivity(intent, options.toBundle());
     }
 
     private void like(Product product) {
