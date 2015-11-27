@@ -2,7 +2,6 @@ package io.nemesis.ninder.logic;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 
 import io.nemesis.ninder.logic.model.Image;
 import io.nemesis.ninder.logic.model.Price;
@@ -18,10 +17,11 @@ public class ProductWrapper {
     public static class ProductState {
         private int status;
         private Product data;
-        private List<ProductFacade.EnquiryCallback> observers = new ArrayList<>();
+        private final List<ProductFacade.EnquiryCallback> observers = new ArrayList<>();
         private Exception lastError;
 
         public void addObserver(ProductFacade.EnquiryCallback callback) {
+            observers.add(callback);
             if (status == 1) {
                 callback.onSuccess(data);
             } else if (status == -1) {
@@ -60,7 +60,7 @@ public class ProductWrapper {
 
     private final NemesisFacadeImpl api;
     private volatile Product pojo;
-    private volatile List<Image> galleryImages;
+    private final List<Image> galleryImages;
     private volatile Image photo;
 
     ProductWrapper(Product product, NemesisFacadeImpl api) {

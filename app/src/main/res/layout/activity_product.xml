@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:id="@+id/container">
 
@@ -78,6 +78,7 @@
                     style="@style/CustomImageButton"
                     android:layout_alignParentEnd="true"
                     android:src="@drawable/heart"
+                    android:contentDescription="@string/cd_like_btn"
                     android:visibility="gone"/>
 
                 <TextView
@@ -117,6 +118,7 @@
                 style="@style/CustomImageButton"
                 android:layout_marginTop="10dp"
                 android:src="@drawable/checkmark_button"
+                android:contentDescription="@string/cd_done_btn"
                 android:layout_below="@id/product_description"
                 android:layout_centerHorizontal="true"/>
         </RelativeLayout>
