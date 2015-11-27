@@ -27,6 +27,7 @@ public class GalleryPageAdapter extends FragmentStatePagerAdapter {
 
     public GalleryPageAdapter(FragmentManager fm, List<Image> data, int imageErrorPlaceholder, int imagePlaceholder) {
         super(fm);
+
         this.data = data;
         this.imageErrorPlaceholder = imageErrorPlaceholder;
         this.imagePlaceholder = imagePlaceholder;

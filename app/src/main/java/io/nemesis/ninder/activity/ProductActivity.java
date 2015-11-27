@@ -22,7 +22,13 @@ import io.nemesis.ninder.logic.model.Image;
 import io.nemesis.ninder.logic.model.Product;
 
 public class ProductActivity extends Activity {
-    public static final String EXTRA_ITEM = "item";
+    public static final String EXTRA_ITEM;
+
+    static {
+        String paramPrefix = ProductActivity.class.getName();
+
+        EXTRA_ITEM = String.format("%s:%s", paramPrefix, Product.class.getSimpleName()).toUpperCase();
+    }
 
     private ImageButton btnCheckmark;
     private GalleryPageAdapter galleryPageAdapter;

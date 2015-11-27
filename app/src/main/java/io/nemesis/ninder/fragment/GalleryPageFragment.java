@@ -20,10 +20,17 @@ import io.nemesis.ninder.R;
  */
 public class GalleryPageFragment extends Fragment {
 
-    public static final String IMAGE_URI = "image.uri";
+    public static final String IMAGE_URI;
+    public static final String IMAGE_ERROR_RES_ID;
+    public static final String IMAGE_PLACEHOLDER_RES_ID;
 
-    public static final String IMAGE_ERROR_RES_ID = "image.err.id";
-    public static final String IMAGE_PLACEHOLDER_RES_ID = "image.placeholder.id";
+    static {
+        String paramPrefix = GalleryPageFragment.class.getName();
+
+        IMAGE_URI = String.format("%s:%s", paramPrefix, "image.uri").toUpperCase();
+        IMAGE_ERROR_RES_ID = String.format("%s:%s", paramPrefix, "image.err.id").toUpperCase();
+        IMAGE_PLACEHOLDER_RES_ID = String.format("%s:%s", paramPrefix, "image.placeholder.id").toUpperCase();
+    }
 
     private ImageView imageView;
 
@@ -49,17 +56,7 @@ public class GalleryPageFragment extends Fragment {
                 .load(imageUri)
                 .error(errorIcon)
                 .placeholder(placeholderIcon)
-                .into(imageView, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        // do nothing
-                    }
-
-                    @Override
-                    public void onError() {
-                        // do something if needed
-                    }
-                });
+                .into(imageView, new Callback.EmptyCallback());
     }
 
     @Override
