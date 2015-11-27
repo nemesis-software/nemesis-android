@@ -74,18 +74,17 @@ public class MainActivity extends Activity {
 
             @Override
             public void onScroll(float scrollProgressPercent) {
+                // scrollProgressPercent -> between [-1, 1] -> -1 left, 0 center, 1 right
                 View view = flingContainer.getSelectedView();
-                if (view != null) {
-//                    view.findViewById(R.id.item_swipe_dislike_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
-//                    view.findViewById(R.id.item_swipe_like_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
-                    if (scrollProgressPercent == 0) {
-                        findViewById(R.id.product_item_name).setAlpha(1.0f);
-                        findViewById(R.id.product_item_sub_name).setAlpha(1.0f);
-                    } else {
-                        findViewById(R.id.product_item_name).setAlpha(scrollProgressPercent < 0 ? scrollProgressPercent : -scrollProgressPercent);
-                        findViewById(R.id.product_item_sub_name).setAlpha(scrollProgressPercent < 0 ? scrollProgressPercent : -scrollProgressPercent);
 
-                    }
+                if (view != null) {
+                    // 0 - the view is completely transparent
+                    // 1 - the view is completely opaque
+
+                    float alpha = 1 - Math.abs(scrollProgressPercent);
+
+                    findViewById(R.id.product_item_name).setAlpha(alpha);
+                    findViewById(R.id.product_item_sub_name).setAlpha(alpha);
                 }
             }
         });
