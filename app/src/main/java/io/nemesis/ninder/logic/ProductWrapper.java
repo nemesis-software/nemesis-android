@@ -15,10 +15,11 @@ import io.nemesis.ninder.logic.model.VariantOption;
 public class ProductWrapper {
 
     public static class ProductState {
-        private int status;
+        private volatile int status;
         private Product data;
         private final List<ProductFacade.EnquiryCallback> callbacks = new ArrayList<>();
         private Exception lastError = new Exception("unknown error");
+        private Object lock = new Object();
 
         public synchronized void addCallback(ProductFacade.EnquiryCallback observer) {
             if (status == 1) {
@@ -30,23 +31,23 @@ public class ProductWrapper {
             }
         }
 
-        public int getStatus() {
+        public synchronized int getStatus() {
             return status;
         }
 
-        public void onDetailsFetched(Product product) {
+        public synchronized void onDetailsFetched(Product product) {
             status = 1;
             this.data = product;
             notifySuccess();
         }
 
-        public void onDetailsFetchFailed(Exception err) {
+        public synchronized void onDetailsFetchFailed(Exception err) {
             status = -1;
             this.lastError = err;
             notifyFail();
         }
 
-        public void onEnquiry() {
+        public synchronized void onEnquiry() {
             status = 0;
         }
 
@@ -69,6 +70,8 @@ public class ProductWrapper {
     private volatile Product pojo;
     private volatile List<Image> galleryImages;
     private volatile Image photo;
+
+    private Object lock = new Object();
 
     ProductWrapper(Product product, NemesisFacadeImpl api) {
         this.pojo = product;
@@ -94,7 +97,9 @@ public class ProductWrapper {
     }
 
     public List<Image> getGalleryImages() {
-        return galleryImages;
+        synchronized (lock) {
+            return galleryImages.subList(0, galleryImages.size());
+        }
     }
 
     public Image getPhoto() {
@@ -143,22 +148,24 @@ public class ProductWrapper {
     }
 
     private void sortImages() {
-        galleryImages.clear();
-        List<Image> images = pojo.getImages();
-        for (Image img : images) {
-            if ("gallery".equalsIgnoreCase(img.getImageType())) {
-                galleryImages.add(img);
-            } else if ("photo".equalsIgnoreCase(img.getFormat())) {
-                photo = img;
+        synchronized (lock) {
+            galleryImages.clear();
+            List<Image> images = pojo.getImages();
+            for (Image img : images) {
+                if ("gallery".equalsIgnoreCase(img.getImageType()) && "product".equalsIgnoreCase(img.getFormat())) {
+                    galleryImages.add(img);
+                } else if ("photo".equalsIgnoreCase(img.getFormat())) {
+                    photo = img;
+                }
             }
-        }
 
-        List<Image> variaztionImages = pojo.getVariantOptions().get(0).getImages();
-        for (Image img : variaztionImages) {
-            if ("gallery".equalsIgnoreCase(img.getImageType())) {
-                galleryImages.add(img);
-            } else if ("photo".equalsIgnoreCase(img.getFormat())) {
-                photo = img;
+            List<Image> variaztionImages = pojo.getVariantOptions().get(0).getImages();
+            for (Image img : variaztionImages) {
+                if ("gallery".equalsIgnoreCase(img.getImageType()) && "product".equalsIgnoreCase(img.getFormat())) {
+                    galleryImages.add(img);
+                } else if ("photo".equalsIgnoreCase(img.getFormat())) {
+                    photo = img;
+                }
             }
         }
     }
