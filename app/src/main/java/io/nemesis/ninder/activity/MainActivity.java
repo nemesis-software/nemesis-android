@@ -78,8 +78,9 @@ public class MainActivity extends Activity {
             public void onScroll(float scrollProgressPercent) {
                 View view = flingContainer.getSelectedView();
                 if (view != null) {
-                    view.findViewById(R.id.item_swipe_dislike_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
-                    view.findViewById(R.id.item_swipe_like_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
+//                    view.findViewById(R.id.item_swipe_dislike_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
+//                    view.findViewById(R.id.item_swipe_like_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
+//                    view.findViewById(R.id.product_item_name).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : scrollProgressPercent);
                 }
             }
         });
@@ -87,7 +88,7 @@ public class MainActivity extends Activity {
         flingContainer.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
-                if (flingContainer.isEnabled())
+             //   if (flingContainer.isEnabled())
                     info();
             }
         });
