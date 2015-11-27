@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import io.nemesis.ninder.R;
 import io.nemesis.ninder.logger.TLog;
 import io.nemesis.ninder.logic.model.Product;
 import io.nemesis.ninder.logic.model.VariantOption;
@@ -26,26 +27,20 @@ public class NemesisFacadeImpl implements ProductFacade {
 
     private static final String QUERY_PAGE_INDEX = "page";
     private static final String QUERY_PAGE_SIZE = "size";
-    private static final String QUERY_PRODUCT_ID = "productId";
-    private static final String QUERY_USER_ID = "userId";
 
-    //    private static final String TEST_USER_ID = "paranoiabla@gmail.com";
-    private static final String TEST_USER_ID = "ipetkov@insitex.com";
-
-    private static final int DEFAULT_PRODUCT_PAGE_SIZE = 8;
-    private static final int DEFAULT_PRODUCT_PAGE_NUMBER = 0;
+    private final String testUserId;
 
     private final ConcurrentHashMap<String, ProductWrapper.ProductState> enquiries;
 
     private final Context mContext;
     // TODO will i need to create 2 instances. One for retrieving data and one to add to wishlist in order not to block execution queues?
     private final NemesisRetrofitRestClient retrofitRestClient;
-    private final NemesisRetrofitRestClient retrofitTestRestClient;
 
     public NemesisFacadeImpl(Context context) {
         mContext = context.getApplicationContext();
+        testUserId = context.getString(R.string.rest_api_test_user);
+
         retrofitRestClient = new NemesisRetrofitRestClient(mContext);
-        retrofitTestRestClient = new NemesisRetrofitRestClient(mContext, true);
         enquiries = new ConcurrentHashMap<>();
     }
 
@@ -128,7 +123,7 @@ public class NemesisFacadeImpl implements ProductFacade {
         Toast.makeText(mContext, "addToWishlist", Toast.LENGTH_SHORT).show();
 
         if (null != variant && !TextUtils.isEmpty(variant.getCode())) {
-            retrofitTestRestClient.getApiService().addToWishlistAsync(variant.getCode(), TEST_USER_ID, new Callback<Void>() {
+            retrofitRestClient.getApiService().addToWishlistAsync(variant.getCode(), testUserId, new Callback<Void>() {
                 @Override
                 public void success(Void aVoid, Response response) {
                     // don't care
@@ -145,7 +140,7 @@ public class NemesisFacadeImpl implements ProductFacade {
             VariantOption v0 = (null != variantOptions) ? product.getVariantOptions().get(0) : null;
 
             if (null != v0 && !TextUtils.isEmpty(v0.getCode())) {
-                retrofitRestClient.getApiService().addToWishlistAsync(v0.getCode(), TEST_USER_ID, new Callback<Void>() {
+                retrofitRestClient.getApiService().addToWishlistAsync(v0.getCode(), testUserId, new Callback<Void>() {
                     @Override
                     public void success(Void aVoid, Response response) {
                         // don't care
@@ -163,7 +158,7 @@ public class NemesisFacadeImpl implements ProductFacade {
                     public void onSuccess(Product prod) {
                         String code = prod.getVariantOptions().get(0).getCode();
 
-                        retrofitTestRestClient.getApiService().addToWishlistAsync(code, TEST_USER_ID, new Callback<Void>() {
+                        retrofitRestClient.getApiService().addToWishlistAsync(code, testUserId, new Callback<Void>() {
                             @Override
                             public void success(Void aVoid, Response response) {
                                 // don't care

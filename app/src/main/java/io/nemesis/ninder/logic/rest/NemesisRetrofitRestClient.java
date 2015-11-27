@@ -96,29 +96,6 @@ public class NemesisRetrofitRestClient {
         apiService = adapter.create(RestApi.class);
     }
 
-    public NemesisRetrofitRestClient(final Context context, boolean test) {
-
-        RequestInterceptor requestInterceptor = new RequestInterceptor() {
-            @Override
-            public void intercept(RequestInterceptor.RequestFacade request) {
-                request.addHeader("Content-Type", "x-www-form-urlencoded");
-            }
-        };
-
-        Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS'Z'")
-                .registerTypeAdapterFactory(new ItemTypeAdapterFactory())
-                .create();
-
-        RestAdapter adapter = new RestAdapter.Builder()
-                .setLogLevel(RestAdapter.LogLevel.FULL)
-                .setEndpoint(context.getString(R.string.rest_api_base_url_1))
-                .setConverter(new GsonConverter(gson))
-                .build();
-
-        apiService = adapter.create(RestApi.class);
-    }
-
     public RestApi getApiService() {
         return apiService;
     }

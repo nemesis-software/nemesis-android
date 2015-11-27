@@ -9,9 +9,10 @@
     <string name="label_sale">Sale</string>
 
     <!--base url-->
-    <!--<string name="rest_api_base_url">https://solar.cfapps.io/en/GB</string>-->
     <string name="rest_api_base_url">http://www.solarapparel.com/en/GB</string>
-    <string name="rest_api_base_url_1">http://www.solarapparel.com/en/GB</string>
+
+    <!--<string name="rest_api_test_user">paranoiabla@gmail.com</string>-->
+    <string name="rest_api_test_user">ipetkov@insitex.com</string>
 
     <!--initial list of items to display-->
     <string name="label_description">Description</string>
