@@ -1,6 +1,7 @@
 package io.nemesis.ninder.logic;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -13,7 +14,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import io.nemesis.ninder.logic.model.Product;
 import io.nemesis.ninder.logic.model.VariantOption;
 import io.nemesis.ninder.logic.rest.NemesisRetrofitRestClient;
-import io.nemesis.ninder.util.StringUtils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -127,7 +127,7 @@ public class NemesisFacadeImpl implements ProductFacade {
     public void addToWishlist(final Product product, final VariantOption variant) {
         Toast.makeText(mContext, "addToWishlist", Toast.LENGTH_SHORT).show();
 
-        if (null != variant && !StringUtils.isEmpty(variant.getCode())) {
+        if (null != variant && !TextUtils.isEmpty(variant.getCode())) {
             retrofitTestRestClient.getApiService().addToWishlistAsync(variant.getCode(), TEST_USER_ID, new Callback<Void>() {
                 @Override
                 public void success(Void aVoid, Response response) {
@@ -144,7 +144,7 @@ public class NemesisFacadeImpl implements ProductFacade {
             List<VariantOption> variantOptions = product.getVariantOptions();
             VariantOption v0 = (null != variantOptions) ? product.getVariantOptions().get(0) : null;
 
-            if (null != v0 && !StringUtils.isEmpty(v0.getCode())) {
+            if (null != v0 && !TextUtils.isEmpty(v0.getCode())) {
                 retrofitRestClient.getApiService().addToWishlistAsync(v0.getCode(), TEST_USER_ID, new Callback<Void>() {
                     @Override
                     public void success(Void aVoid, Response response) {
