@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
@@ -15,6 +14,7 @@ import java.util.List;
 import io.nemesis.ninder.NinderApplication;
 import io.nemesis.ninder.R;
 import io.nemesis.ninder.adapter.GalleryPageAdapter;
+import io.nemesis.ninder.logger.TLog;
 import io.nemesis.ninder.logic.NemesisFacadeImpl;
 import io.nemesis.ninder.logic.ProductFacade;
 import io.nemesis.ninder.logic.ProductWrapper;
@@ -22,8 +22,6 @@ import io.nemesis.ninder.logic.model.Image;
 import io.nemesis.ninder.logic.model.Product;
 
 public class ProductActivity extends Activity {
-
-    private static final String TAG = "ProductActivity";
     public static final String EXTRA_ITEM = "item";
 
     private ImageButton btnCheckmark;
@@ -119,7 +117,7 @@ public class ProductActivity extends Activity {
     // init activity_product with selected product
     private void initProductView(ProductWrapper product) {
         List<Image> galleryImages = product.getGalleryImages();
-        Log.d(TAG, "initProductView:galleryImages.size(): " + galleryImages.size());
+        TLog.d("initProductView:galleryImages.size(): " + galleryImages.size());
         galleryPageAdapter = new GalleryPageAdapter(getFragmentManager(), product.getGalleryImages());
 
         ViewPager productViewPager = (ViewPager) findViewById(R.id.pager);

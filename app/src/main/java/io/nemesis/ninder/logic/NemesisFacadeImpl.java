@@ -2,7 +2,6 @@ package io.nemesis.ninder.logic;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -11,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import io.nemesis.ninder.logger.TLog;
 import io.nemesis.ninder.logic.model.Product;
 import io.nemesis.ninder.logic.model.VariantOption;
 import io.nemesis.ninder.logic.rest.NemesisRetrofitRestClient;
@@ -137,7 +137,7 @@ public class NemesisFacadeImpl implements ProductFacade {
                 @Override
                 public void failure(RetrofitError error) {
                     // notify
-                    Log.e("add to wishlist:", error.getMessage());
+                    TLog.e("add to wishlist:", error.getMessage());
                 }
             });
         } else {
@@ -154,7 +154,7 @@ public class NemesisFacadeImpl implements ProductFacade {
                     @Override
                     public void failure(RetrofitError error) {
                         // notify
-                        Log.e("add to wishlist:", error.getMessage());
+                        TLog.e("add to wishlist:", error.getMessage());
                     }
                 });
             } else {
@@ -172,14 +172,14 @@ public class NemesisFacadeImpl implements ProductFacade {
                             @Override
                             public void failure(RetrofitError error) {
                                 // notify
-                                Log.e("add to wishlist:", error.getMessage());
+                                TLog.e("add to wishlist:", error.getMessage());
                             }
                         });
                     }
 
                     @Override
                     public void onFail(Exception e) {
-                        Log.e("addToWishlist", e.getMessage());
+                        TLog.e("addToWishlist", e.getMessage());
                     }
                 });
             }
