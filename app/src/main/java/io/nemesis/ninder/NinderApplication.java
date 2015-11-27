@@ -2,8 +2,10 @@ package io.nemesis.ninder;
 
 import android.app.Application;
 
+import com.crashlytics.android.Crashlytics;
 import com.squareup.picasso.Picasso;
 
+import io.fabric.sdk.android.Fabric;
 import io.nemesis.ninder.logic.NemesisFacadeImpl;
 import io.nemesis.ninder.logic.ProductFacade;
 
@@ -18,6 +20,7 @@ public class NinderApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
 
         //init stuff here
         Picasso.Builder builder = new Picasso.Builder(this);

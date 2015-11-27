@@ -26,6 +26,9 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             >
         </activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="976234ab6273177a92be635f31c3e4b99b29e3b8" />
     </application>
 
 </manifest>
