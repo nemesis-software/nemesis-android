@@ -17,16 +17,21 @@ public class ProductWrapper {
     public static class ProductState {
         private int status;
         private Product data;
-        private final List<ProductFacade.EnquiryCallback> observers = new ArrayList<>();
-        private Exception lastError;
+        private final List<ProductFacade.EnquiryCallback> callbacks = new ArrayList<>();
+        private Exception lastError = new Exception("unknown error");
 
-        public void addObserver(ProductFacade.EnquiryCallback callback) {
-            observers.add(callback);
+        public synchronized void addCallback(ProductFacade.EnquiryCallback observer) {
             if (status == 1) {
-                callback.onSuccess(data);
+                observer.onSuccess(data);
             } else if (status == -1) {
-                callback.onFail(lastError);
+                observer.onFail(lastError);
+            } else {
+                callbacks.add(observer);
             }
+        }
+
+        public int getStatus() {
+            return status;
         }
 
         public void onDetailsFetched(Product product) {
@@ -45,16 +50,18 @@ public class ProductWrapper {
             status = 0;
         }
 
-        private void notifyFail() {
-            for (ProductFacade.EnquiryCallback cb : observers) {
+        private synchronized void notifyFail() {
+            for (ProductFacade.EnquiryCallback cb : callbacks) {
                 cb.onFail(lastError);
             }
+            callbacks.clear();
         }
 
-        private void notifySuccess() {
-            for (ProductFacade.EnquiryCallback cb : observers) {
+        private synchronized void notifySuccess() {
+            for (ProductFacade.EnquiryCallback cb : callbacks) {
                 cb.onSuccess(data);
             }
+            callbacks.clear();
         }
     }
 
@@ -80,7 +87,9 @@ public class ProductWrapper {
         this.photo = (0 != size) ? pojo.getImages().get(size -1) : null;
 
         if (!hasDetails()) {
-            enquireDetails();
+            enquireDetails(null);
+        } else {
+            sortImages();
         }
     }
 
@@ -134,9 +143,10 @@ public class ProductWrapper {
     }
 
     private void sortImages() {
+        galleryImages.clear();
         List<Image> images = pojo.getImages();
         for (Image img : images) {
-            if ("gallery".equalsIgnoreCase(img.getFormat())) {
+            if ("gallery".equalsIgnoreCase(img.getImageType())) {
                 galleryImages.add(img);
             } else if ("photo".equalsIgnoreCase(img.getFormat())) {
                 photo = img;
@@ -145,7 +155,7 @@ public class ProductWrapper {
 
         List<Image> variaztionImages = pojo.getVariantOptions().get(0).getImages();
         for (Image img : variaztionImages) {
-            if ("gallery".equalsIgnoreCase(img.getFormat())) {
+            if ("gallery".equalsIgnoreCase(img.getImageType())) {
                 galleryImages.add(img);
             } else if ("photo".equalsIgnoreCase(img.getFormat())) {
                 photo = img;
@@ -153,19 +163,22 @@ public class ProductWrapper {
         }
     }
 
-    private void enquireDetails() {
+    public void enquireDetails(final ProductFacade.EnquiryCallback callback) {
         api.enquireAsync(pojo, new ProductFacade.EnquiryCallback() {
             @Override
             public void onSuccess(Product product) {
                 pojo = product;
                 sortImages();
-//                setChanged();
-//                notifyObservers();
+                if (null != callback) {
+                    callback.onSuccess(product);
+                }
             }
 
             @Override
             public void onFail(Exception e) {
-
+                if (null != callback) {
+                    callback.onFail(e);
+                }
             }
         });
     }

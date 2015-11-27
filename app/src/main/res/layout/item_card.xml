@@ -19,7 +19,6 @@
             android:scaleType="fitCenter"
             android:contentDescription="@string/cd_product_photo"
             />
-            <!--android:background="@color/purple_dark"-->
 
         <TextView
             android:id="@+id/item_swipe_dislike_indicator"
@@ -45,15 +44,6 @@
             android:textSize="14sp"
             />
     </FrameLayout>
-
-    <!--<TextView-->
-        <!--android:id="@+id/label_product"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:background="@color/grey_light"-->
-        <!--android:gravity="center"-->
-        <!--android:textColor="@color/grey_dark"-->
-        <!--android:textSize="40sp"/>-->
 
     <TextView
         android:id="@+id/product_item_sub_name"
