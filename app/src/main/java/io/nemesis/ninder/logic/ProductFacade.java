@@ -22,7 +22,7 @@ public interface ProductFacade {
          * only called when {@link #getProductsAsync} fetched new data
          * @param products data retrieved by the call
          */
-        void onSuccess(List<Product> products);
+        void onSuccess(List<ProductWrapper> products);
 
         /**
          * called when {@link #getProductsAsync} fetched no data, regardless the cause

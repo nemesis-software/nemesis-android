@@ -16,6 +16,7 @@ import java.io.IOException;
 
 import io.nemesis.ninder.R;
 import io.nemesis.ninder.logic.model.Product;
+import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
 
@@ -72,7 +73,7 @@ public class NemesisRetrofitRestClient {
 
     private final RestApi apiService;
 
-    public NemesisRetrofitRestClient(Context context) {
+    public NemesisRetrofitRestClient(final Context context) {
 
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS'Z'")
@@ -82,6 +83,29 @@ public class NemesisRetrofitRestClient {
         RestAdapter adapter = new RestAdapter.Builder()
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setEndpoint(context.getString(R.string.rest_api_base_url))
+                .setConverter(new GsonConverter(gson))
+                .build();
+
+        apiService = adapter.create(RestApi.class);
+    }
+
+    public NemesisRetrofitRestClient(final Context context, boolean test) {
+
+        RequestInterceptor requestInterceptor = new RequestInterceptor() {
+            @Override
+            public void intercept(RequestInterceptor.RequestFacade request) {
+                request.addHeader("Content-Type", "x-www-form-urlencoded");
+            }
+        };
+
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS'Z'")
+                .registerTypeAdapterFactory(new ItemTypeAdapterFactory())
+                .create();
+
+        RestAdapter adapter = new RestAdapter.Builder()
+                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setEndpoint(context.getString(R.string.rest_api_base_url_1))
                 .setConverter(new GsonConverter(gson))
                 .build();
 

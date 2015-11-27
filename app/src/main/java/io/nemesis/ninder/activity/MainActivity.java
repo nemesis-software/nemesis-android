@@ -23,7 +23,7 @@ import java.util.List;
 import io.nemesis.ninder.NinderApplication;
 import io.nemesis.ninder.R;
 import io.nemesis.ninder.logic.ProductFacade;
-import io.nemesis.ninder.logic.model.Image;
+import io.nemesis.ninder.logic.ProductWrapper;
 import io.nemesis.ninder.logic.model.Product;
 
 public class MainActivity extends Activity {
@@ -56,15 +56,21 @@ public class MainActivity extends Activity {
 
             @Override
             public void onLeftCardExit(Object dataObject) {
-                if (dataObject instanceof Product) {
-                    dislike((Product) dataObject);
+//                if (dataObject instanceof Product) {
+//                    dislike((Product) dataObject);
+//                } else
+                if (dataObject instanceof ProductWrapper) {
+                    like(((ProductWrapper) dataObject));
                 }
             }
 
             @Override
             public void onRightCardExit(Object dataObject) {
-                if (dataObject instanceof Product) {
-                    like((Product) dataObject);
+//                if (dataObject instanceof Product) {
+//                    like((Product) dataObject);
+//                } else
+                if (dataObject instanceof ProductWrapper) {
+                    like(((ProductWrapper) dataObject));
                 }
             }
 
@@ -78,9 +84,9 @@ public class MainActivity extends Activity {
             public void onScroll(float scrollProgressPercent) {
                 View view = flingContainer.getSelectedView();
                 if (view != null) {
-//                    view.findViewById(R.id.item_swipe_dislike_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
-//                    view.findViewById(R.id.item_swipe_like_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
-//                    view.findViewById(R.id.product_item_name).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : scrollProgressPercent);
+                    view.findViewById(R.id.item_swipe_dislike_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
+                    view.findViewById(R.id.item_swipe_like_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
+                    view.findViewById(R.id.product_item_name).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : scrollProgressPercent);
                 }
             }
         });
@@ -88,7 +94,7 @@ public class MainActivity extends Activity {
         flingContainer.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
-             //   if (flingContainer.isEnabled())
+                if (flingContainer.isEnabled())
                     info();
             }
         });
@@ -125,24 +131,24 @@ public class MainActivity extends Activity {
         return true;
     }
 
-    private void dislike(Product product) {
+    private void dislike(ProductWrapper product) {
         showToast(Toast.makeText(this, R.string.label_dislike, Toast.LENGTH_SHORT));
-        ((NinderApplication) getApplication()).getProductFacade().dislike(product, null);
+        ((NinderApplication) getApplication()).getProductFacade().dislike(product.getProduct(), null);
     }
 
     private void info() {
         // XXX view info for the top item in the queue
-        Product item = mAdapter.getItem(0);
+        // TODO: 11/27/15 Product wrapper
+        Product item = mAdapter.getItem(0).getProduct();
         Intent intent = new Intent(this, ProductActivity.class);
         intent.putExtra(ProductActivity.EXTRA_ITEM, item);
 
         startActivity(intent);
-        //overridePendingTransition(0, R.anim.scale_to_center);
     }
 
-    private void like(Product product) {
+    private void like(ProductWrapper product) {
         showToast(Toast.makeText(this, R.string.label_like, Toast.LENGTH_SHORT));
-        ((NinderApplication) getApplication()).getProductFacade().like(product, null);
+        ((NinderApplication) getApplication()).getProductFacade().like(product.getProduct(), null);
     }
 
     private void showToast(Toast toast) {
@@ -157,7 +163,7 @@ public class MainActivity extends Activity {
 
     private class CardAdapter extends BaseAdapter {
 
-        final ArrayList<Product> list = new ArrayList<Product>();
+        final ArrayList<ProductWrapper> list = new ArrayList<>();
         private int badgeNumber = 0;
         private final int badgeSize = 10;
         boolean endOfQueueReached = false;
@@ -171,7 +177,7 @@ public class MainActivity extends Activity {
             ((NinderApplication) getApplication()).getProductFacade().getProductsAsync(badgeSize, badgeNumber,
                     new ProductFacade.AsyncCallback() {
                         @Override
-                        public void onSuccess(List<Product> products) {
+                        public void onSuccess(List<ProductWrapper> products) {
                             list.addAll(products);
                             notifyDataSetChanged();
                             badgeNumber++;
@@ -204,7 +210,7 @@ public class MainActivity extends Activity {
         }
 
         @Override
-        public Product getItem(int position) {
+        public ProductWrapper getItem(int position) {
             return list.get(position);
         }
 
@@ -225,7 +231,6 @@ public class MainActivity extends Activity {
                 ViewHolder viewHolder = new ViewHolder();
                 viewHolder.product_subname = (TextView) rowView.findViewById(R.id.product_item_sub_name);
                 viewHolder.product_itemname = (TextView) rowView.findViewById(R.id.product_item_name);
-//                viewHolder.text = (TextView) rowView.findViewById(R.id.label_product);
                 viewHolder.label_like = rowView.findViewById(R.id.item_swipe_like_indicator);
                 viewHolder.label_dislike = rowView.findViewById(R.id.item_swipe_dislike_indicator);
                 viewHolder.image = (ImageView) rowView.findViewById(R.id.image_product);
@@ -235,8 +240,7 @@ public class MainActivity extends Activity {
 
             // fill data
             ViewHolder holder = (ViewHolder) rowView.getTag();
-            Product item = getItem(position);
-//            holder.text.setText(s);
+            ProductWrapper item = getItem(position);
             holder.product_itemname.setText(item.getName());
             holder.product_subname.setText(item.getVariantType());
 
@@ -246,18 +250,8 @@ public class MainActivity extends Activity {
             // XXX from mail conversations we know the initial call
             // will return two images and the large one will be second
             // TODO: 11/26/15 iterate the images and find the one we need in case the model changes
-//            String imgUrl = item.getImages().get(1).getUrl();
 
-            String imgUrl = item.getImages().get(0).getUrl();
-
-            for (Image image : item.getImages()) {
-                if ("picture".equalsIgnoreCase(image.getFormat())) {
-                    imgUrl = image.getUrl();
-                    break;
-                }
-            }
-
-            picasso.load(imgUrl)
+            picasso.load(item.getPhoto().getUrl())
                     .placeholder(R.drawable.placeholder)
                     .error(R.drawable.image_err_placeholder)
                     .into(holder.image);
@@ -272,7 +266,6 @@ public class MainActivity extends Activity {
         class ViewHolder {
             public TextView product_subname;
             public TextView product_itemname;
-            //            public TextView text;
             public View label_like;
             public View label_dislike;
             public ImageView image;
