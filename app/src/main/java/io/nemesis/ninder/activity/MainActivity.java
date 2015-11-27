@@ -45,6 +45,7 @@ public class MainActivity extends Activity {
 
         //add the view via xml or programmatically
         flingContainer = (SwipeFlingAdapterView) findViewById(R.id.swipecards);
+        flingContainer.bringToFront();
 
         mAdapter = new CardAdapter();
 
@@ -148,7 +149,7 @@ public class MainActivity extends Activity {
 
         //create transition
         ActivityOptions options = ActivityOptions.
-                makeSceneTransitionAnimation(this, flingContainer, "images");
+                makeSceneTransitionAnimation(this, flingContainer, getString(R.string.transition_name));
 
         startActivity(intent, options.toBundle());
     }

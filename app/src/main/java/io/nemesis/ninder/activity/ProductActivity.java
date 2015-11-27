@@ -42,7 +42,7 @@ public class ProductActivity extends Activity {
         btnCheckmark.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                finishAfterTransition();
             }
         });
     }
@@ -82,7 +82,7 @@ public class ProductActivity extends Activity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 // app icon in action bar clicked; goto parent activity.
-                this.finish();
+                this.finishAfterTransition();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

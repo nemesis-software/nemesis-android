@@ -24,4 +24,5 @@
     <string name="cd_info_btn">Info</string>
     <string name="cd_dislike_btn">Dislike</string>
     <string name="cd_done_btn">Done</string>
+    <string name="transition_name">images</string>
 </resources>
