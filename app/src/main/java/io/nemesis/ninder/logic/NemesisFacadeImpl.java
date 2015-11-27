@@ -2,7 +2,9 @@ package io.nemesis.ninder.logic;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.widget.Toast;
+
+import com.crashlytics.android.answers.AddToCartEvent;
+import com.crashlytics.android.answers.Answers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -101,9 +103,8 @@ public class NemesisFacadeImpl implements ProductFacade {
      * {@inheritDoc}
      */
     @Override
-    public void like(Product product, VariantOption variant) {
-        List<VariantOption> variantOptions = product.getVariantOptions();
-        addToWishlist(product, null != variantOptions ? variantOptions.get(0) : null);
+    public void like(Product product) {
+        addToWishlist(product);
     }
 
     /**
@@ -119,66 +120,65 @@ public class NemesisFacadeImpl implements ProductFacade {
      * {@inheritDoc}
      */
     @Override
-    public void addToWishlist(final Product product, final VariantOption variant) {
-        Toast.makeText(mContext, "addToWishlist", Toast.LENGTH_SHORT).show();
+    public void addToWishlist(final Product product) {
+        if (product == null) {
+            throw new IllegalArgumentException();
+        }
 
-        if (null != variant && !TextUtils.isEmpty(variant.getCode())) {
-            retrofitRestClient.getApiService().addToWishlistAsync(variant.getCode(), testUserId, new Callback<Void>() {
+        TLog.d("addToWishlist: " + product.getUrl());
+
+        List<VariantOption> variantOptions = product.getVariantOptions();
+        VariantOption variant = variantOptions != null && !variantOptions.isEmpty() ? variantOptions.get(0) : null;
+
+        if (variant != null) {
+            addToWishList(variant);
+        } else {
+            enquireAsync(product, new EnquiryCallback() {
                 @Override
-                public void success(Void aVoid, Response response) {
-                    // don't care
+                public void onSuccess(Product prod) {
+                    List<VariantOption> variantOptions = prod.getVariantOptions();
+                    VariantOption variant = variantOptions != null && !variantOptions.isEmpty() ? variantOptions.get(0) : null;
+                    if (variant != null) {
+                        addToWishList(variant);
+                    } else {
+                        TLog.w("missing variant for product: " + product.getUrl());
+                    }
                 }
 
                 @Override
-                public void failure(RetrofitError error) {
-                    // notify
-                    TLog.e("add to wishlist:", error.getMessage());
+                public void onFail(Exception e) {
+                    TLog.e("ERROR on product details call:", e);
                 }
             });
-        } else {
-            List<VariantOption> variantOptions = product.getVariantOptions();
-            VariantOption v0 = (null != variantOptions) ? product.getVariantOptions().get(0) : null;
-
-            if (null != v0 && !TextUtils.isEmpty(v0.getCode())) {
-                retrofitRestClient.getApiService().addToWishlistAsync(v0.getCode(), testUserId, new Callback<Void>() {
-                    @Override
-                    public void success(Void aVoid, Response response) {
-                        // don't care
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        // notify
-                        TLog.e("add to wishlist:", error.getMessage());
-                    }
-                });
-            } else {
-                enquireAsync(product, new EnquiryCallback() {
-                    @Override
-                    public void onSuccess(Product prod) {
-                        String code = prod.getVariantOptions().get(0).getCode();
-
-                        retrofitRestClient.getApiService().addToWishlistAsync(code, testUserId, new Callback<Void>() {
-                            @Override
-                            public void success(Void aVoid, Response response) {
-                                // don't care
-                            }
-
-                            @Override
-                            public void failure(RetrofitError error) {
-                                // notify
-                                TLog.e("add to wishlist:", error.getMessage());
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onFail(Exception e) {
-                        TLog.e("addToWishlist", e.getMessage());
-                    }
-                });
-            }
         }
+    }
+
+    private void addToWishList(final VariantOption variant) {
+        if (variant == null) {
+            throw new IllegalArgumentException();
+        }
+
+        final String code = variant.getCode();
+        if (TextUtils.isEmpty(code)) {
+            TLog.w("variant code isEmpty. variant=" + variant);
+            return;
+        }
+
+        retrofitRestClient.getApiService().addToWishlistAsync(code, testUserId, new Callback<Void>() {
+            @Override
+            public void success(Void aVoid, Response response) {
+                TLog.d("added to wishlist");
+                Answers.getInstance().logAddToCart(new AddToCartEvent()
+                        .putItemId(variant.getCode())
+                );
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                // notify
+                TLog.e("cannot add to wishlist:", error);
+            }
+        });
     }
 
     @Deprecated

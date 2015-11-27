@@ -3,6 +3,7 @@ package io.nemesis.ninder.activity;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,8 @@ import io.nemesis.ninder.logic.model.Product;
 public class MainActivity extends Activity {
     private SwipeFlingAdapterView flingContainer;
     private CardAdapter mAdapter;
+    private TextView productNameTextView;
+    private TextView productCategoryTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +41,35 @@ public class MainActivity extends Activity {
             getActionBar().setDisplayHomeAsUpEnabled(false);
         }
 
+        // text info
+        productNameTextView = (TextView) findViewById(R.id.product_item_name);
+        productCategoryTextView = (TextView) findViewById(R.id.product_item_sub_name);
+
         //add the view via xml or programmatically
         flingContainer = (SwipeFlingAdapterView) findViewById(R.id.swipecards);
         flingContainer.bringToFront();
 
         mAdapter = new CardAdapter();
+        mAdapter.registerDataSetObserver(new DataSetObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+
+                if (!mAdapter.isEmpty()) {
+                    ProductWrapper item = mAdapter.getItem(0);
+                    productNameTextView.setText(item.getName());
+                    productCategoryTextView.setText(item.getVariantType());
+
+                    productCategoryTextView.setAlpha(1.0f);
+                    productNameTextView.setAlpha(1.0f);
+                }
+            }
+
+            @Override
+            public void onInvalidated() {
+
+            }
+        });
 
         //set the listener and the adapter
         flingContainer.setAdapter(mAdapter);
@@ -50,6 +77,15 @@ public class MainActivity extends Activity {
             @Override
             public void removeFirstObjectInAdapter() {
                 mAdapter.pop();
+                if (!mAdapter.isEmpty()) {
+                    ProductWrapper item = mAdapter.getItem(0);
+
+                    productNameTextView.setText(item.getName());
+                    productCategoryTextView.setText(item.getVariantType());
+
+                    productCategoryTextView.setAlpha(1.0f);
+                    productNameTextView.setAlpha(1.0f);
+                }
             }
 
             @Override
@@ -92,8 +128,9 @@ public class MainActivity extends Activity {
         flingContainer.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
-                if (flingContainer.isEnabled())
+                if (flingContainer.isEnabled()) {
                     info();
+                }
             }
         });
 
@@ -141,14 +178,14 @@ public class MainActivity extends Activity {
     }
 
     private void like(ProductWrapper product) {
-        ((NinderApplication) getApplication()).getProductFacade().like(product.getProduct(), null);
+        ((NinderApplication) getApplication()).getProductFacade().like(product.getProduct());
     }
 
     private class CardAdapter extends BaseAdapter {
 
         final ArrayList<ProductWrapper> list = new ArrayList<>();
-        private int badgeNumber = 0;
-        private final int badgeSize = 10;
+        private int batchNumber = 0;
+        private final int batchSize = 10;
         boolean endOfQueueReached = false;
 
         public CardAdapter() {
@@ -157,7 +194,7 @@ public class MainActivity extends Activity {
 
         public void addMoreData() {
             //TODO update the size and the page
-            ((NinderApplication) getApplication()).getProductFacade().getProductsAsync(badgeSize, badgeNumber,
+            ((NinderApplication) getApplication()).getProductFacade().getProductsAsync(batchSize, batchNumber,
                     new ProductFacade.AsyncCallback() {
                         @Override
                         public void onSuccess(final List<ProductWrapper> products) {
@@ -166,7 +203,7 @@ public class MainActivity extends Activity {
                                 public void run() {
                                     list.addAll(products);
                                     notifyDataSetChanged();
-                                    badgeNumber++;
+                                    batchNumber++;
                                 }
                             });
 //                            list.addAll(products);
@@ -230,10 +267,6 @@ public class MainActivity extends Activity {
                 rowView = inflater.inflate(R.layout.item_card, parent, false);
 
                 ViewHolder viewHolder = new ViewHolder();
-                viewHolder.product_subname = (TextView) findViewById(R.id.product_item_sub_name);
-                viewHolder.product_itemname = (TextView) findViewById(R.id.product_item_name);
-//                viewHolder.label_like = rowView.findViewById(R.id.item_swipe_like_indicator);
-//                viewHolder.label_dislike = rowView.findViewById(R.id.item_swipe_dislike_indicator);
                 viewHolder.image = (ImageView) rowView.findViewById(R.id.image_product);
 
                 rowView.setTag(viewHolder);
@@ -242,10 +275,6 @@ public class MainActivity extends Activity {
             // fill data
             ViewHolder holder = (ViewHolder) rowView.getTag();
             ProductWrapper item = getItem(position);
-            holder.product_itemname.setText(item.getName());
-            holder.product_itemname.setAlpha(new Float(100));
-            holder.product_subname.setText(item.getVariantType());
-            holder.product_subname.setAlpha(new Float(100));
 
             Picasso picasso = Picasso.with(getApplicationContext());
             picasso.cancelRequest(holder.image);
@@ -259,18 +288,10 @@ public class MainActivity extends Activity {
                     .error(R.drawable.image_err_placeholder)
                     .into(holder.image);
 
-            //reset old data
-//            holder.label_like.setAlpha(0f);
-//            holder.label_dislike.setAlpha(0f);
-
             return rowView;
         }
 
         class ViewHolder {
-            public TextView product_subname;
-            public TextView product_itemname;
-            public View label_like;
-            public View label_dislike;
             public ImageView image;
         }
     }

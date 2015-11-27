@@ -82,9 +82,8 @@ public interface ProductFacade {
      * The user approved your product! Take advantage of his interests...
      *
      * @param product Product
-     * @param variant Products Variation
      */
-    void like(Product product, VariantOption variant);
+    void like(Product product);
 
     /**
      * The user disapproved your product! Do not bother him with more of the same.
@@ -98,9 +97,8 @@ public interface ProductFacade {
      * Add a product to users wishlist
      *
      * @param product Product
-     * @param variant Products Variation
      */
-    void addToWishlist(Product product, VariantOption variant);
+    void addToWishlist(Product product);
 
     /**
      * retrieve additional details about a product

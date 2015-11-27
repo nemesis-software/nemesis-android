@@ -9,6 +9,9 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.ContentViewEvent;
+
 import java.util.List;
 
 import io.nemesis.ninder.NinderApplication;
@@ -50,8 +53,15 @@ public class ProductActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        Product product = (Product)getIntent().getParcelableExtra(EXTRA_ITEM);
+
+        Product product = getIntent().getParcelableExtra(EXTRA_ITEM);
         if (product != null) {
+            Answers.getInstance().logContentView(new ContentViewEvent()
+                    .putContentName(product.getName())
+                    .putContentType(product.getVariantType())
+                    .putContentId(product.getUrl())
+            );
+
             ProductFacade productFacade = ((NinderApplication) getApplication()).getProductFacade();
             if (productFacade instanceof NemesisFacadeImpl) {
                 final ProductWrapper wrapped = ((NemesisFacadeImpl) productFacade).wrap(product);
