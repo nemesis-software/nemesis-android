@@ -190,16 +190,6 @@ public class ProductWrapper {
     private void sortImages() {
         synchronized (lock) {
             galleryImages.clear();
-            List<Image> images = pojo.getImages();
-            if (images != null && !images.isEmpty()) {
-                for (Image img : images) {
-                    if ("gallery".equalsIgnoreCase(img.getImageType()) && "product".equalsIgnoreCase(img.getFormat())) {
-                        galleryImages.add(img);
-                    } else if ("photo".equalsIgnoreCase(img.getFormat())) {
-                        photo = img;
-                    }
-                }
-            }
 
             List<VariantOption> variantOptions = pojo.getVariantOptions();
             if (variantOptions != null && !variantOptions.isEmpty()) {
@@ -210,6 +200,24 @@ public class ProductWrapper {
                         if ("gallery".equalsIgnoreCase(img.getImageType()) && "product".equalsIgnoreCase(img.getFormat())) {
                             galleryImages.add(img);
                         } else if ("photo".equalsIgnoreCase(img.getFormat())) {
+                            photo = img;
+                        }
+                    }
+                }
+            }
+
+            boolean addImages = galleryImages.isEmpty();
+            boolean addPhoto = photo != null;
+
+            List<Image> images = pojo.getImages();
+            if (images != null && !images.isEmpty()) {
+                for (Image img : images) {
+                    if ("gallery".equalsIgnoreCase(img.getImageType()) && "product".equalsIgnoreCase(img.getFormat())) {
+                        if (addImages) {
+                            galleryImages.add(img);
+                        }
+                    } else if ("photo".equalsIgnoreCase(img.getFormat())) {
+                        if (addPhoto) {
                             photo = img;
                         }
                     }

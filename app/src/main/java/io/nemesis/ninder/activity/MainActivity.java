@@ -63,7 +63,7 @@ public class MainActivity extends Activity {
             }
         });
 
-        showNoDataMessage(true);
+        showNoDataMessage(true, true);
 
         mAdapter = new CardAdapter();
         mAdapter.registerDataSetObserver(new DataSetObserver() {
@@ -72,7 +72,7 @@ public class MainActivity extends Activity {
                 super.onChanged();
 
                 if (!mAdapter.isEmpty()) {
-                    showNoDataMessage(false);
+                    showNoDataMessage(false, false);
 
                     ProductWrapper item = mAdapter.getItem(0);
                     productNameTextView.setText(item.getName());
@@ -81,7 +81,7 @@ public class MainActivity extends Activity {
                     productCategoryTextView.setAlpha(1.0f);
                     productNameTextView.setAlpha(1.0f);
                 } else {
-                    showNoDataMessage(true);
+                    showNoDataMessage(true, false);
                 }
             }
 
@@ -98,7 +98,7 @@ public class MainActivity extends Activity {
             public void removeFirstObjectInAdapter() {
                 mAdapter.pop();
                 if (!mAdapter.isEmpty()) {
-                    showNoDataMessage(false);
+                    showNoDataMessage(false, false);
                     ProductWrapper item = mAdapter.getItem(0);
 
                     productNameTextView.setText(item.getName());
@@ -107,7 +107,7 @@ public class MainActivity extends Activity {
                     productCategoryTextView.setAlpha(1.0f);
                     productNameTextView.setAlpha(1.0f);
                 } else {
-                    showNoDataMessage(true);
+                    showNoDataMessage(true, false);
                 }
             }
 
@@ -190,8 +190,13 @@ public class MainActivity extends Activity {
         });
     }
 
-    private void showNoDataMessage(boolean noData) {
+    private void showNoDataMessage(boolean noData, boolean loading) {
         noDataTextView.setVisibility(noData ? View.VISIBLE : View.INVISIBLE);
+        if (loading) {
+            noDataTextView.setText(this.getString(R.string.loading_products));
+        } else {
+            noDataTextView.setText(this.getString(R.string.end_of_product_queue_notification_text));
+        }
         flingContainer.setVisibility(noData ? View.INVISIBLE : View.VISIBLE);
         productNameTextView.setVisibility(noData ? View.INVISIBLE : View.VISIBLE);
         productCategoryTextView.setVisibility(noData ? View.INVISIBLE : View.VISIBLE);
