@@ -76,7 +76,7 @@ public class MainActivity extends Activity {
 
                     ProductWrapper item = mAdapter.getItem(0);
                     productNameTextView.setText(item.getName());
-                    productCategoryTextView.setText(item.getVariantType());
+                    productCategoryTextView.setText(item.getCategory());
 
                     productCategoryTextView.setAlpha(1.0f);
                     productNameTextView.setAlpha(1.0f);
@@ -102,7 +102,7 @@ public class MainActivity extends Activity {
                     ProductWrapper item = mAdapter.getItem(0);
 
                     productNameTextView.setText(item.getName());
-                    productCategoryTextView.setText(item.getVariantType());
+                    productCategoryTextView.setText(item.getCategory());
 
                     productCategoryTextView.setAlpha(1.0f);
                     productNameTextView.setAlpha(1.0f);
