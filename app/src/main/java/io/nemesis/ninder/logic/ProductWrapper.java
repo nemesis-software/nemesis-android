@@ -17,55 +17,75 @@ import io.nemesis.ninder.logic.model.VariantOption;
 public class ProductWrapper {
 
     public static class ProductState {
-        private static final String TAG = "ProductState";
+
         private volatile int status;
         private Product data;
         private final List<ProductFacade.EnquiryCallback> callbacks = new ArrayList<>();
         private Exception lastError = new Exception("unknown error");
         private Object lock = new Object();
 
-        public synchronized void addCallback(ProductFacade.EnquiryCallback observer) {
-            if (status == 1) {
-                observer.onSuccess(data);
-            } else if (status == -1) {
-                observer.onFail(lastError);
-            } else {
-                callbacks.add(observer);
+        public void addCallback(ProductFacade.EnquiryCallback observer) {
+            synchronized (lock) {
+                if (status == 1) {
+                    observer.onSuccess(data);
+                } else if (status == -1) {
+                    observer.onFail(lastError);
+                } else {
+                    callbacks.add(observer);
+                }
             }
         }
 
-        public synchronized int getStatus() {
+        public int getStatus() {
             return status;
         }
 
+        private synchronized void updateStatus(int newStatus) {
+            this.status = newStatus;
+        }
+
         public synchronized void onDetailsFetched(Product product) {
-            status = 1;
-            this.data = product;
-            notifySuccess();
+            synchronized (lock) {
+                updateStatus(1);
+                this.data = product;
+                notifySuccess();
+            }
         }
 
         public synchronized void onDetailsFetchFailed(Exception err) {
-            status = -1;
-            this.lastError = err;
-            notifyFail();
+            synchronized (lock) {
+                updateStatus(-1);
+                this.lastError = err;
+                notifyFail();
+            }
         }
 
-        public synchronized void onEnquiry() {
-            status = 0;
+        public void onEnquiry() {
+            updateStatus(0);
         }
 
-        private synchronized void notifyFail() {
-            for (ProductFacade.EnquiryCallback cb : callbacks) {
+        private void notifyFail() {
+            List<ProductFacade.EnquiryCallback> enquiryCallbacks = null;
+            synchronized (lock) {
+                enquiryCallbacks = callbacks.subList(0, callbacks.size());
+                callbacks.removeAll(enquiryCallbacks);
+            }
+
+            for (ProductFacade.EnquiryCallback cb : enquiryCallbacks) {
                 cb.onFail(lastError);
             }
-            callbacks.clear();
         }
 
-        private synchronized void notifySuccess() {
-            for (ProductFacade.EnquiryCallback cb : callbacks) {
+        private void notifySuccess() {
+            List<ProductFacade.EnquiryCallback> enquiryCallbacks = null;
+            synchronized (lock) {
+                enquiryCallbacks = callbacks.subList(0, callbacks.size());
+                callbacks.removeAll(enquiryCallbacks);
+            }
+
+            for (ProductFacade.EnquiryCallback cb : enquiryCallbacks) {
                 cb.onSuccess(data);
             }
-            callbacks.clear();
         }
     }
 
