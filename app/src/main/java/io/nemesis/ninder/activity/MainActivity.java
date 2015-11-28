@@ -12,7 +12,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 import com.squareup.picasso.Picasso;
@@ -22,6 +21,7 @@ import java.util.List;
 
 import io.nemesis.ninder.NinderApplication;
 import io.nemesis.ninder.R;
+import io.nemesis.ninder.logger.TLog;
 import io.nemesis.ninder.logic.ProductFacade;
 import io.nemesis.ninder.logic.ProductWrapper;
 import io.nemesis.ninder.logic.model.Product;
@@ -31,6 +31,7 @@ public class MainActivity extends Activity {
     private CardAdapter mAdapter;
     private TextView productNameTextView;
     private TextView productCategoryTextView;
+    private TextView noDataTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +45,13 @@ public class MainActivity extends Activity {
         // text info
         productNameTextView = (TextView) findViewById(R.id.product_item_name);
         productCategoryTextView = (TextView) findViewById(R.id.product_item_sub_name);
+        noDataTextView = (TextView) findViewById(R.id.noDataTextViewId);
 
         //add the view via xml or programmatically
         flingContainer = (SwipeFlingAdapterView) findViewById(R.id.swipecards);
         flingContainer.bringToFront();
+
+        showNoDataMessage(true);
 
         mAdapter = new CardAdapter();
         mAdapter.registerDataSetObserver(new DataSetObserver() {
@@ -56,12 +60,16 @@ public class MainActivity extends Activity {
                 super.onChanged();
 
                 if (!mAdapter.isEmpty()) {
+                    showNoDataMessage(false);
+
                     ProductWrapper item = mAdapter.getItem(0);
                     productNameTextView.setText(item.getName());
                     productCategoryTextView.setText(item.getVariantType());
 
                     productCategoryTextView.setAlpha(1.0f);
                     productNameTextView.setAlpha(1.0f);
+                } else {
+                    showNoDataMessage(true);
                 }
             }
 
@@ -78,6 +86,7 @@ public class MainActivity extends Activity {
             public void removeFirstObjectInAdapter() {
                 mAdapter.pop();
                 if (!mAdapter.isEmpty()) {
+                    showNoDataMessage(false);
                     ProductWrapper item = mAdapter.getItem(0);
 
                     productNameTextView.setText(item.getName());
@@ -85,6 +94,8 @@ public class MainActivity extends Activity {
 
                     productCategoryTextView.setAlpha(1.0f);
                     productNameTextView.setAlpha(1.0f);
+                } else {
+                    showNoDataMessage(true);
                 }
             }
 
@@ -138,7 +149,11 @@ public class MainActivity extends Activity {
         btnNope.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                flingContainer.getTopCardListener().selectLeft();
+                if (flingContainer.getSelectedView() != null) {
+                    flingContainer.getTopCardListener().selectLeft();
+                } else {
+                    TLog.d("no active product view, cannot dislike");
+                }
             }
         });
 
@@ -146,7 +161,11 @@ public class MainActivity extends Activity {
         btnLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                flingContainer.getTopCardListener().selectRight();
+                if (flingContainer.getSelectedView() != null) {
+                    flingContainer.getTopCardListener().selectRight();
+                } else {
+                    TLog.d("no active product view, cannot like");
+                }
             }
         });
 
@@ -159,6 +178,13 @@ public class MainActivity extends Activity {
         });
     }
 
+    private void showNoDataMessage(boolean noData) {
+        noDataTextView.setVisibility(noData ? View.VISIBLE : View.INVISIBLE);
+        flingContainer.setVisibility(noData ? View.INVISIBLE : View.VISIBLE);
+        productNameTextView.setVisibility(noData ? View.INVISIBLE : View.VISIBLE);
+        productCategoryTextView.setVisibility(noData ? View.INVISIBLE : View.VISIBLE);
+    }
+
     private void dislike(ProductWrapper product) {
         ((NinderApplication) getApplication()).getProductFacade().dislike(product.getProduct(), null);
     }
@@ -166,15 +192,19 @@ public class MainActivity extends Activity {
     private void info() {
         // XXX view info for the top item in the queue
         // TODO: 11/27/15 Product wrapper
-        Product item = mAdapter.getItem(0).getProduct();
-        Intent intent = new Intent(this, ProductActivity.class);
-        intent.putExtra(ProductActivity.EXTRA_ITEM, item);
+        if (!mAdapter.isEmpty()) {
+            Product item = mAdapter.getItem(0).getProduct();
+            Intent intent = new Intent(this, ProductActivity.class);
+            intent.putExtra(ProductActivity.EXTRA_ITEM, item);
 
-        //create transition
-        ActivityOptions options = ActivityOptions.
-                makeSceneTransitionAnimation(this, flingContainer, getString(R.string.transition_name));
+            //create transition
+            ActivityOptions options = ActivityOptions.
+                    makeSceneTransitionAnimation(this, flingContainer, getString(R.string.transition_name));
 
-        startActivity(intent, options.toBundle());
+            startActivity(intent, options.toBundle());
+        } else {
+            TLog.d("No content available to show info");
+        }
     }
 
     private void like(ProductWrapper product) {
@@ -206,28 +236,10 @@ public class MainActivity extends Activity {
                                     batchNumber++;
                                 }
                             });
-//                            list.addAll(products);
-//                            notifyDataSetChanged();
-//                            badgeNumber++;
                         }
 
                         @Override
                         public void onFail(final Exception e) {
-                            MainActivity.this.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (e instanceof ProductFacade.EndOfQueueException) {
-                                        endOfQueueReached = true;
-                                        flingContainer.setEnabled(false);
-                                    }
-                                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            });
-//                            if (e instanceof ProductFacade.EndOfQueueException) {
-//                                endOfQueueReached = true;
-//                                flingContainer.setEnabled(false);
-//                            }
-//                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
         }

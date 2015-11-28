@@ -147,20 +147,24 @@ public class ProductWrapper {
         synchronized (lock) {
             galleryImages.clear();
             List<Image> images = pojo.getImages();
-            for (Image img : images) {
-                if ("gallery".equalsIgnoreCase(img.getImageType()) && "product".equalsIgnoreCase(img.getFormat())) {
-                    galleryImages.add(img);
-                } else if ("photo".equalsIgnoreCase(img.getFormat())) {
-                    photo = img;
+            if (images != null && !images.isEmpty()) {
+                for (Image img : images) {
+                    if ("gallery".equalsIgnoreCase(img.getImageType()) && "product".equalsIgnoreCase(img.getFormat())) {
+                        galleryImages.add(img);
+                    } else if ("photo".equalsIgnoreCase(img.getFormat())) {
+                        photo = img;
+                    }
                 }
             }
 
             List<Image> variaztionImages = pojo.getVariantOptions().get(0).getImages();
-            for (Image img : variaztionImages) {
-                if ("gallery".equalsIgnoreCase(img.getImageType()) && "product".equalsIgnoreCase(img.getFormat())) {
-                    galleryImages.add(img);
-                } else if ("photo".equalsIgnoreCase(img.getFormat())) {
-                    photo = img;
+            if (variaztionImages != null && !variaztionImages.isEmpty()) {
+                for (Image img : variaztionImages) {
+                    if ("gallery".equalsIgnoreCase(img.getImageType()) && "product".equalsIgnoreCase(img.getFormat())) {
+                        galleryImages.add(img);
+                    } else if ("photo".equalsIgnoreCase(img.getFormat())) {
+                        photo = img;
+                    }
                 }
             }
         }

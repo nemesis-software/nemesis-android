@@ -84,6 +84,7 @@
         android:layout_above="@id/titles_container"
         >
         <TextView
+            android:id="@+id/noDataTextViewId"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/rounded_rectangle_light"
@@ -91,7 +92,7 @@
             android:gravity="center"
             android:textAppearance="@style/TextAppearance.Header.Large"
             android:layout_margin="@dimen/activity_vertical_margin_x2"
-            android:visibility="gone"
+            android:visibility="invisible"
             />
 
         <com.lorentzos.flingswipe.SwipeFlingAdapterView
@@ -103,6 +104,7 @@
             swipecards:min_adapter_stack="6"
             android:transitionName="@string/transition_name"
             android:background="@android:color/transparent"
+            android:visibility="visible"
             />
     </FrameLayout>
 
