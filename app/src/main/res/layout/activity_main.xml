@@ -96,7 +96,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         swipecards:rotation_degrees="16"
-        swipecards:max_visible="4"
+        swipecards:max_visible="2"
         swipecards:min_adapter_stack="6"
         android:transitionName="@string/transition_name"
         android:background="@android:color/transparent"
