@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -50,6 +51,17 @@ public class MainActivity extends Activity {
         //add the view via xml or programmatically
         flingContainer = (SwipeFlingAdapterView) findViewById(R.id.swipecards);
         flingContainer.bringToFront();
+
+        final View textContainerView = findViewById(R.id.titles_container);
+        textContainerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                flingContainer.setPadding(
+                        flingContainer.getPaddingLeft(), flingContainer.getPaddingTop(),
+                        flingContainer.getPaddingRight(), flingContainer.getHeight() - textContainerView.getTop()
+                );
+            }
+        });
 
         showNoDataMessage(true);
 

@@ -58,7 +58,6 @@ public class ProductActivity extends Activity {
         if (product != null) {
             Answers.getInstance().logContentView(new ContentViewEvent()
                     .putContentName(product.getName())
-                    .putContentType(product.getVariantType())
                     .putContentId(product.getUrl())
             );
 
