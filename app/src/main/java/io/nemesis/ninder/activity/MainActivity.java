@@ -233,7 +233,7 @@ public class MainActivity extends Activity {
         final ArrayList<ProductWrapper> list = new ArrayList<>();
         private int batchNumber = 0;
         private final int batchSize = 10;
-        boolean endOfQueueReached = false;
+        private volatile boolean endOfQueueReached = false;
 
         public CardAdapter() {
             addMoreData();
@@ -257,6 +257,10 @@ public class MainActivity extends Activity {
 
                         @Override
                         public void onFail(final Exception e) {
+                            if (e instanceof ProductFacade.EndOfQueueException) {
+                                endOfQueueReached = true;
+                                showNoDataMessage(true, true);
+                            }
                         }
                     });
         }
