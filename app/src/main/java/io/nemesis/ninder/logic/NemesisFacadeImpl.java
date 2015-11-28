@@ -2,6 +2,7 @@ package io.nemesis.ninder.logic;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.crashlytics.android.answers.AddToCartEvent;
 import com.crashlytics.android.answers.Answers;
@@ -42,11 +43,14 @@ public class NemesisFacadeImpl implements ProductFacade {
         mContext = context.getApplicationContext();
         testUserId = context.getString(R.string.rest_api_test_user);
 
-        retrofitRestClient = new NemesisRetrofitRestClient(mContext);
+        retrofitRestClient = new NemesisRetrofitRestClient(mContext, mContext.getString(R.string.rest_api_base_url));
         enquiries = new ConcurrentHashMap<>();
     }
 
+    @Deprecated
     /**
+     * only Use {@link #getProductsAsync(int, int, AsyncCallback)}
+     *
      * {@inheritDoc}
      */
     @Override
@@ -201,7 +205,6 @@ public class NemesisFacadeImpl implements ProductFacade {
      */
     @Override
     public void enquireAsync(final Product product, final EnquiryCallback callback) {
-
         ProductWrapper.ProductState state = enquiries.get(product.getUid());
         if (null == state) {
             // create state and add
@@ -226,6 +229,7 @@ public class NemesisFacadeImpl implements ProductFacade {
                     } else {
                         productState.onDetailsFetchFailed(new Exception("Bad response code:" + response.getStatus()));
                     }
+                } else {
                 }
             }
 
@@ -234,6 +238,7 @@ public class NemesisFacadeImpl implements ProductFacade {
                 ProductWrapper.ProductState productState = enquiries.get(product.getUid());
                 if (null != productState) {
                     productState.onDetailsFetchFailed(error);
+                } else {
                 }
             }
         });

@@ -75,7 +75,7 @@ public class NemesisRetrofitRestClient {
 
     private final RestApi apiService;
 
-    public NemesisRetrofitRestClient(final Context context) {
+    public NemesisRetrofitRestClient(final Context context, String baseUrl) {
 
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS'Z'")
@@ -88,7 +88,8 @@ public class NemesisRetrofitRestClient {
 
         RestAdapter adapter = new RestAdapter.Builder()
                 .setLogLevel(RestAdapter.LogLevel.FULL)
-                .setEndpoint(context.getString(R.string.rest_api_base_url))
+//                .setEndpoint(context.getString(R.string.rest_api_base_url))
+                .setEndpoint(baseUrl)
                 .setConverter(new GsonConverter(gson))
                 .setExecutors(executorService, executorService1)
                 .build();
