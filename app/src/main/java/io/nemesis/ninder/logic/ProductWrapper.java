@@ -157,13 +157,17 @@ public class ProductWrapper {
                 }
             }
 
-            List<Image> variaztionImages = pojo.getVariantOptions().get(0).getImages();
-            if (variaztionImages != null && !variaztionImages.isEmpty()) {
-                for (Image img : variaztionImages) {
-                    if ("gallery".equalsIgnoreCase(img.getImageType()) && "product".equalsIgnoreCase(img.getFormat())) {
-                        galleryImages.add(img);
-                    } else if ("photo".equalsIgnoreCase(img.getFormat())) {
-                        photo = img;
+            List<VariantOption> variantOptions = pojo.getVariantOptions();
+            if (variantOptions != null && !variantOptions.isEmpty()) {
+                VariantOption variantOption = variantOptions.get(0);
+                List<Image> variantImages = variantOption.getImages();
+                if (variantImages != null && !variantImages.isEmpty()) {
+                    for (Image img : variantImages) {
+                        if ("gallery".equalsIgnoreCase(img.getImageType()) && "product".equalsIgnoreCase(img.getFormat())) {
+                            galleryImages.add(img);
+                        } else if ("photo".equalsIgnoreCase(img.getFormat())) {
+                            photo = img;
+                        }
                     }
                 }
             }
