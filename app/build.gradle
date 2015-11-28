@@ -19,19 +19,46 @@ android {
 	compileSdkVersion 23
 	buildToolsVersion "23.0.2"
 
+	def buildNumber = getBuildNumber()
+	def versionNameString = getVersionName(buildNumber)
+
 	defaultConfig {
 		applicationId "io.nemesis.ninder"
 		minSdkVersion 21
 		targetSdkVersion 23
-		versionCode 1
-		versionName "1.0"
+        versionCode buildNumber
+        versionName versionNameString
 	}
+
+    signingConfigs {
+        release {
+            storeFile file("release.jks")
+            storePassword "nemesis++"
+            keyAlias "ninder"
+            keyPassword "ninder++"
+        }
+    }
+
 	buildTypes {
+        debug {
+            // disable crashlytics
+            ext.enableCrashlytics = false
+        }
+
 		release {
+            signingConfig signingConfigs.release
+
+            // enable crashlytics
+            ext.enableCrashlytics = true
+
 			minifyEnabled false
 			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 		}
 	}
+
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
@@ -44,4 +71,53 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.5.3@aar') {
         transitive = true;
     }
+}
+
+def getBuildNumber() {
+    def circleBranch = System.getenv("CIRCLE_BUILD_NUM")
+    if (circleBranch != null && circleBranch.length() > 0) {
+        // CircleCI build number
+        return circleBranch.toInteger();
+    }
+
+    // fallback mechanism
+    return 1
+}
+
+def getBranchName() {
+    def branch = System.getenv("CIRCLE_BRANCH");
+    if (branch != null && branch.length() > 0) {
+        branch = branch.trim();
+    } else {
+        // fallback for local dev
+        branch = "localdev";
+    }
+
+    return branch;
+}
+
+def getBuildNameSuffix() {
+    def branch = getBranchName();
+
+    if ("master".equalsIgnoreCase(branch)) {
+        branch = "";
+    }
+
+    if (branch != null && branch.length() > 0) {
+        return "-$branch";
+    }
+
+    return "";
+}
+
+def getVersionName(def buildNumber) {
+    def nameSuffix = getBuildNameSuffix();
+
+    def versionName = "1.0";
+    if (!("".equalsIgnoreCase(nameSuffix))) {
+        // no name suffix and build number on master branch build
+        versionName = "$versionName.$buildNumber$nameSuffix";
+    }
+
+    return versionName;
 }
