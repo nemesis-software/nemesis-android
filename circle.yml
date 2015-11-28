@@ -1,0 +1,29 @@
+machine:
+  environment:
+    # avoid OOM error, see https://circleci.com/docs/oom#out-of-memory-errors-in-android-builds
+    # GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx1024m -XX:+HeapDumpOnOutOfMemoryError"'
+    GRADLE_OPTS: -Xmx512m -XX:MaxPermSize=512m
+
+dependencies:
+  pre:
+    - echo y | sudo /usr/local/android-sdk-linux/tools/android update sdk --no-ui --all --filter extra-android-m2repository,extra-android-support,extra-google-google_play_services,extra-google-m2repository
+
+test:
+  override:
+    # assemble app & run unit test(s)
+    - ./gradlew clean build test -PdisablePreDex -Pcom.android.build.threadPoolSize=4
+
+    # copy the build outputs to artifacts
+    - cp -r app/build/outputs/* $CIRCLE_ARTIFACTS
+    # copy the test results to the test results directory.
+    # - cp -r app/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
+
+deployment:
+# to be added
+#  production:
+#    branch: master
+
+  crashlytics:
+    branch: [develop, master]
+    commands:
+      - ./gradlew crashlyticsUploadDistributionRelease
