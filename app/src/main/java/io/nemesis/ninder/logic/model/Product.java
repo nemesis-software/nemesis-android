@@ -30,7 +30,7 @@ public class Product implements Parcelable {
     private List<VariantOption> variantOptions = new ArrayList<VariantOption>();
     private String url;
     private String uid;
-//    private List<Category> categories = new ArrayList<Category>();
+    private List<Category> categories = new ArrayList<Category>();
 //    private Boolean purchasable;
 //    private Stock stock;
 //    private Object potentialPromotions;
@@ -157,19 +157,19 @@ public class Product implements Parcelable {
         this.variantOptions = variantOptions;
     }
 
-//    /**
-//     * @return The categories
-//     */
-//    public List<Category> getCategories() {
-//        return categories;
-//    }
-//
-//    /**
-//     * @param categories The categories
-//     */
-//    public void setCategories(List<Category> categories) {
-//        this.categories = categories;
-//    }
+    /**
+     * @return The categories
+     */
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    /**
+     * @param categories The categories
+     */
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
+    }
 
     /**
      * @return The description

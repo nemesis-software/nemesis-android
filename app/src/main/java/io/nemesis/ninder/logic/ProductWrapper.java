@@ -5,6 +5,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.nemesis.ninder.logic.model.Category;
 import io.nemesis.ninder.logic.model.Image;
 import io.nemesis.ninder.logic.model.Price;
 import io.nemesis.ninder.logic.model.Product;
@@ -17,55 +18,77 @@ import io.nemesis.ninder.logic.model.VariantOption;
 public class ProductWrapper {
 
     public static class ProductState {
-        private static final String TAG = "ProductState";
+
         private volatile int status;
         private Product data;
         private final List<ProductFacade.EnquiryCallback> callbacks = new ArrayList<>();
         private Exception lastError = new Exception("unknown error");
         private Object lock = new Object();
 
-        public synchronized void addCallback(ProductFacade.EnquiryCallback observer) {
-            if (status == 1) {
-                observer.onSuccess(data);
-            } else if (status == -1) {
-                observer.onFail(lastError);
-            } else {
-                callbacks.add(observer);
+        public void addCallback(ProductFacade.EnquiryCallback observer) {
+            synchronized (lock) {
+                if (status == 1) {
+                    observer.onSuccess(data);
+                } else if (status == -1) {
+                    observer.onFail(lastError);
+                } else {
+                    callbacks.add(observer);
+                }
             }
         }
 
-        public synchronized int getStatus() {
+        public int getStatus() {
             return status;
         }
 
+        private synchronized void updateStatus(int newStatus) {
+            this.status = newStatus;
+        }
+
         public synchronized void onDetailsFetched(Product product) {
-            status = 1;
-            this.data = product;
-            notifySuccess();
+            synchronized (lock) {
+                updateStatus(1);
+                this.data = product;
+                notifySuccess();
+            }
         }
 
         public synchronized void onDetailsFetchFailed(Exception err) {
-            status = -1;
-            this.lastError = err;
-            notifyFail();
+            synchronized (lock) {
+                updateStatus(-1);
+                this.lastError = err;
+                notifyFail();
+            }
         }
 
-        public synchronized void onEnquiry() {
-            status = 0;
+        public void onEnquiry() {
+            updateStatus(0);
         }
 
-        private synchronized void notifyFail() {
-            for (ProductFacade.EnquiryCallback cb : callbacks) {
+        private void notifyFail() {
+            ProductFacade.EnquiryCallback[] enquiryCallbacks = null;
+            synchronized (lock) {
+                enquiryCallbacks = new ProductFacade.EnquiryCallback[callbacks.size()];
+                callbacks.toArray(enquiryCallbacks);
+                callbacks.clear();
+            }
+
+            for (ProductFacade.EnquiryCallback cb : enquiryCallbacks) {
                 cb.onFail(lastError);
             }
-            callbacks.clear();
         }
 
-        private synchronized void notifySuccess() {
-            for (ProductFacade.EnquiryCallback cb : callbacks) {
+        private void notifySuccess() {
+            ProductFacade.EnquiryCallback[] enquiryCallbacks = null;
+            synchronized (lock) {
+                enquiryCallbacks = new ProductFacade.EnquiryCallback[callbacks.size()];
+                callbacks.toArray(enquiryCallbacks);
+                callbacks.clear();
+            }
+
+            for (ProductFacade.EnquiryCallback cb : enquiryCallbacks) {
                 cb.onSuccess(data);
             }
-            callbacks.clear();
         }
     }
 
@@ -110,27 +133,48 @@ public class ProductWrapper {
         return pojo.getDescription();
     }
 
+    public String getCategory() {
+        List<Category> categories = this.pojo.getCategories();
+        if (categories != null && !categories.isEmpty()) {
+            Category category = categories.get(0);
+            return category.getName();
+        }
+
+        return null;
+    }
+
     public String getVariantType() {
         return pojo.getVariantType();
     }
 
     public String getCode() {
-        VariantOption variantOption = pojo.getVariantOptions().get(0);
-        String expand = null != variantOption ? variantOption.getCode() : null;
+        List<VariantOption> variantOptions = pojo.getVariantOptions();
+        if (variantOptions != null && !variantOptions.isEmpty()) {
+            VariantOption variantOption = variantOptions.get(0);
+            return null != variantOption ? variantOption.getCode() : null;
+        }
 
-        return null != expand ? expand : pojo.getUid();
+        return null;
     }
 
     public Price getPrice() {
-        VariantOption variantOption = pojo.getVariantOptions().get(0);
-        Price expand = null != variantOption ? variantOption.getPrice() : null;
+        Price expand = null;
+        List<VariantOption> variantOptions = pojo.getVariantOptions();
+        if (variantOptions != null && !variantOptions.isEmpty()) {
+            VariantOption variantOption = pojo.getVariantOptions().get(0);
+            expand = null != variantOption ? variantOption.getPrice() : null;
+        }
 
         return null != expand ? expand : pojo.getPrice();
     }
 
     public Price getDiscountedPrice() {
-        VariantOption variantOption = pojo.getVariantOptions().get(0);
-        Price expand = null != variantOption ? variantOption.getDiscountedPrice() : null;
+        Price expand = null;
+        List<VariantOption> variantOptions = pojo.getVariantOptions();
+        if (variantOptions != null && !variantOptions.isEmpty()) {
+            VariantOption variantOption = pojo.getVariantOptions().get(0);
+            expand = null != variantOption ? variantOption.getDiscountedPrice() : null;
+        }
 
         return null != expand ? expand : pojo.getDiscountedPrice();
     }

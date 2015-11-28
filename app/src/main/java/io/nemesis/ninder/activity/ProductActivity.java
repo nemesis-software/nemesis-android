@@ -114,7 +114,7 @@ public class ProductActivity extends Activity {
         productNameView.setText(product.getName());
 
         TextView productSubNameView = (TextView) findViewById(R.id.product_sub_name);
-        productSubNameView.setText(product.getVariantType());
+        productSubNameView.setText(product.getCategory());
 
         TextView productPriceView = (TextView) findViewById(R.id.product_price);
         productPriceView.setText(product.getPrice().getFormattedValue());
