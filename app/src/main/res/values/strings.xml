@@ -10,6 +10,7 @@
 
     <!--base url-->
     <string name="rest_api_base_url">http://www.solarapparel.com/en/GB</string>
+    <string name="rest_api_base_url_1">https://solar.cfapps.io</string>
 
     <!--<string name="rest_api_test_user">paranoiabla@gmail.com</string>-->
     <string name="rest_api_test_user">ipetkov@insitex.com</string>

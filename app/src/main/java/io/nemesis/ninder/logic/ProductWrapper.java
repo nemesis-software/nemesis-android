@@ -1,5 +1,7 @@
 package io.nemesis.ninder.logic;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +17,7 @@ import io.nemesis.ninder.logic.model.VariantOption;
 public class ProductWrapper {
 
     public static class ProductState {
+        private static final String TAG = "ProductState";
         private volatile int status;
         private Product data;
         private final List<ProductFacade.EnquiryCallback> callbacks = new ArrayList<>();
@@ -80,13 +83,6 @@ public class ProductWrapper {
         this.galleryImages = new ArrayList<>();
         int size = pojo.getImages().size();
 
-//        for (Image image : item.getImages()) {
-//            if ("picture".equalsIgnoreCase(image.getFormat())) {
-//                imgUrl = image.getUrl();
-//                break;
-//            }
-//        }
-
         this.photo = (0 != size) ? pojo.getImages().get(size -1) : null;
 
         if (!hasDetails()) {
@@ -144,7 +140,7 @@ public class ProductWrapper {
     }
 
     public boolean hasDetails() {
-        return null != pojo.getVariantType();
+        return null != pojo.getVariantType() && null != pojo.getVariantOptions() && pojo.getVariantOptions().size() > 0;
     }
 
     private void sortImages() {

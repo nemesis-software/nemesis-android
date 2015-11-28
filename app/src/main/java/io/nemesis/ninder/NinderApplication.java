@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.answers.Answers;
 import com.squareup.picasso.Picasso;
 
 import io.fabric.sdk.android.Fabric;
