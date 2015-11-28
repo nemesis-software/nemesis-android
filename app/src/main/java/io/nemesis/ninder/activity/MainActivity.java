@@ -5,6 +5,7 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import io.nemesis.ninder.R;
 import io.nemesis.ninder.logger.TLog;
 import io.nemesis.ninder.logic.ProductFacade;
 import io.nemesis.ninder.logic.ProductWrapper;
+import io.nemesis.ninder.logic.model.Image;
 import io.nemesis.ninder.logic.model.Product;
 
 public class MainActivity extends Activity {
@@ -316,10 +318,15 @@ public class MainActivity extends Activity {
             // will return two images and the large one will be second
             // TODO: 11/26/15 iterate the images and find the one we need in case the model changes
 
-            picasso.load(item.getPhoto().getUrl())
-                    .placeholder(R.drawable.placeholder)
-                    .error(R.drawable.image_err_placeholder)
-                    .into(holder.image);
+            Image photo = item.getPhoto();
+            if (photo != null && !TextUtils.isEmpty(photo.getUrl())) {
+                picasso.load(photo.getUrl())
+                        .placeholder(R.drawable.placeholder)
+                        .error(R.drawable.image_err_placeholder)
+                        .into(holder.image);
+            } else {
+                holder.image.setImageResource(R.drawable.placeholder);
+            }
 
             return rowView;
         }
