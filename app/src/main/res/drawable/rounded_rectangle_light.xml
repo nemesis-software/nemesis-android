@@ -6,6 +6,6 @@
         android:radius="3dp"
         />
     <solid
-        android:color="@android:color/transparent"
+        android:color="@color/grey_light"
         />
 </shape>
