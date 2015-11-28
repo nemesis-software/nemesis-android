@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".ProductActivity">
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,8 +23,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin_x2"
-            android:layout_marginRight="@dimen/activity_horizontal_margin_x2"
+            android:layout_marginLeft="@dimen/activity_product_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_product_horizontal_margin"
             android:orientation="vertical">
 
             <TextView
@@ -89,7 +89,9 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
                 android:contentDescription="@string/cd_done_btn"
-                android:src="@drawable/checkmark_button" />
+                android:src="@drawable/checkmark_button"
+                android:layout_marginBottom="10dp"
+                />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
