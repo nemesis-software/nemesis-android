@@ -65,16 +65,15 @@ public class MainActivity extends Activity {
             }
         });
 
-        showNoDataMessage(true, true);
-
         mAdapter = new CardAdapter();
+        showNoDataMessage(true);
         mAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override
             public void onChanged() {
                 super.onChanged();
 
                 if (!mAdapter.isEmpty()) {
-                    showNoDataMessage(false, false);
+                    showNoDataMessage(false);
 
                     ProductWrapper item = mAdapter.getItem(0);
                     productNameTextView.setText(item.getName());
@@ -83,7 +82,7 @@ public class MainActivity extends Activity {
                     productCategoryTextView.setAlpha(1.0f);
                     productNameTextView.setAlpha(1.0f);
                 } else {
-                    showNoDataMessage(true, false);
+                    showNoDataMessage(true);
                 }
             }
 
@@ -100,7 +99,7 @@ public class MainActivity extends Activity {
             public void removeFirstObjectInAdapter() {
                 mAdapter.pop();
                 if (!mAdapter.isEmpty()) {
-                    showNoDataMessage(false, false);
+                    showNoDataMessage(false);
                     ProductWrapper item = mAdapter.getItem(0);
 
                     productNameTextView.setText(item.getName());
@@ -109,7 +108,7 @@ public class MainActivity extends Activity {
                     productCategoryTextView.setAlpha(1.0f);
                     productNameTextView.setAlpha(1.0f);
                 } else {
-                    showNoDataMessage(true, false);
+                    showNoDataMessage(true);
                 }
             }
 
@@ -192,9 +191,9 @@ public class MainActivity extends Activity {
         });
     }
 
-    private void showNoDataMessage(boolean noData, boolean loading) {
+    private void showNoDataMessage(boolean noData) {
         noDataTextView.setVisibility(noData ? View.VISIBLE : View.INVISIBLE);
-        if (loading) {
+        if (mAdapter != null && !mAdapter.endOfQueueReached) {
             noDataTextView.setText(this.getString(R.string.loading_products));
         } else {
             noDataTextView.setText(this.getString(R.string.end_of_product_queue_notification_text));
@@ -251,7 +250,13 @@ public class MainActivity extends Activity {
                                 @Override
                                 public void run() {
                                     list.addAll(products);
+                                    if (list.isEmpty()) {
+                                        endOfQueueReached = true;
+                                    } else {
+                                        endOfQueueReached = false;
+                                    }
                                     notifyDataSetChanged();
+
                                     batchNumber++;
                                 }
                             });
@@ -259,9 +264,15 @@ public class MainActivity extends Activity {
 
                         @Override
                         public void onFail(final Exception e) {
-                            if (e instanceof ProductFacade.EndOfQueueException) {
-                                endOfQueueReached = true;
-                                showNoDataMessage(true, true);
+                            // on any exception show, no data message -> handles connectivity errors
+                            endOfQueueReached = true;
+                            if (list.isEmpty()) {
+                                MainActivity.this.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        showNoDataMessage(true);
+                                    }
+                                });
                             }
                         }
                     });
