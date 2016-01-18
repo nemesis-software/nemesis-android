@@ -42,8 +42,7 @@ public class NemesisFacadeImpl implements ProductFacade {
 
     public NemesisFacadeImpl(Context context) {
         mContext = context.getApplicationContext();
-//        testUserId = context.getString(R.string.rest_api_test_user);
-        testUserId = "ipetkov@insitex.com";
+        testUserId = context.getString(R.string.rest_api_test_user);
 
         retrofitRestClient = new NemesisRetrofitRestClient(mContext, mContext.getString(R.string.rest_api_base_url));
         enquiries = new ConcurrentHashMap<>();
