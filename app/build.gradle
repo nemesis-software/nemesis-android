@@ -42,7 +42,7 @@ android {
 	buildTypes {
         debug {
             // disable crashlytics
-            ext.enableCrashlytics = false
+//            ext.enableCrashlytics = false
         }
 
 		release {
@@ -68,7 +68,7 @@ dependencies {
 	compile 'com.squareup.picasso:picasso:2.5.2'
 	compile 'com.lorentzos.swipecards:library:1.0.8@aar' //https://github.com/Diolor/Swipecards
 	compile 'com.android.support:support-v13:23.1.1'
-    compile('com.crashlytics.sdk.android:crashlytics:2.5.3@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;
     }
 }
