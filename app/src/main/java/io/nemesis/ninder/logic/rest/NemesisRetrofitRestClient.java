@@ -44,19 +44,29 @@ public class NemesisRetrofitRestClient {
                     }
 
                     public T read(JsonReader in) throws IOException {
-
                         JsonElement jsonElement = elementAdapter.read(in);
+                        jsonElement = resolveRoot(jsonElement);
+                        return delegate.fromJsonTree(jsonElement);
+                    }
+
+                    private JsonElement resolveRoot(final JsonElement jsonElement) {
                         if (jsonElement.isJsonObject()) {
                             JsonObject jsonObject = jsonElement.getAsJsonObject();
                             if (jsonObject.has("content") && jsonObject.get("content").isJsonArray()) {
-                                jsonElement = jsonObject.get("content");
+                                return jsonObject.get("content");
                             } else if (jsonObject.has("product") && jsonObject.get("product").isJsonObject()) {
-                                jsonElement = jsonObject.get("product");
+                                return jsonObject.get("product");
+                            }
+//                            else if (jsonObject.has("cmsPage") && jsonObject.get("cmsPage").isJsonObject()) {
+//                                return resolveRoot(jsonObject.get("cmsPage"));
+//                            }
+                            else if (jsonObject.has("page") && jsonObject.get("page").isJsonObject()) {
+                                return resolveRoot(jsonObject.get("page"));
                             }
                         }
-
-                        return delegate.fromJsonTree(jsonElement);
+                        return jsonElement;
                     }
+
                 }.nullSafe();
             }
 
@@ -88,7 +98,6 @@ public class NemesisRetrofitRestClient {
 
         RestAdapter adapter = new RestAdapter.Builder()
                 .setLogLevel(RestAdapter.LogLevel.FULL)
-//                .setEndpoint(context.getString(R.string.rest_api_base_url))
                 .setEndpoint(baseUrl)
                 .setConverter(new GsonConverter(gson))
                 .setExecutors(executorService, executorService1)
