@@ -24,6 +24,7 @@ import io.nemesis.ninder.logic.ProductFacade;
 import io.nemesis.ninder.logic.ProductWrapper;
 import io.nemesis.ninder.logic.model.Image;
 import io.nemesis.ninder.logic.model.Product;
+import io.nemesis.ninder.logic.model.ProductEntity;
 
 public class ProductActivity extends Activity {
     public static final String EXTRA_ITEM;
@@ -70,7 +71,7 @@ public class ProductActivity extends Activity {
                 } else {
                     wrapped.enquireDetails(new ProductFacade.EnquiryCallback() {
                         @Override
-                        public void onSuccess(Product products) {
+                        public void onSuccess(ProductEntity products) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {

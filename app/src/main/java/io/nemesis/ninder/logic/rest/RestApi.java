@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.nemesis.ninder.logic.model.Product;
+import io.nemesis.ninder.logic.model.ProductEntity;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
@@ -32,10 +33,10 @@ public interface RestApi {
     void getProductListAsync(@QueryMap Map<String, String> query, retrofit.Callback<List<Product>> callback);
 
     @GET("/api/{productURL}")
-    Product getProductDetail(@Path(value="productURL", encode=false) String url);
+    ProductEntity getProductDetail(@Path(value="productURL", encode=false) String url);
 
     @GET("/api{productURL}")
-    void getProductDetailAsync(@Path(value="productURL", encode=false) String url, retrofit.Callback<Product> callback);
+    void getProductDetailAsync(@Path(value="productURL", encode=false) String url, retrofit.Callback<ProductEntity> callback);
 
     // XXX service methods: Must have either a return type or Callback as last argument.
     // XXX java.lang.NullPointerException: Attempt to invoke interface method

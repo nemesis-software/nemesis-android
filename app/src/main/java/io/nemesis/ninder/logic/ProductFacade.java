@@ -3,6 +3,7 @@ package io.nemesis.ninder.logic;
 import java.util.List;
 
 import io.nemesis.ninder.logic.model.Product;
+import io.nemesis.ninder.logic.model.ProductEntity;
 import io.nemesis.ninder.logic.model.VariantOption;
 
 /**
@@ -38,7 +39,7 @@ public interface ProductFacade {
          * only called when {@link #enquireAsync(Product, EnquiryCallback)} fetched new data
          * @param products data retrieved by the call
          */
-        void onSuccess(Product products);
+        void onSuccess(ProductEntity products);
 
         /**
          * called when {@link #enquireAsync(Product, EnquiryCallback)} fetched no data, regardless the cause
@@ -83,7 +84,7 @@ public interface ProductFacade {
      *
      * @param product Product
      */
-    void like(Product product);
+    void like(ProductWrapper product);
 
     /**
      * The user disapproved your product! Do not bother him with more of the same.
@@ -91,20 +92,20 @@ public interface ProductFacade {
      * @param product Product
      * @param variant Products Variation
      */
-    void dislike(Product product, VariantOption variant);
+    void dislike(ProductWrapper product, VariantOption variant);
 
     /**
      * Add a product to users wishlist
      *
      * @param product Product
      */
-    void addToWishlist(Product product);
+    void addToWishlist(ProductWrapper product);
 
     /**
      * retrieve additional details about a product
      * @param product
      */
-    Product enquire(Product product);
+    ProductEntity enquire(Product product);
 
     /**
      * retrieve additional details about a product

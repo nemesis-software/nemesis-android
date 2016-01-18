@@ -2,7 +2,6 @@ package io.nemesis.ninder.logic;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.crashlytics.android.answers.AddToCartEvent;
 import com.crashlytics.android.answers.Answers;
@@ -16,7 +15,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import io.nemesis.ninder.R;
 import io.nemesis.ninder.logger.TLog;
 import io.nemesis.ninder.logic.model.Product;
+import io.nemesis.ninder.logic.model.ProductEntity;
 import io.nemesis.ninder.logic.model.VariantOption;
+import io.nemesis.ninder.logic.model.Variation;
 import io.nemesis.ninder.logic.rest.NemesisRetrofitRestClient;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -41,7 +42,8 @@ public class NemesisFacadeImpl implements ProductFacade {
 
     public NemesisFacadeImpl(Context context) {
         mContext = context.getApplicationContext();
-        testUserId = context.getString(R.string.rest_api_test_user);
+//        testUserId = context.getString(R.string.rest_api_test_user);
+        testUserId = "ipetkov@insitex.com";
 
         retrofitRestClient = new NemesisRetrofitRestClient(mContext, mContext.getString(R.string.rest_api_base_url));
         enquiries = new ConcurrentHashMap<>();
@@ -107,7 +109,8 @@ public class NemesisFacadeImpl implements ProductFacade {
      * {@inheritDoc}
      */
     @Override
-    public void like(Product product) {
+    public void like(ProductWrapper product) {
+        if (null == product || null == product.getProduct()) return;
         addToWishlist(product);
     }
 
@@ -115,36 +118,39 @@ public class NemesisFacadeImpl implements ProductFacade {
      * {@inheritDoc}
      */
     @Override
-    public void dislike(Product product, VariantOption variant) {
-        if (null != product.getUid())
-            enquiries.remove(product.getUid());
+    public void dislike(ProductWrapper product, VariantOption variant) {
+        if (null == product || null == product.getProduct() || null == product.getProduct().getUid()) return;
+            enquiries.remove(product.getProduct().getUid());
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void addToWishlist(final Product product) {
-        if (product == null) {
+    public void addToWishlist(final ProductWrapper wrapper) {
+        if (wrapper == null || wrapper.getProduct() == null) {
             throw new IllegalArgumentException();
         }
+        Product prod = wrapper.getProduct();
 
-        TLog.d("addToWishlist: " + product.getUrl());
+        TLog.d("addToWishlist: " + prod.getUrl());
 
-        List<VariantOption> variantOptions = product.getVariantOptions();
-        VariantOption variant = variantOptions != null && !variantOptions.isEmpty() ? variantOptions.get(0) : null;
+        List<Variation> variations = wrapper.getVariations();
+        Variation variation = null != variations && !variations.isEmpty() ? variations.get(0) : null;
 
-        if (variant != null) {
-            addToWishList(variant);
+        if (variation != null) {
+            addToWishList(variation);
         } else {
-            enquireAsync(product, new EnquiryCallback() {
+            enquireAsync(prod, new EnquiryCallback() {
                 @Override
-                public void onSuccess(Product prod) {
-                    List<VariantOption> variantOptions = prod.getVariantOptions();
-                    VariantOption variant = variantOptions != null && !variantOptions.isEmpty() ? variantOptions.get(0) : null;
-                    if (variant != null) {
-                        addToWishList(variant);
+                public void onSuccess(ProductEntity entity) {
+                    List<Variation> variations = entity.getVariants();
+                    Variation variation = null != variations && !variations.isEmpty() ? variations.get(0) : null;
+
+                    if (variation != null) {
+                        addToWishList(variation);
                     } else {
+                        Product product = entity.getProduct();
                         TLog.w("missing variant for product: " + product.getUrl());
                     }
                 }
@@ -157,12 +163,12 @@ public class NemesisFacadeImpl implements ProductFacade {
         }
     }
 
-    private void addToWishList(final VariantOption variant) {
+    private void addToWishList(final Variation variant) {
         if (variant == null) {
             throw new IllegalArgumentException();
         }
 
-        final String code = variant.getCode();
+        final String code = variant.getUid();
         if (TextUtils.isEmpty(code)) {
             TLog.w("variant code isEmpty. variant=" + variant);
             return;
@@ -173,7 +179,7 @@ public class NemesisFacadeImpl implements ProductFacade {
             public void success(Void aVoid, Response response) {
                 TLog.d("added to wishlist");
                 Answers.getInstance().logAddToCart(new AddToCartEvent()
-                        .putItemId(variant.getCode())
+                        .putItemId(variant.getUid())
                 );
             }
 
@@ -192,10 +198,10 @@ public class NemesisFacadeImpl implements ProductFacade {
      * {@inheritDoc}
      */
     @Override
-    public Product enquire(Product product) {
+    public ProductEntity enquire(Product product) {
         // TODO verify that product.uid and productDetail.uid mach
         // TODO verify that product does have uid value
-        Product productDetail = retrofitRestClient.getApiService().getProductDetail(product.getUrl());
+        ProductEntity productDetail = retrofitRestClient.getApiService().getProductDetail(product.getUrl());
 //        enquiries.put(product.getUid(), productDetail);
         return productDetail;
     }
@@ -219,9 +225,9 @@ public class NemesisFacadeImpl implements ProductFacade {
         }
 
         state.onEnquiry();
-        retrofitRestClient.getApiService().getProductDetailAsync(product.getUrl(), new Callback<Product>() {
+        retrofitRestClient.getApiService().getProductDetailAsync(product.getUrl(), new Callback<ProductEntity>() {
             @Override
-            public void success(Product prod, Response response) {
+            public void success(ProductEntity prod, Response response) {
                 ProductWrapper.ProductState productState = enquiries.get(product.getUid());
                 if (null != productState) {
                     if (response.getStatus() == 200) {

@@ -204,7 +204,7 @@ public class MainActivity extends Activity {
     }
 
     private void dislike(ProductWrapper product) {
-        ((NinderApplication) getApplication()).getProductFacade().dislike(product.getProduct(), null);
+        ((NinderApplication) getApplication()).getProductFacade().dislike(product, null);
     }
 
     private void info() {
@@ -226,7 +226,7 @@ public class MainActivity extends Activity {
     }
 
     private void like(ProductWrapper product) {
-        ((NinderApplication) getApplication()).getProductFacade().like(product.getProduct());
+        ((NinderApplication) getApplication()).getProductFacade().like(product);
     }
 
     private class CardAdapter extends BaseAdapter {

@@ -9,7 +9,9 @@ import io.nemesis.ninder.logic.model.Category;
 import io.nemesis.ninder.logic.model.Image;
 import io.nemesis.ninder.logic.model.Price;
 import io.nemesis.ninder.logic.model.Product;
+import io.nemesis.ninder.logic.model.ProductEntity;
 import io.nemesis.ninder.logic.model.VariantOption;
+import io.nemesis.ninder.logic.model.Variation;
 
 /**
  * @author ivanpetkov
@@ -20,7 +22,7 @@ public class ProductWrapper {
     public static class ProductState {
 
         private volatile int status;
-        private Product data;
+        private ProductEntity data;
         private final List<ProductFacade.EnquiryCallback> callbacks = new ArrayList<>();
         private Exception lastError = new Exception("unknown error");
         private Object lock = new Object();
@@ -45,10 +47,10 @@ public class ProductWrapper {
             this.status = newStatus;
         }
 
-        public synchronized void onDetailsFetched(Product product) {
+        public synchronized void onDetailsFetched(ProductEntity entity) {
             synchronized (lock) {
                 updateStatus(1);
-                this.data = product;
+                this.data = entity;
                 notifySuccess();
             }
         }
@@ -94,6 +96,7 @@ public class ProductWrapper {
 
     private final NemesisFacadeImpl api;
     private volatile Product pojo;
+    private List<Variation> variations;
     private volatile List<Image> galleryImages;
     private volatile Image photo;
 
@@ -184,7 +187,12 @@ public class ProductWrapper {
     }
 
     public boolean hasDetails() {
-        return null != pojo.getVariantType() && null != pojo.getVariantOptions() && pojo.getVariantOptions().size() > 0;
+        return variations != null && !variations.isEmpty();
+//        return null != pojo.getVariantType() && null != pojo.getVariantOptions() && pojo.getVariantOptions().size() > 0;
+    }
+
+    public List<Variation> getVariations() {
+        return variations;
     }
 
     private void sortImages() {
@@ -229,8 +237,9 @@ public class ProductWrapper {
     public void enquireDetails(final ProductFacade.EnquiryCallback callback) {
         api.enquireAsync(pojo, new ProductFacade.EnquiryCallback() {
             @Override
-            public void onSuccess(Product product) {
-                pojo = product;
+            public void onSuccess(ProductEntity product) {
+                pojo = product.getProduct();
+                variations = product.getVariants();
                 sortImages();
                 if (null != callback) {
                     callback.onSuccess(product);

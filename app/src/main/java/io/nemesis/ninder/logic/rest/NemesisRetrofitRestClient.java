@@ -54,9 +54,10 @@ public class NemesisRetrofitRestClient {
                             JsonObject jsonObject = jsonElement.getAsJsonObject();
                             if (jsonObject.has("content") && jsonObject.get("content").isJsonArray()) {
                                 return jsonObject.get("content");
-                            } else if (jsonObject.has("product") && jsonObject.get("product").isJsonObject()) {
-                                return jsonObject.get("product");
                             }
+//                            else if (jsonObject.has("product") && jsonObject.get("product").isJsonObject()) {
+//                                return jsonObject.get("product");
+//                            }
 //                            else if (jsonObject.has("cmsPage") && jsonObject.get("cmsPage").isJsonObject()) {
 //                                return resolveRoot(jsonObject.get("cmsPage"));
 //                            }
