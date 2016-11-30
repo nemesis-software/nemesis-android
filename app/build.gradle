@@ -16,8 +16,8 @@ repositories {
 
 
 android {
-	compileSdkVersion 23
-	buildToolsVersion "23.0.2"
+	compileSdkVersion 24
+	buildToolsVersion "24.0.3"
 
 	def buildNumber = getBuildNumber()
 	def versionNameString = getVersionName(buildNumber)
@@ -25,7 +25,7 @@ android {
 	defaultConfig {
 		applicationId "io.nemesis.ninder"
 		minSdkVersion 21
-		targetSdkVersion 23
+		targetSdkVersion 24
         versionCode buildNumber
         versionName versionNameString
 	}
