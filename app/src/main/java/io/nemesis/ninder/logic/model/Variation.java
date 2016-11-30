@@ -17,7 +17,7 @@ public class Variation implements Parcelable {
     private Object discount;
     private Price discountedPrice;
     private List<VariantOptionQualifier> variantOptionQualifiers = new ArrayList<VariantOptionQualifier>();
-    private String uid;
+    private String code;
     private Image pictures;
     private List<Image> images = new ArrayList<>();
 
@@ -29,7 +29,7 @@ public class Variation implements Parcelable {
         price = in.readParcelable(Price.class.getClassLoader());
         discountedPrice = in.readParcelable(Price.class.getClassLoader());
         variantOptionQualifiers = in.createTypedArrayList(VariantOptionQualifier.CREATOR);
-        uid = in.readString();
+        code = in.readString();
         pictures = in.readParcelable(Image.class.getClassLoader());
         images = in.createTypedArrayList(Image.CREATOR);
     }
@@ -58,7 +58,7 @@ public class Variation implements Parcelable {
         dest.writeParcelable(price, flags);
         dest.writeParcelable(discountedPrice, flags);
         dest.writeTypedList(variantOptionQualifiers);
-        dest.writeString(uid);
+        dest.writeString(code);
         dest.writeParcelable(pictures, flags);
         dest.writeTypedList(images);
     }
@@ -89,8 +89,8 @@ public class Variation implements Parcelable {
         return variantOptionQualifiers;
     }
 
-    public String getUid() {
-        return uid;
+    public String getCode() {
+        return code;
     }
 
     public Image getPictures() {
@@ -125,8 +125,8 @@ public class Variation implements Parcelable {
         this.variantOptionQualifiers = variantOptionQualifiers;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public void setPictures(Image pictures) {

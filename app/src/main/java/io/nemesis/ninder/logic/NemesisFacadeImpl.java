@@ -118,8 +118,8 @@ public class NemesisFacadeImpl implements ProductFacade {
      */
     @Override
     public void dislike(ProductWrapper product, VariantOption variant) {
-        if (null == product || null == product.getProduct() || null == product.getProduct().getUid()) return;
-            enquiries.remove(product.getProduct().getUid());
+        if (null == product || null == product.getProduct() || null == product.getProduct().getCode()) return;
+            enquiries.remove(product.getProduct().getCode());
     }
 
     /**
@@ -167,7 +167,7 @@ public class NemesisFacadeImpl implements ProductFacade {
             throw new IllegalArgumentException();
         }
 
-        final String code = variant.getUid();
+        final String code = variant.getCode();
         if (TextUtils.isEmpty(code)) {
             TLog.w("variant code isEmpty. variant=" + variant);
             return;
@@ -178,7 +178,7 @@ public class NemesisFacadeImpl implements ProductFacade {
             public void success(Void aVoid, Response response) {
                 TLog.d("added to wishlist");
                 Answers.getInstance().logAddToCart(new AddToCartEvent()
-                        .putItemId(variant.getUid())
+                        .putItemId(variant.getCode())
                 );
             }
 
@@ -201,7 +201,7 @@ public class NemesisFacadeImpl implements ProductFacade {
         // TODO verify that product.uid and productDetail.uid mach
         // TODO verify that product does have uid value
         ProductEntity productDetail = retrofitRestClient.getApiService().getProductDetail(product.getUrl());
-//        enquiries.put(product.getUid(), productDetail);
+//        enquiries.put(product.getCode(), productDetail);
         return productDetail;
     }
 
@@ -210,11 +210,11 @@ public class NemesisFacadeImpl implements ProductFacade {
      */
     @Override
     public void enquireAsync(final Product product, final EnquiryCallback callback) {
-        ProductWrapper.ProductState state = enquiries.get(product.getUid());
+        ProductWrapper.ProductState state = enquiries.get(product.getCode());
         if (null == state) {
             // create state and add
             state = new ProductWrapper.ProductState();
-            enquiries.put(product.getUid(), state);
+            enquiries.put(product.getCode(), state);
         } else {
             if (null != callback) {
                 state.addCallback(callback);
@@ -227,7 +227,7 @@ public class NemesisFacadeImpl implements ProductFacade {
         retrofitRestClient.getApiService().getProductDetailAsync(product.getUrl(), new Callback<ProductEntity>() {
             @Override
             public void success(ProductEntity prod, Response response) {
-                ProductWrapper.ProductState productState = enquiries.get(product.getUid());
+                ProductWrapper.ProductState productState = enquiries.get(product.getCode());
                 if (null != productState) {
                     if (response.getStatus() == 200) {
                         productState.onDetailsFetched(prod);
@@ -240,7 +240,7 @@ public class NemesisFacadeImpl implements ProductFacade {
 
             @Override
             public void failure(RetrofitError error) {
-                ProductWrapper.ProductState productState = enquiries.get(product.getUid());
+                ProductWrapper.ProductState productState = enquiries.get(product.getCode());
                 if (null != productState) {
                     productState.onDetailsFetchFailed(error);
                 } else {

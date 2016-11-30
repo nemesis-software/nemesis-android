@@ -44,5 +44,5 @@ public interface RestApi {
     // async methods cannot set null callbacks if the caller does not care about the result of the call
     @FormUrlEncoded
     @POST("/wishlist/entry/add")
-    void addToWishlistAsync(@Field("productId") String productId, @Field("userId") String userId, retrofit.Callback<Void> callback);
+    void addToWishlistAsync(@Field("productCode") String productCode, @Field("userId") String userId, retrofit.Callback<Void> callback);
 }
