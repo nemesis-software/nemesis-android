@@ -58,10 +58,18 @@ public class NemesisFacadeImpl implements ProductFacade {
             public void success(Void aVoid, Response response) {
                 if (response.getStatus() == 200) {
                     if (null != callback) {
-                            for(Header header : response.getHeaders()){
-                                if(header.getName().equals("x-auth-token"))
-                                    header.getValue();
+                        try{
+                        List<Header> headers = response.getHeaders();
+                            for (Header header : headers) {
+                                String name = header.getName();
+                                if(name!=null)
+                                if (name.equals("x-auth-token"))
+                                    StoreToken(header.getValue());
                             }
+                        }
+                        catch(Exception ex){
+                            ex.printStackTrace();
+                        }
                             callback.onSuccess(null);
                         }
                 } else {
@@ -204,8 +212,9 @@ public class NemesisFacadeImpl implements ProductFacade {
             TLog.w("variant code isEmpty. variant=" + variant);
             return;
         }
+        String token = ReadToken();
 
-        retrofitRestClient.getApiService().addToWishlistAsync(code, testUserId, new Callback<Void>() {
+        retrofitRestClient.getApiService().addToWishlistAsync(token,code,testUserId, new Callback<Void>() {
             @Override
             public void success(Void aVoid, Response response) {
                 TLog.d("added to wishlist");

@@ -98,7 +98,7 @@ public class NemesisRetrofitRestClient {
         ExecutorService executorService1 = Executors.newFixedThreadPool(1);
 
         RestAdapter adapter = new RestAdapter.Builder()
-                .setLogLevel(RestAdapter.LogLevel.HEADERS)
+                .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setEndpoint(baseUrl)
                 .setConverter(new GsonConverter(gson))
                 .setExecutors(executorService, executorService1)
