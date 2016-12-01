@@ -1,6 +1,8 @@
 package io.nemesis.ninder.logic;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
 import com.crashlytics.android.answers.AddToCartEvent;
@@ -21,6 +23,7 @@ import io.nemesis.ninder.logic.model.Variation;
 import io.nemesis.ninder.logic.rest.NemesisRetrofitRestClient;
 import retrofit.Callback;
 import retrofit.RetrofitError;
+import retrofit.client.Header;
 import retrofit.client.Response;
 
 /**
@@ -46,6 +49,35 @@ public class NemesisFacadeImpl implements ProductFacade {
 
         retrofitRestClient = new NemesisRetrofitRestClient(mContext, mContext.getString(R.string.rest_api_base_url));
         enquiries = new ConcurrentHashMap<>();
+    }
+
+    @Override
+    public void loginAsync(String email, String password, final AsyncCallback callback) {
+        retrofitRestClient.getApiService().loginAsync(email, password, new Callback<Void>() {
+            @Override
+            public void success(Void aVoid, Response response) {
+                if (response.getStatus() == 200) {
+                    if (null != callback) {
+                            for(Header header : response.getHeaders()){
+                                if(header.getName().equals("x-auth-token"))
+                                    header.getValue();
+                            }
+                            callback.onSuccess(null);
+                        }
+                } else {
+                    if (null != callback) {
+                        callback.onFail(new RuntimeException("bad response: " + response.getStatus()));
+                    }
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (null != callback) {
+                    callback.onFail(error);
+                }
+            }
+        });
     }
 
     @Deprecated
@@ -247,6 +279,18 @@ public class NemesisFacadeImpl implements ProductFacade {
                 }
             }
         });
+    }
+
+    private void StoreToken(String token){
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(mContext.getString(R.string.token), token);
+        editor.apply();
+    }
+
+    private String ReadToken(){
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        return sharedPref.getString(mContext.getString(R.string.token),null);
     }
 
     public ProductWrapper wrap(Product product) {

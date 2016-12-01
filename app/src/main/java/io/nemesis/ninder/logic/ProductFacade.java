@@ -49,6 +49,19 @@ public interface ProductFacade {
     }
 
     /**
+     * Login using the credentials provided
+     * {@code callback} will be called with the result.
+     *
+     * @param callback called when method completes its execution,
+     *                 this should be called on the main thread
+     *
+     * @param email email
+     *
+     * @param password password
+     */
+    void loginAsync(String email, String password, AsyncCallback callback);
+
+    /**
      * This call is synchronous and will block. In order to retrieve items in background use {@link #getProductsAsync(int, int, AsyncCallback)}
      *
      * Retrieves a Product list of size up to {@code size} Products
