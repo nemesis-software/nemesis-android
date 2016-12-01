@@ -24,6 +24,6 @@
 
     <dimen name="button_elevation">2dp</dimen>
     <dimen name="button_press_elevation">6dp</dimen>
-    
+
     <dimen name="gallery_vertical_height">300dp</dimen>
 </resources>
