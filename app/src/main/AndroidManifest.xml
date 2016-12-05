@@ -34,6 +34,7 @@
         <activity
             android:name=".activity.LoginActivity"
             android:theme="@android:style/Theme.Holo.Light.NoActionBar"
+            android:windowSoftInputMode="stateVisible|adjustPan"
             android:label="@string/title_activity_login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

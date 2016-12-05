@@ -27,6 +27,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -53,6 +54,7 @@ public class LoginActivity extends Activity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
+
         mEmailView = (EditText) findViewById(R.id.email);
 
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -74,6 +76,14 @@ public class LoginActivity extends Activity  {
                 attemptLogin();
             }
         });
+        Button mForgotPasswordButton = (Button) findViewById(R.id.forgot_password_button);
+        mForgotPasswordButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                forgotPassword();
+            }
+        });
+
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
@@ -152,6 +162,9 @@ public class LoginActivity extends Activity  {
         return password.length() > 5;
     }
 
+    private void forgotPassword(){
+        
+    }
 
     private void showProgress(final boolean show) {
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
