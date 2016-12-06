@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home_black_24dp"
+            android:title="@string/nav_home" />
+        <item
+            android:id="@+id/nav_list"
+            android:icon="@drawable/ic_view_list_black_24dp"
+            android:title="@string/nav_list" />
+        <item
+            android:id="@+id/nav_ninder"
+            android:icon="@drawable/ic_switch_camera_black_24dp"
+            android:title="@string/nav_ninder" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="@string/nav_settings" />
+    </group>
+</menu>

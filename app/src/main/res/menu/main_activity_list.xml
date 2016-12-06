@@ -5,11 +5,14 @@
     <!-- Settings, should always be in the overflow -->
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
+        android:orderInCategory="100"
+
         android:icon="@drawable/icon_burger"
-        app:showAsAction="ifRoom|collapseActionView"/>
+        app:showAsAction="ifRoom"/>
 
     <item android:id="@+id/action_search"
         android:title="@string/action_search"
+        android:orderInCategory="101"
         android:icon="@drawable/icon_search"
         app:showAsAction="ifRoom|collapseActionView"
         app:actionViewClass="android.support.v7.widget.SearchView" />
