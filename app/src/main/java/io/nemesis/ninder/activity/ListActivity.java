@@ -1,19 +1,30 @@
 package io.nemesis.ninder.activity;
 
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import io.nemesis.ninder.R;
 import io.nemesis.ninder.fragment.RecyclerViewFragment;
 
-public class ListActivity extends AppCompatActivity {
-
+public class ListActivity extends AppCompatActivity implements RecyclerViewFragment.OnFragmentInteractionListener {
+    private DrawerLayout mDrawer;
+    private NavigationView navigationView;
+    private Toolbar mToolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,9 +35,41 @@ public class ListActivity extends AppCompatActivity {
             transaction.replace(R.id.recycle_fragment, fragment);
             transaction.commit();
         }
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(myToolbar);
-        getSupportActionBar().setTitle("Ninder");
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.setNavigationIcon(R.drawable.icon_burger);
+        setSupportActionBar(mToolbar);
+
+        mDrawer = (DrawerLayout) findViewById(R.id.activity_list);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.getHeaderView(0);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch(item.getItemId()){
+                    case R.id.nav_home:
+                        Log.d("Nav","Home");
+                        break;
+                    case R.id.nav_list:
+                        break;
+                    case R.id.nav_ninder:
+                        break;
+                    case R.id.nav_settings:
+                        break;
+                    default:
+                        break;
+                }
+                return false;
+            }
+        });
+
+    }
+    @Override
+    public void onBackPressed() {
+        if (mDrawer.isDrawerOpen(GravityCompat.START)) {
+            mDrawer.closeDrawers();
+            return;
+        }
+        super.onBackPressed();
     }
 
     @Override
@@ -38,32 +81,14 @@ public class ListActivity extends AppCompatActivity {
 
         // Configure the search info and add any event listeners...
 
-        // Get the MenuItem for the action item
-        MenuItem actionMenuItem = menu.findItem(R.id.action_settings);
-
-        //  Assign the listener to that action item
-        MenuItemCompat.setOnActionExpandListener(actionMenuItem, new MenuItemCompat.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                // Do something when action item collapses
-                return true;  // Return true to collapse action view
-            }
-
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-                // Do something when expanded
-                return true;  // Return true to expand action view
-            }
-        });
-
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                // User chose the "Settings" item, show the app settings UI...
+            case android.R.id.home:
+                mDrawer.openDrawer(GravityCompat.START);
                 return true;
 
             case R.id.action_search:
@@ -76,5 +101,10 @@ public class ListActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
 
         }
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }
