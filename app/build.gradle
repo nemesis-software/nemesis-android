@@ -66,7 +66,8 @@ dependencies {
 	testCompile 'junit:junit:4.12'
 	compile 'com.squareup.retrofit:retrofit:1.9.0'
 	compile 'com.squareup.picasso:picasso:2.5.2'
-	compile 'com.lorentzos.swipecards:library:1.0.8@aar' //https://github.com/Diolor/Swipecards
+    compile 'com.vinaysshenoy:mugen:1.0.2'
+    compile 'com.lorentzos.swipecards:library:1.0.8@aar' //https://github.com/Diolor/Swipecards
 	compile 'com.android.support:support-v13:25.0.1'
     compile 'com.android.support:design:25.0.1'
     compile 'com.android.support:appcompat-v7:25.0.1'

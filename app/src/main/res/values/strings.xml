@@ -27,7 +27,7 @@
     <string name="cd_dislike_btn">Dislike</string>
     <string name="cd_done_btn">Done</string>
     <string name="transition_name">images</string>
-    <string name="title_activity_login">Sign in</string>
+    <string name="title_activity_login">Ninder</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
