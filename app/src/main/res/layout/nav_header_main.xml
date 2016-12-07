@@ -26,8 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="hristo.stoyanov@scalefocus.com"
-            android:textSize="15sp"
+            android:textSize="12sp"
             android:textColor="@color/black"/>
 
     </LinearLayout>

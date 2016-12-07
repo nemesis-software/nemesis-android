@@ -1,12 +1,17 @@
 package io.nemesis.ninder.fragment;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -35,6 +40,7 @@ import io.nemesis.ninder.logic.ProductWrapper;
 public class RecyclerViewFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final int PAGE_SIZE = 12;
+    private static final int PRODUCTS_PER_PAGE = 2;
     private static int OFFSET = 0;
 
     // TODO: Rename and change types of parameters
@@ -89,7 +95,7 @@ public class RecyclerViewFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
 
         products = new ArrayList<>();
-        layoutManager = new StaggeredGridLayoutManager(3,1);
+        layoutManager = new StaggeredGridLayoutManager(PRODUCTS_PER_PAGE, OrientationHelper.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         adapter = new RecyclerViewAdapter(getContext(), products);
         recyclerView.setAdapter(adapter);
@@ -110,7 +116,7 @@ public class RecyclerViewFragment extends Fragment {
                 return false;
             }
         }).start();
-        attacher.setLoadMoreOffset(12);
+        attacher.setLoadMoreOffset(PAGE_SIZE);
 //        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager) {
 //            @Override
 //            public void onLoadMore(int current_page) {
@@ -122,11 +128,15 @@ public class RecyclerViewFragment extends Fragment {
         return rootView;
     }
 
+
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
+    }
+    public RecyclerViewAdapter getAdapter(){
+        return adapter;
     }
     private void getData(){
         ((NinderApplication) getActivity().getApplication()).getProductFacade().getProductsAsync(PAGE_SIZE, OFFSET, new ProductFacade.AsyncCallback() {

@@ -29,7 +29,7 @@ public class NinderApplication extends Application {
 
         //init stuff here
         Picasso.Builder builder = new Picasso.Builder(this);
-        builder.loggingEnabled(true);
+        builder.loggingEnabled(false);
         Picasso.setSingletonInstance(builder.build());
 
         mProductFacade = new NemesisFacadeImpl(this);

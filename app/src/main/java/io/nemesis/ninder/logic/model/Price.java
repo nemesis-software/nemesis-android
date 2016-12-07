@@ -8,25 +8,22 @@ import android.os.Parcelable;
  */
 public class Price implements Parcelable {
 
-    private String currencyIso;
-    private double value;
-    private String priceType;
-    private String formattedValue;
+    private String currency;
+    private double amount;
+    private String formatted;
 
     // start Parcelable
     protected Price(Parcel in) {
-        currencyIso = in.readString();
-        value = in.readDouble();
-        priceType = in.readString();
-        formattedValue = in.readString();
+        currency = in.readString();
+        amount = in.readDouble();
+        formatted = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(currencyIso);
-        dest.writeDouble(value);
-        dest.writeString(priceType);
-        dest.writeString(formattedValue);
+        dest.writeString(currency);
+        dest.writeDouble(amount);
+        dest.writeString(formatted);
     }
 
     @Override
@@ -49,59 +46,45 @@ public class Price implements Parcelable {
     // end Parcelable
 
     /**
-     * @return The currencyIso
+     * @return The currency
      */
     public String getCurrencyIso() {
-        return currencyIso;
+        return currency;
     }
 
     /**
-     * @param currencyIso The currencyIso
+     * @param currency The currency
      */
-    public void setCurrencyIso(String currencyIso) {
-        this.currencyIso = currencyIso;
+    public void setCurrencyIso(String currency) {
+        this.currency = currency;
     }
 
     /**
-     * @return The value
+     * @return The amount
      */
     public double getValue() {
-        return value;
+        return amount;
     }
 
     /**
-     * @param value The value
+     * @param amount The amount
      */
-    public void setValue(double value) {
-        this.value = value;
+    public void setValue(double amount) {
+        this.amount = amount;
     }
 
     /**
-     * @return The priceType
-     */
-    public String getPriceType() {
-        return priceType;
-    }
-
-    /**
-     * @param priceType The priceType
-     */
-    public void setPriceType(String priceType) {
-        this.priceType = priceType;
-    }
-
-    /**
-     * @return The formattedValue
+     * @return The formatted
      */
     public String getFormattedValue() {
-        return formattedValue;
+        return formatted;
     }
 
     /**
-     * @param formattedValue The formattedValue
+     * @param formatted The formatted
      */
-    public void setFormattedValue(String formattedValue) {
-        this.formattedValue = formattedValue;
+    public void setFormattedValue(String formatted) {
+        this.formatted = formatted;
     }
 
 }

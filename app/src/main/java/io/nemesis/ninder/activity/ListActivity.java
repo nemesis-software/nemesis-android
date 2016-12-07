@@ -1,22 +1,24 @@
 package io.nemesis.ninder.activity;
 
+import android.app.SearchManager;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import io.nemesis.ninder.R;
 import io.nemesis.ninder.fragment.RecyclerViewFragment;
@@ -25,13 +27,14 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
     private DrawerLayout mDrawer;
     private NavigationView navigationView;
     private Toolbar mToolbar;
+    private RecyclerViewFragment fragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            RecyclerViewFragment fragment = new RecyclerViewFragment();
+            fragment = new RecyclerViewFragment();
             transaction.replace(R.id.recycle_fragment, fragment);
             transaction.commit();
         }
@@ -41,7 +44,9 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
 
         mDrawer = (DrawerLayout) findViewById(R.id.activity_list);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.getHeaderView(0);
+        View header = navigationView.getHeaderView(0);
+        TextView name = (TextView) header.findViewById(R.id.name);
+        name.setText("hristo.stoyanov@scalefocus.com");
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -52,6 +57,7 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
                     case R.id.nav_list:
                         break;
                     case R.id.nav_ninder:
+                        startActivity(new Intent(ListActivity.this,MainActivity.class));
                         break;
                     case R.id.nav_settings:
                         break;
@@ -63,6 +69,33 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
         });
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_activity_list, menu);
+        final SearchView searchView =
+                (SearchView) menu.findItem(R.id.action_search).getActionView();
+        SearchManager searchManager = (SearchManager)getSystemService(Context.SEARCH_SERVICE);
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchView.clearFocus();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if(fragment!=null)
+                fragment.getAdapter().getFilter().filter(newText);
+                else Log.d("Fragment","Null");
+                return false;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
+    }
+
     @Override
     public void onBackPressed() {
         if (mDrawer.isDrawerOpen(GravityCompat.START)) {
@@ -72,17 +105,6 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
         super.onBackPressed();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_activity_list, menu);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchView searchView =
-                (SearchView) MenuItemCompat.getActionView(searchItem);
-
-        // Configure the search info and add any event listeners...
-
-        return super.onCreateOptionsMenu(menu);
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
