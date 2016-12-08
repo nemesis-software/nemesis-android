@@ -402,4 +402,5 @@ public class Product implements Parcelable {
     public String getUid() {
         return uid;
     }
+
 }

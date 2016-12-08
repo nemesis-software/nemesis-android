@@ -2,6 +2,7 @@ package io.nemesis.ninder.logic;
 
 import java.util.List;
 
+import io.nemesis.ninder.logic.model.AutoCompleteItem;
 import io.nemesis.ninder.logic.model.Product;
 import io.nemesis.ninder.logic.model.ProductEntity;
 import io.nemesis.ninder.logic.model.VariantOption;
@@ -18,12 +19,12 @@ public interface ProductFacade {
         }
     }
 
-    interface AsyncCallback {
+    interface AsyncCallback<T> {
         /**
          * only called when {@link #getProductsAsync} fetched new data
          * @param products data retrieved by the call
          */
-        void onSuccess(List<ProductWrapper> products);
+        void onSuccess(List<T> products);
 
         /**
          * called when {@link #getProductsAsync} fetched no data, regardless the cause
@@ -59,7 +60,19 @@ public interface ProductFacade {
      *
      * @param password password
      */
-    void loginAsync(String email, String password, AsyncCallback callback);
+    void loginAsync(String email, String password, AsyncCallback<Void> callback);
+
+    /**
+     * Initiate a search with the term provided to return a list of autocomplete items.
+     * {@code callback} will be called with the result.
+     *
+     * @param callback called when method completes its execution,
+     *                 this should be called on the main thread
+     *
+     * @param term term
+     */
+    void autoComplete(String term, AsyncCallback<Product> callback);
+
 
     /**
      * This call is synchronous and will block. In order to retrieve items in background use {@link #getProductsAsync(int, int, AsyncCallback)}
@@ -90,7 +103,7 @@ public interface ProductFacade {
      * @param page the range of items to retrieve. In the format:
      *             start from {@code page} * {@code size} and get next {@code size} items
      */
-    void getProductsAsync(int size, int page, AsyncCallback callback);
+    void getProductsAsync(int size, int page, AsyncCallback<ProductWrapper> callback);
 
     /**
      * The user approved your product! Take advantage of his interests...

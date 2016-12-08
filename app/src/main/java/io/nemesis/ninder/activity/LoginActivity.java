@@ -1,42 +1,23 @@
 package io.nemesis.ninder.activity;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.app.Activity;
-import android.app.LoaderManager.LoaderCallbacks;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
-
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.nemesis.ninder.NinderApplication;
@@ -64,7 +45,6 @@ public class LoginActivity extends AppCompatActivity {
         //this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         mEmailView = (EditText) findViewById(R.id.email);
-
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -102,7 +82,7 @@ public class LoginActivity extends AppCompatActivity {
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
+        final String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
@@ -134,14 +114,18 @@ public class LoginActivity extends AppCompatActivity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            ((NinderApplication) getApplication()).getProductFacade().loginAsync(email, password, new ProductFacade.AsyncCallback() {
+            ((NinderApplication) getApplication()).getProductFacade().loginAsync(email, password, new ProductFacade.AsyncCallback<Void>() {
                 @Override
-                public void onSuccess(List<ProductWrapper> products) {
+                public void onSuccess(List<Void> voids) {
                     LoginActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             showProgress(false);
-                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            editor.putString(LoginActivity.this.getString(R.string.email), email);
+                            editor.apply();
+                            startActivity(new Intent(LoginActivity.this, ListActivity.class));
                         }
                     });
                 }
@@ -170,7 +154,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void forgotPassword(){
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this,R.style.CustomDialog)
                 .setTitle("Forgot your password")
                 .setMessage("An email has been sent with instructions how to reset your password.")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -187,5 +171,8 @@ public class LoginActivity extends AppCompatActivity {
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
     }
+
+
+
 }
 

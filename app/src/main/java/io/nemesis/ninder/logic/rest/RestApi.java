@@ -3,6 +3,8 @@ package io.nemesis.ninder.logic.rest;
 import java.util.List;
 import java.util.Map;
 
+import io.nemesis.ninder.logic.ProductWrapper;
+import io.nemesis.ninder.logic.model.AutoCompleteItem;
 import io.nemesis.ninder.logic.model.Product;
 import io.nemesis.ninder.logic.model.ProductEntity;
 import retrofit.http.Field;
@@ -12,6 +14,7 @@ import retrofit.http.Header;
 import retrofit.http.Headers;
 import retrofit.http.POST;
 import retrofit.http.Path;
+import retrofit.http.Query;
 import retrofit.http.QueryMap;
 
 /**
@@ -28,6 +31,9 @@ public interface RestApi {
     })
     @GET("/api/login")
     void loginAsync(@Header("X-Nemesis-Username") String email, @Header("X-Nemesis-Password") String password, retrofit.Callback<Void> callback);
+
+    @GET("/api/search/autocomplete")
+    void autoComplete(@Query("term") String term, retrofit.Callback<List<Product>> callback);
 
     @GET("/api/c/womens")
     List<Product> getProductList();

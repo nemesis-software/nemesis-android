@@ -99,6 +99,7 @@ public class ProductWrapper {
     private List<Variation> variations;
     private volatile List<Image> galleryImages;
     private volatile Image photo;
+    private boolean is_favourite = false;
 
     private Object lock = new Object();
 
@@ -124,6 +125,12 @@ public class ProductWrapper {
         }
     }
 
+    public boolean getFavourite() {
+        return is_favourite;
+    }
+    public void setFavourite(boolean is_favourite) {
+        this.is_favourite = is_favourite;
+    }
     public Image getPhoto() {
         return photo;
     }

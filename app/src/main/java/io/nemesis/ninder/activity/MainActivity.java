@@ -243,7 +243,7 @@ public class MainActivity extends Activity {
         public void addMoreData() {
             //TODO update the size and the page
             ((NinderApplication) getApplication()).getProductFacade().getProductsAsync(batchSize, batchNumber,
-                    new ProductFacade.AsyncCallback() {
+                    new ProductFacade.AsyncCallback<ProductWrapper>() {
                         @Override
                         public void onSuccess(final List<ProductWrapper> products) {
                             MainActivity.this.runOnUiThread(new Runnable() {

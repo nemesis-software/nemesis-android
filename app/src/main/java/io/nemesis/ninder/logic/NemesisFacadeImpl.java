@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.crashlytics.android.answers.AddToCartEvent;
 import com.crashlytics.android.answers.Answers;
@@ -16,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import io.nemesis.ninder.R;
 import io.nemesis.ninder.logger.TLog;
+import io.nemesis.ninder.logic.model.AutoCompleteItem;
 import io.nemesis.ninder.logic.model.Product;
 import io.nemesis.ninder.logic.model.ProductEntity;
 import io.nemesis.ninder.logic.model.VariantOption;
@@ -87,6 +89,32 @@ public class NemesisFacadeImpl implements ProductFacade {
             }
         });
     }
+
+    @Override
+    public void autoComplete(String term, final AsyncCallback callback) {
+        retrofitRestClient.getApiService().autoComplete(term, new Callback<List<Product>>() {
+            @Override
+            public void success(List<Product> items, Response response) {
+                if (response.getStatus() == 200) {
+                    if (null != callback) {
+                        callback.onSuccess(items);
+                    }
+                } else {
+                    if (null != callback) {
+                        callback.onFail(new RuntimeException("bad response: " + response.getStatus()));
+                    }
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (null != callback) {
+                    callback.onFail(error);
+                }
+            }
+        });
+    }
+
 
     @Deprecated
     /**

@@ -139,7 +139,7 @@ public class RecyclerViewFragment extends Fragment {
         return adapter;
     }
     private void getData(){
-        ((NinderApplication) getActivity().getApplication()).getProductFacade().getProductsAsync(PAGE_SIZE, OFFSET, new ProductFacade.AsyncCallback() {
+        ((NinderApplication) getActivity().getApplication()).getProductFacade().getProductsAsync(PAGE_SIZE, OFFSET, new ProductFacade.AsyncCallback<ProductWrapper>() {
             @Override
             public void onSuccess(final List<ProductWrapper> new_products) {
                 getActivity().runOnUiThread(new Runnable() {

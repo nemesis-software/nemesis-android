@@ -3,11 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:gravity="center_horizontal"
     android:orientation="vertical"
     tools:context="io.nemesis.ninder.activity.LoginActivity"
-    app:theme="@style/AppTheme"
     android:background="@drawable/login_background_new"
+    android:theme="@style/AppTheme"
     >
 
     <!--<ImageView-->
@@ -41,24 +40,32 @@
             android:orientation="vertical">
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            <android.support.v7.widget.AppCompatEditText
+                android:layout_height="wrap_content"
+                android:theme="@style/EditTextHint"
+                app:errorTextAppearance="@style/MyErrorText">
+            <EditText
                 android:id="@+id/email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_email"
+                android:textColor="@color/white"
                 android:padding="10dp"
                 android:inputType="textEmailAddress"
                 android:maxLines="1" />
             </android.support.design.widget.TextInputLayout>
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            <android.support.v7.widget.AppCompatEditText
+                android:layout_height="wrap_content"
+                android:theme="@style/EditTextHint"
+                app:errorTextAppearance="@style/MyErrorText"
+                >
+
+            <EditText
                 android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_password"
+                android:textColor="@color/white"
                 android:padding="10dp"
                 android:imeActionId="@+id/login"
                 android:imeActionLabel="@string/action_log_in"

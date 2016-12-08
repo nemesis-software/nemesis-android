@@ -14,6 +14,7 @@
     <color name="dark_grey">#515658</color>
     <color name="purple">#FF4081</color>
     <color name="dark_tan">#bc8d48</color>
+    <color name="pink">#FB0025</color>
 
     <!-- Material overwrite -->
     <color name="colorPrimary">@color/white_dusty</color>
