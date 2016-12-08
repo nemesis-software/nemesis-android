@@ -2,7 +2,6 @@ package io.nemesis.ninder.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +11,7 @@ import android.widget.TextView;
 
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
+import com.robohorse.pagerbullet.PagerBullet;
 
 import java.util.List;
 
@@ -49,20 +49,7 @@ public class ProductFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.activity_product, container, false);
-
-        btnCheckmark = (ImageButton) rootView.findViewById(R.id.button_checkmark);
-        btnCheckmark.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    finalize();
-                } catch (Throwable throwable) {
-                    throwable.printStackTrace();
-                }
-            }
-        });
-        return rootView;
+        return inflater.inflate(R.layout.fragment_product, container, false);
     }
     @Override
     public void onStart() {
@@ -102,14 +89,16 @@ public class ProductFragment extends Fragment {
         }
     }
 
-    // init activity_product with selected product
+    // init fragment_product with selected product
     private void initProductView(ProductWrapper product) {
         List<Image> galleryImages = product.getGalleryImages();
         TLog.d("initProductView:galleryImages.size(): " + galleryImages.size());
         galleryPageAdapter = new GalleryPageAdapter(getFragmentManager(), product.getGalleryImages());
 
-        ViewPager productViewPager = (ViewPager) getView().findViewById(R.id.pager);
+        PagerBullet productViewPager = (PagerBullet) getView().findViewById(R.id.pager);
         productViewPager.setAdapter(galleryPageAdapter);
+        productViewPager.setTextSeparatorOffset(5);
+        productViewPager.setIndicatorTintColorScheme(getContext().getResources().getColor(R.color.red),getContext().getResources().getColor(R.color.grey));
 
         TextView productNameView = (TextView) getView().findViewById(R.id.product_name);
         productNameView.setText(product.getName());
