@@ -21,7 +21,7 @@
             android:layout_height="1dp"
             android:background="@color/divider_color"/>
         <FrameLayout
-            android:id="@+id/recycle_fragment"
+            android:id="@+id/fragment_placeholder"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </LinearLayout>

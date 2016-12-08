@@ -1,12 +1,12 @@
-package io.nemesis.ninder.activity;
+package io.nemesis.ninder.fragment;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
-import android.util.Log;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -26,12 +26,15 @@ import io.nemesis.ninder.logic.model.Image;
 import io.nemesis.ninder.logic.model.Product;
 import io.nemesis.ninder.logic.model.ProductEntity;
 
-public class ProductActivity extends Activity {
+public class ProductFragment extends Fragment {
+
+    public ProductFragment(){
+    }
+
     public static final String EXTRA_ITEM;
 
     static {
-        String paramPrefix = ProductActivity.class.getName();
-
+        String paramPrefix = ProductFragment.class.getName();
         EXTRA_ITEM = String.format("%s:%s", paramPrefix, Product.class.getSimpleName()).toUpperCase();
     }
 
@@ -39,31 +42,40 @@ public class ProductActivity extends Activity {
     private GalleryPageAdapter galleryPageAdapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_product);
 
-        btnCheckmark = (ImageButton) findViewById(R.id.button_checkmark);
+    }
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.activity_product, container, false);
+
+        btnCheckmark = (ImageButton) rootView.findViewById(R.id.button_checkmark);
         btnCheckmark.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finishAfterTransition();
+                try {
+                    finalize();
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
+                }
             }
         });
+        return rootView;
     }
-
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
 
-        Product product = getIntent().getParcelableExtra(EXTRA_ITEM);
+        Product product = getArguments().getParcelable(EXTRA_ITEM);
         if (product != null) {
             Answers.getInstance().logContentView(new ContentViewEvent()
                     .putContentName(product.getName())
                     .putContentId(product.getUrl())
             );
 
-            ProductFacade productFacade = ((NinderApplication) getApplication()).getProductFacade();
+            ProductFacade productFacade = ((NinderApplication) getActivity().getApplication()).getProductFacade();
             if (productFacade instanceof NemesisFacadeImpl) {
                 final ProductWrapper wrapped = ((NemesisFacadeImpl) productFacade).wrap(product);
                 if (wrapped.hasDetails()) {
@@ -72,7 +84,7 @@ public class ProductActivity extends Activity {
                     wrapped.enquireDetails(new ProductFacade.EnquiryCallback() {
                         @Override
                         public void onSuccess(ProductEntity products) {
-                            runOnUiThread(new Runnable() {
+                            getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                 initProductView(wrapped);
@@ -90,43 +102,31 @@ public class ProductActivity extends Activity {
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                // app icon in action bar clicked; goto parent activity.
-                this.finishAfterTransition();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
     // init activity_product with selected product
     private void initProductView(ProductWrapper product) {
         List<Image> galleryImages = product.getGalleryImages();
         TLog.d("initProductView:galleryImages.size(): " + galleryImages.size());
         galleryPageAdapter = new GalleryPageAdapter(getFragmentManager(), product.getGalleryImages());
 
-        ViewPager productViewPager = (ViewPager) findViewById(R.id.pager);
+        ViewPager productViewPager = (ViewPager) getView().findViewById(R.id.pager);
         productViewPager.setAdapter(galleryPageAdapter);
 
-        TextView productNameView = (TextView) findViewById(R.id.product_name);
+        TextView productNameView = (TextView) getView().findViewById(R.id.product_name);
         productNameView.setText(product.getName());
 
-        TextView productSubNameView = (TextView) findViewById(R.id.product_sub_name);
+        TextView productSubNameView = (TextView) getView().findViewById(R.id.product_sub_name);
         productSubNameView.setText(product.getCategory());
 
-        TextView productPriceView = (TextView) findViewById(R.id.product_price);
+        TextView productPriceView = (TextView) getView().findViewById(R.id.product_price);
         productPriceView.setText(product.getPrice().getFormattedValue());
 
         if (product.getDiscountedPrice() != null) {
-            TextView productDiscountedPriceView = (TextView) findViewById(R.id.product_discounted_price);
+            TextView productDiscountedPriceView = (TextView) getView().findViewById(R.id.product_discounted_price);
             String sale = getString(R.string.label_sale) + " " + product.getDiscountedPrice().getFormattedValue();
             productDiscountedPriceView.setText(sale);
         }
 
-        TextView productDescriptionView = (TextView) findViewById(R.id.product_description);
+        TextView productDescriptionView = (TextView) getView().findViewById(R.id.product_description);
         productDescriptionView.setText(Html.fromHtml(product.getDescription()));
     }
 }

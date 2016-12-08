@@ -21,7 +21,6 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -30,27 +29,28 @@ import java.util.List;
 
 import io.nemesis.ninder.NinderApplication;
 import io.nemesis.ninder.R;
+import io.nemesis.ninder.fragment.ProductFragment;
 import io.nemesis.ninder.fragment.RecyclerViewFragment;
 import io.nemesis.ninder.logic.ProductFacade;
-import io.nemesis.ninder.logic.ProductWrapper;
-import io.nemesis.ninder.logic.model.AutoCompleteItem;
 import io.nemesis.ninder.logic.model.Product;
 
 public class ListActivity extends AppCompatActivity implements RecyclerViewFragment.OnFragmentInteractionListener {
     private DrawerLayout mDrawer;
     private NavigationView navigationView;
     private Toolbar mToolbar;
-    private RecyclerViewFragment fragment;
+    private RecyclerViewFragment recyclerViewFragment;
+    private ProductFragment productFragment;
     private SearchView searchView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
         if (savedInstanceState == null) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            fragment = new RecyclerViewFragment();
-            transaction.replace(R.id.recycle_fragment, fragment);
-            transaction.commit();
+            recyclerViewFragment = new RecyclerViewFragment();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_placeholder, recyclerViewFragment)
+                    .commit();
         }
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setNavigationIcon(R.drawable.icon_burger);
@@ -104,7 +104,7 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
                 String term = cursor.getString(cursor.getColumnIndex(SearchManager.SUGGEST_COLUMN_TEXT_1));
                 cursor.close();
                 searchView.setQuery(term,true);
-                //fragment.getAdapter().getFilter().filter(term);
+                //recyclerViewFragment.getAdapter().getFilter().filter(term);
                 return true;
             }
 
@@ -117,16 +117,16 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
-                if(fragment!=null)
-                    fragment.getAdapter().getFilter().filter("");
+                if(recyclerViewFragment!=null)
+                    recyclerViewFragment.getAdapter().getFilter().filter("");
                 return false;
             }
         });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                if(fragment!=null)
-                    fragment.getAdapter().getFilter().filter(query);
+                if(recyclerViewFragment!=null)
+                    recyclerViewFragment.getAdapter().getFilter().filter(query);
                 else Log.d("Fragment","Null");
                 searchView.clearFocus();
                 return true;
@@ -134,8 +134,8 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if(fragment!=null)
-                fragment.getAdapter().getFilter().filter("");
+                if(recyclerViewFragment!=null)
+                recyclerViewFragment.getAdapter().getFilter().filter("");
                 ((NinderApplication) getApplication()).getProductFacade().autoComplete(newText, new ProductFacade.AsyncCallback<Product>() {
                     @Override
                     public void onSuccess(List<Product> items) {

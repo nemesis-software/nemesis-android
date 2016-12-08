@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Paint;
+import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.nemesis.ninder.R;
-import io.nemesis.ninder.activity.ProductActivity;
+import io.nemesis.ninder.activity.ListActivity;
+import io.nemesis.ninder.fragment.ProductFragment;
+import io.nemesis.ninder.fragment.RecyclerViewFragment;
 import io.nemesis.ninder.logic.ProductWrapper;
 import io.nemesis.ninder.logic.model.Product;
 
@@ -133,10 +137,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         @Override
         public void onClick(View view) {
-            Product item = initial_products.get(getAdapterPosition()).getProduct();
-            Intent intent = new Intent(context, ProductActivity.class);
-            intent.putExtra(ProductActivity.EXTRA_ITEM, item);
-            context.startActivity(intent);
+            ProductFragment productFragment = new ProductFragment();
+            Bundle args = new Bundle();
+            args.putParcelable(ProductFragment.EXTRA_ITEM,products.get(getAdapterPosition()).getProduct());
+            productFragment.setArguments(args);
+            FragmentTransaction transaction =((ListActivity)context).getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_placeholder, productFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
             //Toast.makeText(view.getContext(), "Clicked Position = " + getAdapterPosition(), Toast.LENGTH_SHORT).show();
         }
     }

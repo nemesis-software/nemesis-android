@@ -209,17 +209,17 @@ public class MainActivity extends Activity {
 
     private void info() {
         // XXX view info for the top item in the queue
-        // TODO: 11/27/15 Product wrapper
         if (!mAdapter.isEmpty()) {
             Product item = mAdapter.getItem(0).getProduct();
-            Intent intent = new Intent(this, ProductActivity.class);
-            intent.putExtra(ProductActivity.EXTRA_ITEM, item);
-
-            //create transition
-            ActivityOptions options = ActivityOptions.
-                    makeSceneTransitionAnimation(this, flingContainer, getString(R.string.transition_name));
-
-            startActivity(intent, options.toBundle());
+            // TODO: Fragment
+//            Intent intent = new Intent(this, ProductActivity.class);
+//            intent.putExtra(ProductActivity.EXTRA_ITEM, item);
+//
+//            //create transition
+//            ActivityOptions options = ActivityOptions.
+//                    makeSceneTransitionAnimation(this, flingContainer, getString(R.string.transition_name));
+//
+//            startActivity(intent, options.toBundle());
         } else {
             TLog.d("No content available to show info");
         }
