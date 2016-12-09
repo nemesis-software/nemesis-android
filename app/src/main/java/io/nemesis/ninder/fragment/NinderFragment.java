@@ -1,10 +1,11 @@
-package io.nemesis.ninder.activity;
+package io.nemesis.ninder.fragment;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,32 +30,35 @@ import io.nemesis.ninder.logic.ProductWrapper;
 import io.nemesis.ninder.logic.model.Image;
 import io.nemesis.ninder.logic.model.Product;
 
-public class MainActivity extends Activity {
+public class NinderFragment extends Fragment {
     private SwipeFlingAdapterView flingContainer;
     private CardAdapter mAdapter;
     private TextView productNameTextView;
     private TextView productCategoryTextView;
     private TextView noDataTextView;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    public NinderFragment(){}
 
-        if (getActionBar() != null) {
-            getActionBar().setDisplayHomeAsUpEnabled(false);
-        }
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        final View rootView = inflater.inflate(R.layout.activity_main, container, false);
 
         // text info
-        productNameTextView = (TextView) findViewById(R.id.product_item_name);
-        productCategoryTextView = (TextView) findViewById(R.id.product_item_sub_name);
-        noDataTextView = (TextView) findViewById(R.id.noDataTextViewId);
+        productNameTextView = (TextView) rootView.findViewById(R.id.product_item_name);
+        productCategoryTextView = (TextView) rootView.findViewById(R.id.product_item_sub_name);
+        noDataTextView = (TextView) rootView.findViewById(R.id.noDataTextViewId);
 
         //add the view via xml or programmatically
-        flingContainer = (SwipeFlingAdapterView) findViewById(R.id.swipecards);
+        flingContainer = (SwipeFlingAdapterView) rootView.findViewById(R.id.swipecards);
         flingContainer.bringToFront();
 
-        final View textContainerView = findViewById(R.id.titles_container);
+        final View textContainerView = rootView.findViewById(R.id.titles_container);
         textContainerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -143,8 +147,8 @@ public class MainActivity extends Activity {
 
                     float alpha = 1 - Math.abs(scrollProgressPercent);
 
-                    findViewById(R.id.product_item_name).setAlpha(alpha);
-                    findViewById(R.id.product_item_sub_name).setAlpha(alpha);
+                    rootView.findViewById(R.id.product_item_name).setAlpha(alpha);
+                    rootView.findViewById(R.id.product_item_sub_name).setAlpha(alpha);
                 }
             }
         });
@@ -158,7 +162,7 @@ public class MainActivity extends Activity {
             }
         });
 
-        ImageButton btnNope = (ImageButton) findViewById(R.id.button_nope);
+        ImageButton btnNope = (ImageButton) rootView.findViewById(R.id.button_nope);
         btnNope.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -170,7 +174,7 @@ public class MainActivity extends Activity {
             }
         });
 
-        ImageButton btnLike = (ImageButton) findViewById(R.id.button_like);
+        ImageButton btnLike = (ImageButton) rootView.findViewById(R.id.button_like);
         btnLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -182,13 +186,14 @@ public class MainActivity extends Activity {
             }
         });
 
-        ImageButton btnInfo = (ImageButton) findViewById(R.id.button_info);
+        ImageButton btnInfo = (ImageButton) rootView.findViewById(R.id.button_info);
         btnInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 info();
             }
         });
+        return rootView;
     }
 
     private void showNoDataMessage(boolean noData) {
@@ -204,7 +209,7 @@ public class MainActivity extends Activity {
     }
 
     private void dislike(ProductWrapper product) {
-        ((NinderApplication) getApplication()).getProductFacade().dislike(product, null);
+        ((NinderApplication) getActivity().getApplication()).getProductFacade().dislike(product, null);
     }
 
     private void info() {
@@ -226,7 +231,7 @@ public class MainActivity extends Activity {
     }
 
     private void like(ProductWrapper product) {
-        ((NinderApplication) getApplication()).getProductFacade().like(product);
+        ((NinderApplication) getActivity().getApplication()).getProductFacade().like(product);
     }
 
     private class CardAdapter extends BaseAdapter {
@@ -242,11 +247,11 @@ public class MainActivity extends Activity {
 
         public void addMoreData() {
             //TODO update the size and the page
-            ((NinderApplication) getApplication()).getProductFacade().getProductsAsync(batchSize, batchNumber,
+            ((NinderApplication) getActivity().getApplication()).getProductFacade().getProductsAsync(batchSize, batchNumber,
                     new ProductFacade.AsyncCallback<ProductWrapper>() {
                         @Override
                         public void onSuccess(final List<ProductWrapper> products) {
-                            MainActivity.this.runOnUiThread(new Runnable() {
+                            getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     list.addAll(products);
@@ -267,7 +272,7 @@ public class MainActivity extends Activity {
                             // on any exception show, no data message -> handles connectivity errors
                             endOfQueueReached = true;
                             if (list.isEmpty()) {
-                                MainActivity.this.runOnUiThread(new Runnable() {
+                                getActivity().runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         showNoDataMessage(true);
@@ -309,7 +314,7 @@ public class MainActivity extends Activity {
             View rowView = convertView;
             // reuse views
             if (rowView == null) {
-                LayoutInflater inflater = MainActivity.this.getLayoutInflater();
+                LayoutInflater inflater = getActivity().getLayoutInflater();
                 rowView = inflater.inflate(R.layout.item_card, parent, false);
 
                 ViewHolder viewHolder = new ViewHolder();
@@ -322,7 +327,7 @@ public class MainActivity extends Activity {
             ViewHolder holder = (ViewHolder) rowView.getTag();
             ProductWrapper item = getItem(position);
 
-            Picasso picasso = Picasso.with(getApplicationContext());
+            Picasso picasso = Picasso.with(getContext());
             picasso.cancelRequest(holder.image);
 
             // XXX from mail conversations we know the initial call

@@ -28,8 +28,7 @@ import io.nemesis.ninder.logic.model.ProductEntity;
 
 public class ProductFragment extends Fragment {
 
-    public ProductFragment(){
-    }
+    public ProductFragment(){}
 
     public static final String EXTRA_ITEM;
 

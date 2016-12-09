@@ -108,10 +108,11 @@ public class ProductWrapper {
         this.api = api;
 
         this.galleryImages = new ArrayList<>();
-        int size = pojo.getImages().size();
+        if(pojo.getImages()!=null) {
+            int size = pojo.getImages().size();
 
-        this.photo = (0 != size) ? pojo.getImages().get(size -1) : null;
-
+            this.photo = (0 != size) ? pojo.getImages().get(size - 1) : null;
+        }
         if (!hasDetails()) {
             enquireDetails(null);
         } else {

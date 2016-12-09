@@ -11,6 +11,7 @@ import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.CursorAdapter;
@@ -29,6 +30,7 @@ import java.util.List;
 
 import io.nemesis.ninder.NinderApplication;
 import io.nemesis.ninder.R;
+import io.nemesis.ninder.fragment.NinderFragment;
 import io.nemesis.ninder.fragment.ProductFragment;
 import io.nemesis.ninder.fragment.RecyclerViewFragment;
 import io.nemesis.ninder.logic.ProductFacade;
@@ -64,21 +66,32 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
         name.setText(sharedPref.getString(getString(R.string.email),getString(R.string.default_name)));
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch(item.getItemId()){
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch(menuItem.getItemId()){
                     case R.id.nav_home:
                         Log.d("Nav","Home");
                         break;
                     case R.id.nav_list:
+                        recyclerViewFragment = new RecyclerViewFragment();
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.fragment_placeholder, recyclerViewFragment)
+                                .commit();
                         break;
                     case R.id.nav_ninder:
-                        startActivity(new Intent(ListActivity.this,MainActivity.class));
+                        NinderFragment ninderFragment = new NinderFragment();
+                        FragmentTransaction transaction = getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.fragment_placeholder, ninderFragment);
+                        transaction.addToBackStack(null);
+                        transaction.commit();
                         break;
                     case R.id.nav_settings:
                         break;
                     default:
                         break;
                 }
+                mDrawer.closeDrawers();
                 return false;
             }
         });
