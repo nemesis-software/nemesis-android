@@ -1,17 +1,13 @@
 package io.nemesis.ninder.fragment;
 
-import android.app.SearchManager;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -24,8 +20,8 @@ import java.util.List;
 
 import io.nemesis.ninder.NinderApplication;
 import io.nemesis.ninder.R;
-import io.nemesis.ninder.activity.ListActivity;
 import io.nemesis.ninder.adapter.RecyclerViewAdapter;
+import io.nemesis.ninder.listener.EndlessRecyclerViewScrollListener;
 import io.nemesis.ninder.logic.ProductFacade;
 import io.nemesis.ninder.logic.ProductWrapper;
 
@@ -42,6 +38,7 @@ public class RecyclerViewFragment extends Fragment {
     private static final int PAGE_SIZE = 12;
     private static final int PRODUCTS_PER_PAGE = 2;
     private static int OFFSET = 0;
+    private boolean endOfQueueReached = false;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -53,7 +50,7 @@ public class RecyclerViewFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private List<ProductWrapper> products;
+    private static List<ProductWrapper> products;
 
     public RecyclerViewFragment() {
         // Required empty public constructor
@@ -80,10 +77,12 @@ public class RecyclerViewFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
 //        if (getArguments() != null) {
 //            mParam1 = getArguments().getString(ARG_PARAM1);
 //            mParam2 = getArguments().getString(ARG_PARAM2);
 //        }
+        products = new ArrayList<>();
     }
 
     @Override
@@ -94,7 +93,6 @@ public class RecyclerViewFragment extends Fragment {
         recyclerView = (RecyclerView)rootView.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
 
-        products = new ArrayList<>();
         layoutManager = new StaggeredGridLayoutManager(PRODUCTS_PER_PAGE, OrientationHelper.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         adapter = new RecyclerViewAdapter(getContext(), products);
@@ -102,8 +100,8 @@ public class RecyclerViewFragment extends Fragment {
         BaseAttacher attacher = Mugen.with(recyclerView, new MugenCallbacks() {
             @Override
             public void onLoadMore() {
-                OFFSET++;
-                getData();
+                    OFFSET++;
+                    getData();
             }
 
             @Override
@@ -116,14 +114,6 @@ public class RecyclerViewFragment extends Fragment {
                 return false;
             }
         }).start();
-        attacher.setLoadMoreOffset(PAGE_SIZE);
-//        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager) {
-//            @Override
-//            public void onLoadMore(int current_page) {
-//                Log.d("Page",current_page+"");
-//                getData(current_page);
-//            }
-//        });
         getData();
         return rootView;
     }
@@ -145,15 +135,15 @@ public class RecyclerViewFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        for(ProductWrapper product : new_products) {
-                            products.add(product);
-                        }
+                        products.addAll(new_products);
+                        endOfQueueReached = products.isEmpty();
                         adapter.notifyDataSetChanged();
                     }
                 });
             }
             @Override
             public void onFail(Exception e) {
+                endOfQueueReached = true;
                 e.printStackTrace();
             }
         });

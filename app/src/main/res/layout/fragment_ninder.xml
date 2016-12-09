@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:id="@+id/container"
-    tools:context=".MainActivity"
+    tools:context="io.nemesis.ninder.fragment.NinderFragment"
     android:gravity="center_horizontal">
 
     <RelativeLayout
@@ -98,6 +98,7 @@
         swipecards:rotation_degrees="16"
         swipecards:max_visible="2"
         swipecards:min_adapter_stack="6"
+        android:paddingBottom="160dp"
         android:transitionName="@string/transition_name"
         android:background="@android:color/transparent"
         android:visibility="visible"

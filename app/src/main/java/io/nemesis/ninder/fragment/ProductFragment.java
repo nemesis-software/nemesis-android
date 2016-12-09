@@ -39,12 +39,12 @@ public class ProductFragment extends Fragment {
         EXTRA_ITEM = String.format("%s:%s", paramPrefix, Product.class.getSimpleName()).toUpperCase();
     }
 
-    private ImageButton btnCheckmark;
     private GalleryPageAdapter galleryPageAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         setHasOptionsMenu(true);
     }
     @Override
@@ -90,22 +90,24 @@ public class ProductFragment extends Fragment {
         }
     }
 
+
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         MenuItem item = menu.findItem(R.id.action_search);
         item.setVisible(false);
     }
 
+
     // init fragment_product with selected product
     private void initProductView(ProductWrapper product) {
         List<Image> galleryImages = product.getGalleryImages();
         TLog.d("initProductView:galleryImages.size(): " + galleryImages.size());
         galleryPageAdapter = new GalleryPageAdapter(getFragmentManager(), product.getGalleryImages());
-
         PagerBullet productViewPager = (PagerBullet) getView().findViewById(R.id.pager);
         productViewPager.setAdapter(galleryPageAdapter);
         productViewPager.setTextSeparatorOffset(5);
-        productViewPager.setIndicatorTintColorScheme(getContext().getResources().getColor(R.color.red),getContext().getResources().getColor(R.color.grey));
+        productViewPager.setIndicatorTintColorScheme(getContext().getResources().getColor(R.color.red), getContext().getResources().getColor(R.color.grey));
+        if(galleryPageAdapter.getCount()<2) productViewPager.setIndicatorVisibility(false);
 
         TextView productNameView = (TextView) getView().findViewById(R.id.product_name);
         productNameView.setText(product.getName());

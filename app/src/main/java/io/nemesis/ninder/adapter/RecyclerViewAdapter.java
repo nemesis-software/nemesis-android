@@ -1,8 +1,6 @@
 package io.nemesis.ninder.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -25,9 +23,7 @@ import java.util.List;
 import io.nemesis.ninder.R;
 import io.nemesis.ninder.activity.ListActivity;
 import io.nemesis.ninder.fragment.ProductFragment;
-import io.nemesis.ninder.fragment.RecyclerViewFragment;
 import io.nemesis.ninder.logic.ProductWrapper;
-import io.nemesis.ninder.logic.model.Product;
 
 /**
  * Created by hristo.stoyanov on 02-Dec-16.
