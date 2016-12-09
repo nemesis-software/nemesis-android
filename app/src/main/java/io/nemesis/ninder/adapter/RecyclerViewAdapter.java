@@ -146,7 +146,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     .replace(R.id.fragment_placeholder, productFragment);
             transaction.addToBackStack(null);
             transaction.commit();
-            //Toast.makeText(view.getContext(), "Clicked Position = " + getAdapterPosition(), Toast.LENGTH_SHORT).show();
         }
     }
 }

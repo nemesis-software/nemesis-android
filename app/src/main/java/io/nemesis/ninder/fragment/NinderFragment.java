@@ -6,8 +6,11 @@ import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -42,6 +45,7 @@ public class NinderFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -196,6 +200,12 @@ public class NinderFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.action_search);
+        item.setVisible(false);
+    }
+
     private void showNoDataMessage(boolean noData) {
         noDataTextView.setVisibility(noData ? View.VISIBLE : View.INVISIBLE);
         if (mAdapter != null && !mAdapter.endOfQueueReached) {
@@ -216,7 +226,15 @@ public class NinderFragment extends Fragment {
         // XXX view info for the top item in the queue
         if (!mAdapter.isEmpty()) {
             Product item = mAdapter.getItem(0).getProduct();
-            // TODO: Fragment
+            ProductFragment productFragment = new ProductFragment();
+            Bundle args = new Bundle();
+            args.putParcelable(ProductFragment.EXTRA_ITEM,item);
+            productFragment.setArguments(args);
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_placeholder, productFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
 //            Intent intent = new Intent(this, ProductActivity.class);
 //            intent.putExtra(ProductActivity.EXTRA_ITEM, item);
 //
