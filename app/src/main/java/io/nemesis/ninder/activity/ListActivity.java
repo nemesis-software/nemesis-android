@@ -2,6 +2,8 @@ package io.nemesis.ninder.activity;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.MatrixCursor;
 import android.net.Uri;
@@ -15,6 +17,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -28,6 +31,7 @@ import java.util.List;
 
 import io.nemesis.ninder.NinderApplication;
 import io.nemesis.ninder.R;
+import io.nemesis.ninder.fragment.AccountFragment;
 import io.nemesis.ninder.fragment.NinderFragment;
 import io.nemesis.ninder.fragment.ProductFragment;
 import io.nemesis.ninder.fragment.RecyclerViewFragment;
@@ -66,9 +70,6 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch(menuItem.getItemId()){
-                    case R.id.nav_home:
-                        Log.d("Nav","Home");
-                        break;
                     case R.id.nav_list:
                         recyclerViewFragment = new RecyclerViewFragment();
                         getSupportFragmentManager()
@@ -84,8 +85,30 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
                         transaction.addToBackStack(null);
                         transaction.commit();
                         break;
-                    case R.id.nav_settings:
+                    case R.id.nav_account:
+                        AccountFragment accountFragment = new AccountFragment();
+                        transaction = getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.fragment_placeholder, accountFragment);
+                        transaction.addToBackStack(null);
+                        transaction.commit();
                         break;
+                    case R.id.nav_logout:
+                        new AlertDialog.Builder(ListActivity.this)
+                                .setTitle("Logout")
+                                .setMessage("Are you sure you want to logout?")
+                                .setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        startActivity(new Intent(ListActivity.this,LoginActivity.class));
+                                        finish();
+                                    }
+                                })
+                                .setNegativeButton("Go Back",null)
+                                .create()
+                                .show();
+                        break;
+
                     default:
                         break;
                 }

@@ -47,17 +47,59 @@
     <string name="action_settings">Settings</string>
 
     <!-- Navigation Drawer menu labels -->
-    <string name="nav_home">Home</string>
-    <string name="nav_list">List of Products</string>
+    <string name="nav_list">Products</string>
     <string name="nav_ninder">Ninder</string>
-    <string name="nav_settings">Settings</string>
+    <string name="nav_account">My Account</string>
+    <string name="nav_logout">Logout</string>
 
     <string-array name="nav_item_activity_titles">
-        <item>Home</item>
         <item>List of Products</item>
         <item>Ninder</item>
-        <item>Settings</item>
+        <item>My Account</item>
+        <item>Logout</item>
     </string-array>
 
+    <!-- Tab Items -->
+    <string name="tab_settings">Settings</string>
+    <string name="tab_payment">Payment</string>
+    <string name="tab_shipping">Shipping</string>
+
+    <!--Settings Tab-->
+    <string name="hint_current_password">Current Password</string>
+    <string name="hint_new_password">New Password</string>
+    <string name="hint_confirm_password">Confirm Password</string>
+    <string name="button_save_details">Save Details</string>
+    <string name="label_policies">Policies</string>
+    <string name="button_privacy">Privacy</string>
+    <string name="button_terms">Terms of Use</string>
+    <string name="button_returns">Returns</string>
+
+    <!--Payment Tab-->
+    <string name="label_tap_to_edit">Tap to edit your payment details</string>
+    <string name="hint_name_on_card">Name on card</string>
+    <string name="hint_card_number">Card Number</string>
+    <string name="hint_expiry_date">Expiry Date</string>
+    <string name="hint_security_code">Security Code</string>
+    <string name="button_scan_card">Scan your card</string>
+
+    <string name="label_checkbox_address">Billing address is the same as shipping address</string>
+    <string name="label_or">or</string>
+
+    <!--Shipping Tab-->
+    <string name="hint_first_name">Name</string>
+    <string name="hint_surname">Surname</string>
+    <string name="hint_address_line_1">Address line 1</string>
+    <string name="hint_address_line_2">Address line 2</string>
+    <string name="hint_town_city">Town/City</string>
+    <string name="hint_state_country">State/Country</string>
+    <string name="hint_zipcode">Zipcode/Postcode</string>
+    <string name="hint_phone">Phone</string>
+
+
+
     <string name="search_hint">Filter products by name</string>
+
+    <string name="title_activity_settings">Settings</string>
+
+
 </resources>

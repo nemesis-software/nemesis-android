@@ -1,0 +1,125 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="io.nemesis.ninder.fragment.TabPayment"
+    android:focusableInTouchMode="true"
+    android:focusable="true">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin">
+    <!--<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:background="#fff" >-->
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:background="#555" />-->
+
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:paddingStart="@dimen/default_padding"-->
+            <!--android:paddingEnd="@dimen/default_padding"-->
+            <!--android:background="@color/white"-->
+            <!--android:text="@string/label_tap_to_edit" />-->
+    <!--</FrameLayout>-->
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <android.support.design.widget.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/hint_name"
+            android:inputType="textPersonName"
+            android:hint="@string/hint_name_on_card" />
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <android.support.design.widget.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/hint_card_number"
+            android:inputType="numberDecimal"
+            android:hint="@string/hint_card_number" />
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <android.support.design.widget.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/hint_expiry_date"
+            android:inputType="date"
+            android:hint="@string/hint_expiry_date" />
+    </android.support.design.widget.TextInputLayout>
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <android.support.design.widget.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/hint_security_code"
+                android:inputType="numberDecimal"
+                android:hint="@string/hint_security_code" />
+        </android.support.design.widget.TextInputLayout>
+
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:id="@+id/checkBox_address"
+            android:text="@string/label_checkbox_address"
+            />
+        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#fff" >
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_gravity="center"
+                android:background="#555" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="@dimen/default_padding"
+                android:background="#fff"
+                android:text="@string/label_or" />
+        </FrameLayout>
+        <android.support.v7.widget.AppCompatButton
+            android:text="@string/button_scan_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/dark_grey"
+            android:textColor="@color/white"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:paddingStart="40dp"
+            android:paddingEnd="40dp"
+            android:textSize="22sp"
+            android:layout_gravity="center|bottom"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
+            android:id="@+id/button_scan_card" />
+        <android.support.v7.widget.AppCompatButton
+            android:text="@string/button_save_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/red"
+            android:textColor="@color/white"
+            android:elevation="10dp"
+            android:paddingStart="60dp"
+            android:paddingEnd="60dp"
+            android:textSize="22sp"
+            android:layout_gravity="center|bottom"
+            android:id="@+id/button_save_details" />
+    </LinearLayout>
+</FrameLayout>

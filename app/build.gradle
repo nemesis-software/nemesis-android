@@ -19,15 +19,14 @@ android {
     compileSdkVersion 25
     buildToolsVersion "24.0.3"
 
-    def buildNumber = getBuildNumber()
-    def versionNameString = getVersionName(buildNumber)
+//    def buildNumber = getBuildNumber()
+//    def versionNameString = getVersionName(buildNumber)
 
     defaultConfig {
         applicationId "io.nemesis.ninder"
         minSdkVersion 21
         targetSdkVersion 25
-        versionCode buildNumber
-        versionName versionNameString
+        versionName "1.0.2-localdev"
     }
 
     signingConfigs {
@@ -81,51 +80,51 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
-def getBuildNumber() {
-    def circleBranch = System.getenv("CIRCLE_BUILD_NUM")
-    if (circleBranch != null && circleBranch.length() > 0) {
-        // CircleCI build number
-        return circleBranch.toInteger();
-    }
-
-    // fallback mechanism
-    return 1
-}
-
-def getBranchName() {
-    def branch = System.getenv("CIRCLE_BRANCH");
-    if (branch != null && branch.length() > 0) {
-        branch = branch.trim();
-    } else {
-        // fallback for local dev
-        branch = "localdev";
-    }
-
-    return branch;
-}
-
-def getBuildNameSuffix() {
-    def branch = getBranchName();
-
-    if ("master".equalsIgnoreCase(branch)) {
-        branch = "";
-    }
-
-    if (branch != null && branch.length() > 0) {
-        return "-$branch";
-    }
-
-    return "";
-}
-
-def getVersionName(def buildNumber) {
-    def nameSuffix = getBuildNameSuffix();
-
-    def versionName = "1.0";
-    if (!("".equalsIgnoreCase(nameSuffix))) {
-        // no name suffix and build number on master branch build
-        versionName = "$versionName.$buildNumber$nameSuffix";
-    }
-
-    return versionName;
-}
+//def getBuildNumber() {
+//    def circleBranch = System.getenv("CIRCLE_BUILD_NUM")
+//    if (circleBranch != null && circleBranch.length() > 0) {
+//        // CircleCI build number
+//        return circleBranch.toInteger();
+//    }
+//
+//    // fallback mechanism
+//    return 1
+//}
+//
+//def getBranchName() {
+//    def branch = System.getenv("CIRCLE_BRANCH");
+//    if (branch != null && branch.length() > 0) {
+//        branch = branch.trim();
+//    } else {
+//        // fallback for local dev
+//        branch = "localdev";
+//    }
+//
+//    return branch;
+//}
+//
+//def getBuildNameSuffix() {
+//    def branch = getBranchName();
+//
+//    if ("master".equalsIgnoreCase(branch)) {
+//        branch = "";
+//    }
+//
+//    if (branch != null && branch.length() > 0) {
+//        return "-$branch";
+//    }
+//
+//    return "";
+//}
+//
+//def getVersionName(def buildNumber) {
+//    def nameSuffix = getBuildNameSuffix();
+//
+//    def versionName = "1.0";
+//    if (!("".equalsIgnoreCase(nameSuffix))) {
+//        // no name suffix and build number on master branch build
+//        versionName = "$versionName.$buildNumber$nameSuffix";
+//    }
+//
+//    return versionName;
+//}

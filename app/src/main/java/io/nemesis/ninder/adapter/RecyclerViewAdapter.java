@@ -5,9 +5,11 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageButton;
@@ -34,6 +36,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private List<ProductWrapper> initial_products;
     private Context context;
     private boolean fav_button_pressed = false;
+    private ProductWrapper product;
 
     public RecyclerViewAdapter(Context context, List<ProductWrapper> products) {
         this.context = context;
@@ -48,37 +51,41 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     @Override
-    public void onBindViewHolder(CustomViewHolder holder, int position) {
-        final ProductWrapper product = products.get(position);
+    public void onBindViewHolder(final CustomViewHolder holder, int position) {
+        //holder.setIsRecyclable(false);
+        product = products.get(position);
         if(product.getDiscountedPrice()!=null) {
             holder.product_price.setText(product.getDiscountedPrice().getFormattedValue());
             holder.product_discounted_price.setText(product.getPrice().getFormattedValue());
             holder.product_discounted_price.setPaintFlags(holder.product_discounted_price.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            holder.discount_label.setVisibility(View.VISIBLE);
         }
         else {
             holder.product_price.setText(product.getPrice().getFormattedValue());
             holder.product_discounted_price.setText("");
-            holder.discount_label.setVisibility(View.GONE);
+            holder.discount_label.setVisibility(View.INVISIBLE);
         }
         if(product.getPhoto()!=null)
         Picasso.with(context).load(product.getPhoto().getUrl()).into(holder.productImage);
-        final ImageButton product_fav_button = holder.product_fav_button;
-        product_fav_button.setOnClickListener(new View.OnClickListener() {
+        holder.product_fav_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean is_favourite = product.getFavourite();
-                if(!is_favourite){
-                    product_fav_button.setImageDrawable(context.getDrawable(R.drawable.heart_full));
-                    product_fav_button.setImageTintList(context.getResources().getColorStateList(R.color.red));
+                ImageButton fav_button = (ImageButton) view;
+                Log.d("Position",holder.getAdapterPosition()+""+products.get(holder.getAdapterPosition()).getFavourite()+"");
+                if(!products.get(holder.getAdapterPosition()).getFavourite()){
+                    fav_button.setImageDrawable(context.getDrawable(R.drawable.heart_full));
+                    fav_button.setImageTintList(context.getResources().getColorStateList(R.color.red));
                 }
                 else {
-                    product_fav_button.setImageDrawable(context.getDrawable(R.drawable.icon_heart));
-                    product_fav_button.setImageTintList(null);
+                    fav_button.setImageDrawable(context.getDrawable(R.drawable.icon_heart));
+                    fav_button.setImageTintList(null);
                 }
-                product.setFavourite(!is_favourite);
+                product.setFavourite(!product.getFavourite());
             }
         });
+
     }
+
 
     @Override
     public int getItemCount() {
