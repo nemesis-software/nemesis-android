@@ -95,8 +95,14 @@
     <string name="hint_zipcode">Zipcode/Postcode</string>
     <string name="hint_phone">Phone</string>
 
-
-
+    <string name="text_type">TEXT_TYPE</string>
+    <string name="dummy_terms">
+        Aenean lacinia bibendum nulla sed consectetur. Nullam quis risus eget urna mollis ornare vel eu leo. Aenean lacinia bibendum nulla sed consectetur. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Curabitur blandit tempus porttitor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor link.
+        \n\nMorbi leo risus, porta ac consectetur ac, vestibulum at eros. Maecenas faucibus mollis interdum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh.
+        \n\nDuis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Maecenas faucibus mollis interdum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam quis risus eget urna mollis ornare vel eu leo.
+        \n\nLorem ipsum dolor sit amet, labore sed sem orci. Ante mauris nisl odio faucibus, duis molestie, sed leo sit ac lacus, arcu et eu maecenas massa, id dictum fringilla a quis. Auctor ultrices turpis enim vel nec. Mauris amet. Mattis nec fames accumsan commodo. Dolor nam in a, sed nam non gravida orci erat blandit.
+        \n\nProin id tellus ut vulputate, lacinia nam wisi nibh tempor ullamcorper, eros turpis justo, eget nunc orci ut vel, at libero sit. Varius sed ligula iusto morbi tempor eget. Sollicitudin nam tristique nec, ultrices lorem ligula porttitor dolor a duis. Etiam sapien, ullamcorper suspendisse amet ornare dignissim vestibulum. Vulputate mattis accusantium, ac eos sapien tortor ante nibh condimentum, placerat curabitur pellentesque et, sociis odio curabitur praesent facilisi, tortor posuere volutpat porttitor rutrum felis.
+    </string>
     <string name="search_hint">Filter products by name</string>
 
     <string name="title_activity_settings">Settings</string>

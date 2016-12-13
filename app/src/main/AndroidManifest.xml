@@ -3,7 +3,11 @@
     package="io.nemesis.ninder">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.flash" android:required="false" />
     <application
         android:name=".NinderApplication"
         android:allowBackup="true"
@@ -15,10 +19,11 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="c53add6925a454295d9a893f18c9880fa4ed6af6" />
+
         <activity
             android:name=".activity.LoginActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:noHistory="true">
+            android:noHistory="true"
+            android:windowSoftInputMode="adjustPan">
 
         </activity>
         <activity
@@ -32,10 +37,16 @@
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
+        <activity android:name=".activity.TextActivity">
+
+        </activity>
+        <activity android:name="io.card.payment.CardIOActivity" android:configChanges="keyboardHidden|orientation" />
+
     </application>
 
 </manifest>

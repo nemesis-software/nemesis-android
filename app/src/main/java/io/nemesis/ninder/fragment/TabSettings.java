@@ -1,5 +1,6 @@
 package io.nemesis.ninder.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import io.nemesis.ninder.R;
+import io.nemesis.ninder.activity.TextActivity;
 import io.nemesis.ninder.util.Util;
 
 public class TabSettings extends Fragment {
@@ -45,6 +47,34 @@ public class TabSettings extends Fragment {
                 SaveDetails();
             }
         });
+        Button button_privacy = (Button) rootView.findViewById(R.id.button_privacy);
+        button_privacy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent new_intent = new Intent(getContext(), TextActivity.class);
+                new_intent.putExtra("TEXT_TYPE",getString(R.string.button_privacy));
+                startActivity(new_intent);
+            }
+        });
+        Button button_terms = (Button) rootView.findViewById(R.id.button_terms);
+        button_terms.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent new_intent = new Intent(getContext(), TextActivity.class);
+                new_intent.putExtra("TEXT_TYPE",getString(R.string.button_terms));
+                startActivity(new_intent);
+            }
+        });
+        Button button_returns = (Button) rootView.findViewById(R.id.button_returns);
+        button_returns.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent new_intent = new Intent(getContext(), TextActivity.class);
+                new_intent.putExtra("TEXT_TYPE",getString(R.string.button_returns));
+                startActivity(new_intent);
+            }
+        });
+
         return rootView;
     }
 

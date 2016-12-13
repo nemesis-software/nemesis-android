@@ -130,7 +130,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/field_security_code"
-                android:inputType="numberDecimal"
+                android:inputType="numberPassword"
                 android:maxLength="3"
                 android:hint="@string/hint_security_code" />
         </android.support.design.widget.TextInputLayout>
