@@ -1,5 +1,7 @@
 package io.nemesis.ninder.fragment;
 
+import android.app.ActivityOptions;
+import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,6 +18,7 @@ import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import io.nemesis.ninder.NinderApplication;
 import io.nemesis.ninder.R;
+import io.nemesis.ninder.activity.ProductActivity;
 import io.nemesis.ninder.adapter.CardAdapter;
 import io.nemesis.ninder.logger.TLog;
 import io.nemesis.ninder.logic.ProductWrapper;
@@ -226,28 +229,16 @@ public class NinderFragment extends Fragment {
         // XXX view info for the top item in the queue
         if (!mAdapter.isEmpty()) {
             Product item = mAdapter.getItem(0).getProduct();
-            ProductFragment productFragment = new ProductFragment();
-            Bundle args = new Bundle();
-            args.putParcelable(ProductFragment.EXTRA_ITEM,item);
-            productFragment.setArguments(args);
-            FragmentTransaction transaction = getActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_placeholder, productFragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
-//            Intent intent = new Intent(this, ProductActivity.class);
-//            intent.putExtra(ProductActivity.EXTRA_ITEM, item);
-//
-//            //create transition
-//            ActivityOptions options = ActivityOptions.
-//                    makeSceneTransitionAnimation(this, flingContainer, getString(R.string.transition_name));
-//
-//            startActivity(intent, options.toBundle());
+            Intent intent = new Intent(getContext(), ProductActivity.class);
+            intent.putExtra(ProductActivity.EXTRA_ITEM, item);
+            //create transition
+            ActivityOptions options = ActivityOptions.
+                    makeSceneTransitionAnimation(getActivity(), flingContainer, getString(R.string.transition_name));
+            startActivity(intent, options.toBundle());
         } else {
             TLog.d("No content available to show info");
         }
     }
-
     private void like(ProductWrapper product) {
         ((NinderApplication) getActivity().getApplication()).getProductFacade().like(product);
     }

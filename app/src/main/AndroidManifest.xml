@@ -46,6 +46,7 @@
 
         </activity>
         <activity android:name="io.card.payment.CardIOActivity" android:configChanges="keyboardHidden|orientation" />
+        <activity android:name=".activity.ProductActivity" android:configChanges="keyboardHidden|orientation" />
 
     </application>
 

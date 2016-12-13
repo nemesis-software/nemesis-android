@@ -75,6 +75,17 @@ public interface ProductFacade {
 
 
     /**
+     * Initiate a search with the term provided to return a list of autocomplete items.
+     * {@code callback} will be called with the result.
+     *
+     * @param callback called when method completes its execution,
+     *                 this should be called on the main thread
+     *
+     */
+    void getAccountInfo(AsyncCallback<Product> callback);
+
+
+    /**
      * This call is synchronous and will block. In order to retrieve items in background use {@link #getProductsAsync(int, int, AsyncCallback)}
      *
      * Retrieves a Product list of size up to {@code size} Products

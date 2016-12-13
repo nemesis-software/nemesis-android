@@ -116,6 +116,32 @@ public class NemesisFacadeImpl implements ProductFacade {
     }
 
 
+    @Override
+    public void getAccountInfo(final AsyncCallback<Product> callback) {
+        String token = ReadToken();
+        retrofitRestClient.getApiService().getAccountInfo(token, new Callback<Void>() {
+            @Override
+            public void success(Void products, Response response) {
+                if (response.getStatus() == 200) {
+                    if (null != callback) {
+                        callback.onSuccess(null);
+                    }
+                } else {
+                    if (null != callback) {
+                        callback.onFail(new RuntimeException("bad response: " + response.getStatus()));
+                    }
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (null != callback) {
+                    callback.onFail(error);
+                }
+            }
+        });
+    }
+
     @Deprecated
     /**
      * only Use {@link #getProductsAsync(int, int, AsyncCallback)}

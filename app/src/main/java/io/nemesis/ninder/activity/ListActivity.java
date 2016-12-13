@@ -34,7 +34,6 @@ import io.nemesis.ninder.NinderApplication;
 import io.nemesis.ninder.R;
 import io.nemesis.ninder.fragment.AccountFragment;
 import io.nemesis.ninder.fragment.NinderFragment;
-import io.nemesis.ninder.fragment.ProductFragment;
 import io.nemesis.ninder.fragment.RecyclerViewFragment;
 import io.nemesis.ninder.logic.ProductFacade;
 import io.nemesis.ninder.logic.model.Product;

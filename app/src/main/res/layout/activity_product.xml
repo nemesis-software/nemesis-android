@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_text"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    >
-
+    android:orientation="vertical"
+    tools:context="io.nemesis.ninder.activity.ProductActivity">
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider_color"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
         android:layout_marginBottom="20dp"
         android:orientation="vertical"
         android:transitionName="@string/transition_name">
@@ -17,7 +27,8 @@
         <com.robohorse.pagerbullet.PagerBullet
             android:id="@+id/pager"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/gallery_vertical_height"
+            android:layout_height="300dp"
+            android:layout_gravity="top"
             android:transitionName="images" />
 
         <LinearLayout
@@ -82,4 +93,5 @@
                 tools:text="@string/product_description" />
         </LinearLayout>
     </LinearLayout>
-</ScrollView>
+    </ScrollView>
+</LinearLayout>

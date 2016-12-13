@@ -4,13 +4,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import java.util.List;
+
+import io.nemesis.ninder.NinderApplication;
 import io.nemesis.ninder.R;
 import io.nemesis.ninder.activity.TextActivity;
+import io.nemesis.ninder.logic.ProductFacade;
+import io.nemesis.ninder.logic.model.Product;
 import io.nemesis.ninder.util.Util;
 
 public class TabSettings extends Fragment {
@@ -81,7 +87,18 @@ public class TabSettings extends Fragment {
     private void SaveDetails(){
         if(Util.isPasswordValid(getContext(),field_current_password)&&(Util.isPasswordValid(getContext(),field_new_password))&&(Util.isPasswordValid(getContext(),field_confirm_password))){
             showProgress(true);
-            //Send request
+            ((NinderApplication) getActivity().getApplication()).getProductFacade().getAccountInfo(new ProductFacade.AsyncCallback<Product>() {
+                @Override
+                public void onSuccess(List<Product> products) {
+                    Log.d("Success","");
+                }
+
+                @Override
+                public void onFail(Exception e) {
+                    showProgress(false);
+                    e.printStackTrace();
+                }
+            });
             field_current_password.setText("");
             field_new_password.setText("");
             field_confirm_password.setText("");

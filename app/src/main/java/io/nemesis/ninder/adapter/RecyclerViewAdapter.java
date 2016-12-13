@@ -1,6 +1,7 @@
 package io.nemesis.ninder.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -24,7 +25,8 @@ import java.util.List;
 
 import io.nemesis.ninder.R;
 import io.nemesis.ninder.activity.ListActivity;
-import io.nemesis.ninder.fragment.ProductFragment;
+import io.nemesis.ninder.activity.ProductActivity;
+import io.nemesis.ninder.activity.TextActivity;
 import io.nemesis.ninder.logic.ProductWrapper;
 
 /**
@@ -140,15 +142,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         @Override
         public void onClick(View view) {
-            ProductFragment productFragment = new ProductFragment();
-            Bundle args = new Bundle();
-            args.putParcelable(ProductFragment.EXTRA_ITEM,products.get(getAdapterPosition()).getProduct());
-            productFragment.setArguments(args);
-            FragmentTransaction transaction =((ListActivity)context).getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_placeholder, productFragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
+            Intent new_intent = new Intent(context, ProductActivity.class);
+            new_intent.putExtra(ProductActivity.EXTRA_ITEM,products.get(getAdapterPosition()).getProduct());
+            context.startActivity(new_intent);
         }
     }
 }

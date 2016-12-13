@@ -35,6 +35,9 @@ public interface RestApi {
     @GET("/api/search/autocomplete")
     void autoComplete(@Query("term") String term, retrofit.Callback<List<Product>> callback);
 
+    @GET("/api/my-account")
+    void getAccountInfo(@Header("X-Auth-Token") String token, retrofit.Callback<Void> callback);
+
     @GET("/api/c/womens")
     List<Product> getProductList();
 

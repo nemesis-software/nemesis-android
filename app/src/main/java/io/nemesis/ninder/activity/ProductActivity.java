@@ -1,14 +1,10 @@
-package io.nemesis.ninder.fragment;
+package io.nemesis.ninder.activity;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
-import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.crashlytics.android.answers.Answers;
@@ -28,14 +24,13 @@ import io.nemesis.ninder.logic.model.Image;
 import io.nemesis.ninder.logic.model.Product;
 import io.nemesis.ninder.logic.model.ProductEntity;
 
-public class ProductFragment extends Fragment {
-
-    public ProductFragment(){}
+public class ProductActivity extends AppCompatActivity {
 
     public static final String EXTRA_ITEM;
+    Toolbar mToolbar;
 
     static {
-        String paramPrefix = ProductFragment.class.getName();
+        String paramPrefix = ProductActivity.class.getName();
         EXTRA_ITEM = String.format("%s:%s", paramPrefix, Product.class.getSimpleName()).toUpperCase();
     }
 
@@ -44,26 +39,24 @@ public class ProductFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-        setHasOptionsMenu(true);
-    }
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_product, container, false);
+        setContentView(R.layout.activity_product);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+        mToolbar.setTitle("Product Details");
+        setSupportActionBar(mToolbar);
     }
     @Override
     public void onStart() {
         super.onStart();
 
-        Product product = getArguments().getParcelable(EXTRA_ITEM);
+        Product product = getIntent().getParcelableExtra(EXTRA_ITEM);
         if (product != null) {
             Answers.getInstance().logContentView(new ContentViewEvent()
                     .putContentName(product.getName())
                     .putContentId(product.getUrl())
             );
 
-            ProductFacade productFacade = ((NinderApplication) getActivity().getApplication()).getProductFacade();
+            ProductFacade productFacade = ((NinderApplication) getApplication()).getProductFacade();
             if (productFacade instanceof NemesisFacadeImpl) {
                 final ProductWrapper wrapped = ((NemesisFacadeImpl) productFacade).wrap(product);
                 if (wrapped.hasDetails()) {
@@ -72,7 +65,7 @@ public class ProductFragment extends Fragment {
                     wrapped.enquireDetails(new ProductFacade.EnquiryCallback() {
                         @Override
                         public void onSuccess(ProductEntity products) {
-                            getActivity().runOnUiThread(new Runnable() {
+                            runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                 initProductView(wrapped);
@@ -89,42 +82,53 @@ public class ProductFragment extends Fragment {
             }
         }
     }
-
-
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        MenuItem item = menu.findItem(R.id.action_search);
-        item.setVisible(false);
+    public void onBackPressed() {
+        super.onBackPressed();
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+//    @Override
+//    public void onPrepareOptionsMenu(Menu menu) {
+//        MenuItem item = menu.findItem(R.id.action_search);
+//        item.setVisible(false);
+//    }
 
-
-    // init fragment_product with selected product
+    // init activity_product with selected product
     private void initProductView(ProductWrapper product) {
         List<Image> galleryImages = product.getGalleryImages();
         TLog.d("initProductView:galleryImages.size(): " + galleryImages.size());
-        galleryPageAdapter = new GalleryPageAdapter(getFragmentManager(), product.getGalleryImages());
-        PagerBullet productViewPager = (PagerBullet) getView().findViewById(R.id.pager);
+        galleryPageAdapter = new GalleryPageAdapter(getSupportFragmentManager(), product.getGalleryImages());
+        PagerBullet productViewPager = (PagerBullet) findViewById(R.id.pager);
         productViewPager.setAdapter(galleryPageAdapter);
         productViewPager.setTextSeparatorOffset(5);
-        productViewPager.setIndicatorTintColorScheme(getContext().getResources().getColor(R.color.red), getContext().getResources().getColor(R.color.grey));
+        productViewPager.setIndicatorTintColorScheme(getResources().getColor(R.color.red), getResources().getColor(R.color.grey));
         if(galleryPageAdapter.getCount()<2) productViewPager.setIndicatorVisibility(false);
-
-        TextView productNameView = (TextView) getView().findViewById(R.id.product_name);
+        
+        TextView productNameView = (TextView) findViewById(R.id.product_name);
         productNameView.setText(product.getName());
 
-        TextView productSubNameView = (TextView) getView().findViewById(R.id.product_sub_name);
+        TextView productSubNameView = (TextView) findViewById(R.id.product_sub_name);
         productSubNameView.setText(product.getCategory());
 
-        TextView productPriceView = (TextView) getView().findViewById(R.id.product_price);
+        TextView productPriceView = (TextView) findViewById(R.id.product_price);
         productPriceView.setText(product.getPrice().getFormattedValue());
 
         if (product.getDiscountedPrice() != null) {
-            TextView productDiscountedPriceView = (TextView) getView().findViewById(R.id.product_discounted_price);
+            TextView productDiscountedPriceView = (TextView) findViewById(R.id.product_discounted_price);
             String sale = getString(R.string.label_sale) + " " + product.getDiscountedPrice().getFormattedValue();
             productDiscountedPriceView.setText(sale);
         }
 
-        TextView productDescriptionView = (TextView) getView().findViewById(R.id.product_description);
+        TextView productDescriptionView = (TextView) findViewById(R.id.product_description);
         productDescriptionView.setText(Html.fromHtml(product.getDescription()));
     }
 }
