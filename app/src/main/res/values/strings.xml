@@ -81,7 +81,7 @@
     <string name="hint_expiry_date">Expiry Date</string>
     <string name="hint_security_code">Security Code</string>
     <string name="button_scan_card">Scan your card</string>
-
+    <string name="error_invalid_field">Please fill in this field.</string>
     <string name="label_checkbox_address">Billing address is the same as shipping address</string>
     <string name="label_or">or</string>
 

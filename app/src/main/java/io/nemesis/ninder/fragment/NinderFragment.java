@@ -52,7 +52,7 @@ public class NinderFragment extends Fragment {
         flingContainer.bringToFront();
         flingContainer.refreshDrawableState();
 
-        final View textContainerView = rootView.findViewById(R.id.titles_container);
+        //final View textContainerView = rootView.findViewById(R.id.titles_container);
 //        textContainerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 //            @Override
 //            public void onGlobalLayout() {
@@ -64,7 +64,17 @@ public class NinderFragment extends Fragment {
 //            }
 //        });
         mAdapter = new CardAdapter(getActivity());
-        //showNoDataMessage(true);
+        //showNoDataMessage(false);
+        if (!mAdapter.isEmpty()) {
+            showNoDataMessage(false);
+
+            ProductWrapper item = mAdapter.getItem(0);
+            productNameTextView.setText(item.getName());
+            productCategoryTextView.setText(item.getCategory());
+
+            productCategoryTextView.setAlpha(1.0f);
+            productNameTextView.setAlpha(1.0f);
+        }
         mAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override
             public void onChanged() {

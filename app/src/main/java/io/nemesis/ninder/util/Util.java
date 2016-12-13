@@ -11,10 +11,23 @@ import io.nemesis.ninder.R;
  */
 
 public class Util {
-    public static boolean CheckField(Context context, TextInputEditText field){
+    private static final int PASSWORD_MIN_LENGTH = 6;
+    private static final int FIELD_MIN_LENGTH = 3;
+
+    public static boolean isPasswordValid(Context context, TextInputEditText field){
         String field_text = field.getText().toString();
-        if (TextUtils.isEmpty(field_text) || field_text.length()<6) {
+        if (TextUtils.isEmpty(field_text) || field_text.length()<PASSWORD_MIN_LENGTH) {
             field.setError(context.getString(R.string.error_invalid_password));
+            field.requestFocus();
+            return false;
+        }
+        else return true;
+    }
+
+    public static boolean isTextValid(Context context, TextInputEditText field){
+        String field_text = field.getText().toString();
+        if (TextUtils.isEmpty(field_text) || field_text.length()<FIELD_MIN_LENGTH) {
+            field.setError(context.getString(R.string.error_invalid_field));
             field.requestFocus();
             return false;
         }
