@@ -5,12 +5,45 @@
     tools:context="io.nemesis.ninder.fragment.TabPayment"
     android:focusableInTouchMode="true"
     android:focusable="true">
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/settings_panel"
+        android:orientation="vertical"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin">
+    <android.support.v7.widget.AppCompatButton
+        android:text="@string/button_save_details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/red"
+        android:textColor="@color/white"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:elevation="10dp"
+        android:paddingStart="60dp"
+        android:paddingEnd="60dp"
+        android:textSize="22sp"
+        android:layout_gravity="center|bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/button_save_details" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/button_save_details"
+        android:layout_marginBottom="@dimen/activity_vertical_margin">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin">
+        android:orientation="vertical">
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -39,6 +72,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/field_confirm_password"
             android:inputType="textPassword"
+            android:imeOptions="actionDone"
             android:hint="@string/hint_confirm_password" />
         </android.support.design.widget.TextInputLayout>
 
@@ -90,19 +124,9 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/divider_color"/>
-    <android.support.v7.widget.AppCompatButton
-            android:text="@string/button_save_details"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/red"
-            android:textColor="@color/white"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:elevation="10dp"
-            android:paddingStart="60dp"
-            android:paddingEnd="60dp"
-            android:textSize="22sp"
-            android:layout_gravity="center|bottom"
-            android:id="@+id/button_save_details" />
     </LinearLayout>
+    </ScrollView>
+
+    </RelativeLayout>
 
 </FrameLayout>

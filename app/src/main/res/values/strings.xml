@@ -76,7 +76,7 @@
 
     <!--Payment Tab-->
     <string name="label_tap_to_edit">Tap to edit your payment details</string>
-    <string name="hint_name_on_card">Name on card</string>
+    <string name="hint_name_on_card">Name On Card</string>
     <string name="hint_card_number">Card Number</string>
     <string name="hint_expiry_date">Expiry Date</string>
     <string name="hint_security_code">Security Code</string>

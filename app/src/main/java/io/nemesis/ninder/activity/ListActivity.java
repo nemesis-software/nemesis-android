@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.List;
@@ -43,7 +44,6 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
     private NavigationView navigationView;
     private Toolbar mToolbar;
     private RecyclerViewFragment recyclerViewFragment;
-    private ProductFragment productFragment;
     private SearchView searchView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +69,7 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                if(menuItem.getItemId()!=R.id.nav_logout)mToolbar.setTitle(menuItem.getTitle());
                 switch(menuItem.getItemId()){
                     case R.id.nav_list:
                         recyclerViewFragment = new RecyclerViewFragment();

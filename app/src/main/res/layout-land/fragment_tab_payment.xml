@@ -13,6 +13,18 @@
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginEnd="@dimen/activity_horizontal_margin">
         <android.support.v7.widget.AppCompatButton
+            android:text="@string/button_scan_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/dark_grey"
+            android:textColor="@color/white"
+            android:paddingStart="40dp"
+            android:paddingEnd="40dp"
+            android:textSize="22sp"
+            android:layout_gravity="center|bottom"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/button_scan_card" />
+        <android.support.v7.widget.AppCompatButton
             android:text="@string/button_save_details"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -22,25 +34,11 @@
             android:paddingStart="60dp"
             android:paddingEnd="60dp"
             android:textSize="22sp"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_toEndOf="@id/button_scan_card"
             android:layout_gravity="center|bottom"
             android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
             android:id="@+id/button_save_details" />
-        <android.support.v7.widget.AppCompatButton
-            android:text="@string/button_scan_card"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/dark_grey"
-            android:textColor="@color/white"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:paddingStart="40dp"
-            android:paddingEnd="40dp"
-            android:textSize="22sp"
-            android:layout_gravity="center|bottom"
-            android:layout_above="@id/button_save_details"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/activity_horizontal_margin"
-            android:id="@+id/button_scan_card" />
         <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -138,7 +136,6 @@
             android:id="@+id/checkBox_address"
             android:text="@string/label_checkbox_address"
             />
-
     </LinearLayout>
     </ScrollView>
 

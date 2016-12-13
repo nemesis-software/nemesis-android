@@ -5,12 +5,37 @@
     tools:context="io.nemesis.ninder.fragment.TabShipping"
     android:focusableInTouchMode="true"
     android:focusable="true">
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginEnd="@dimen/activity_horizontal_margin">
+
+        <android.support.v7.widget.AppCompatButton
+            android:text="@string/button_save_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/red"
+            android:textColor="@color/white"
+            android:elevation="10dp"
+            android:paddingStart="60dp"
+            android:paddingEnd="60dp"
+            android:textSize="22sp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/button_save_details" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/button_save_details"
+            android:layout_marginBottom="@dimen/activity_vertical_margin">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -69,6 +94,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/hint_state_country"
             android:inputType="textAutoComplete"
+            android:imeOptions="actionNext"
             android:hint="@string/hint_state_country" />
         <!--<Spinner-->
             <!--android:layout_width="match_parent"-->
@@ -84,24 +110,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/hint_zipcode"
-                android:inputType="numberDecimal"
+                android:inputType="textPostalAddress"
                 android:hint="@string/hint_zipcode" />
         </android.support.design.widget.TextInputLayout>
-        <android.support.v7.widget.AppCompatButton
-            android:text="@string/button_save_details"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/red"
-            android:textColor="@color/white"
-            android:elevation="10dp"
-            android:paddingStart="60dp"
-            android:paddingEnd="60dp"
-            android:textSize="22sp"
-            android:layout_gravity="center|bottom"
-            android:id="@+id/button_save_details" />
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/hint_phone"
+                        android:imeOptions="actionDone"
+                        android:inputType="phone"
+                        android:hint="@string/hint_phone" />
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+        </ScrollView>
 
-
-
-
-    </LinearLayout>
+    </RelativeLayout>
 </FrameLayout>

@@ -10,6 +10,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.mugen.Mugen;
 import com.mugen.MugenCallbacks;
@@ -43,6 +44,7 @@ public class RecyclerViewFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private ProgressBar mProgressBar;
 
     protected RecyclerView recyclerView;
     protected RecyclerViewAdapter adapter;
@@ -92,6 +94,7 @@ public class RecyclerViewFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_recycler_view, container, false);
         recyclerView = (RecyclerView)rootView.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
+        mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
 
         layoutManager = new StaggeredGridLayoutManager(PRODUCTS_PER_PAGE, OrientationHelper.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
@@ -114,6 +117,7 @@ public class RecyclerViewFragment extends Fragment {
                 return false;
             }
         }).start();
+        mProgressBar.setVisibility(View.VISIBLE);
         getData();
         return rootView;
     }
@@ -138,6 +142,8 @@ public class RecyclerViewFragment extends Fragment {
                         products.addAll(new_products);
                         endOfQueueReached = products.isEmpty();
                         adapter.notifyDataSetChanged();
+                        if(mProgressBar!=null)
+                            mProgressBar.setVisibility(View.GONE);
                     }
                 });
             }
@@ -145,6 +151,13 @@ public class RecyclerViewFragment extends Fragment {
             public void onFail(Exception e) {
                 endOfQueueReached = true;
                 e.printStackTrace();
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(mProgressBar!=null)
+                        mProgressBar.setVisibility(View.GONE);
+                    }
+                });
             }
         });
 
