@@ -4,10 +4,13 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
     <uses-feature android:name="android.hardware.camera.flash" android:required="false" />
+    <uses-feature android:name="android.hardware.location.gps" />
+
     <application
         android:name=".NinderApplication"
         android:allowBackup="true"
@@ -19,7 +22,9 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="c53add6925a454295d9a893f18c9880fa4ed6af6" />
-
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBk5cf63b67ieX6EUfRS6Rjs1yu-DAcZkg"/>
         <activity
             android:name=".activity.LoginActivity"
             android:noHistory="true"

@@ -12,6 +12,10 @@
             android:icon="@drawable/ic_switch_camera_black_24dp"
             android:title="@string/nav_ninder" />
         <item
+            android:id="@+id/nav_locator"
+            android:icon="@drawable/ic_location_on_black_24dp"
+            android:title="@string/nav_locator" />
+        <item
             android:id="@+id/nav_account"
             android:icon="@drawable/ic_settings_black_24dp"
             android:title="@string/nav_account" />

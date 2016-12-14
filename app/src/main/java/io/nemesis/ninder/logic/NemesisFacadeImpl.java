@@ -142,22 +142,6 @@ public class NemesisFacadeImpl implements ProductFacade {
         });
     }
 
-    @Deprecated
-    /**
-     * only Use {@link #getProductsAsync(int, int, AsyncCallback)}
-     *
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Product> getProducts(int size, int page) {
-
-        Map<String, String> query = new HashMap<>();
-        query.put(QUERY_PAGE_INDEX, String.valueOf(page));
-        query.put(QUERY_PAGE_SIZE, String.valueOf(size));
-
-        return retrofitRestClient.getApiService().getProductList(query);
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -283,21 +267,6 @@ public class NemesisFacadeImpl implements ProductFacade {
                 TLog.e("cannot add to wishlist:", error);
             }
         });
-    }
-
-    @Deprecated
-    /**
-     * only Use {@link #enquireAsync(Product, EnquiryCallback)}
-     *
-     * {@inheritDoc}
-     */
-    @Override
-    public ProductEntity enquire(Product product) {
-        // TODO verify that product.uid and productDetail.uid mach
-        // TODO verify that product does have uid value
-        ProductEntity productDetail = retrofitRestClient.getApiService().getProductDetail(product.getUrl());
-//        enquiries.put(product.getCode(), productDetail);
-        return productDetail;
     }
 
     /**

@@ -34,8 +34,6 @@ public class ProductActivity extends AppCompatActivity {
         EXTRA_ITEM = String.format("%s:%s", paramPrefix, Product.class.getSimpleName()).toUpperCase();
     }
 
-    private GalleryPageAdapter galleryPageAdapter;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +46,6 @@ public class ProductActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-
         Product product = getIntent().getParcelableExtra(EXTRA_ITEM);
         if (product != null) {
             Answers.getInstance().logContentView(new ContentViewEvent()
@@ -96,23 +93,18 @@ public class ProductActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-//    @Override
-//    public void onPrepareOptionsMenu(Menu menu) {
-//        MenuItem item = menu.findItem(R.id.action_search);
-//        item.setVisible(false);
-//    }
 
     // init activity_product with selected product
     private void initProductView(ProductWrapper product) {
         List<Image> galleryImages = product.getGalleryImages();
         TLog.d("initProductView:galleryImages.size(): " + galleryImages.size());
-        galleryPageAdapter = new GalleryPageAdapter(getSupportFragmentManager(), product.getGalleryImages());
+        GalleryPageAdapter galleryPageAdapter = new GalleryPageAdapter(getSupportFragmentManager(), product.getGalleryImages());
         PagerBullet productViewPager = (PagerBullet) findViewById(R.id.pager);
         productViewPager.setAdapter(galleryPageAdapter);
         productViewPager.setTextSeparatorOffset(5);
         productViewPager.setIndicatorTintColorScheme(getResources().getColor(R.color.red), getResources().getColor(R.color.grey));
         if(galleryPageAdapter.getCount()<2) productViewPager.setIndicatorVisibility(false);
-        
+
         TextView productNameView = (TextView) findViewById(R.id.product_name);
         productNameView.setText(product.getName());
 

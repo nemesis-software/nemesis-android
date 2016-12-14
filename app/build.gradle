@@ -79,6 +79,7 @@ dependencies {
     compile 'com.robohorse.pagerbullet:pagerbullet:1.0.7'
     compile 'io.card:android-sdk:5.4.0'
     testCompile 'junit:junit:4.12'
+    compile 'com.google.android.gms:play-services-maps:10.0.1'
 }
 
 //def getBuildNumber() {

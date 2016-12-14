@@ -1,10 +1,12 @@
 package io.nemesis.ninder.activity;
 
+import android.Manifest;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.MatrixCursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +14,8 @@ import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.CursorAdapter;
@@ -25,14 +29,22 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
 
 import io.nemesis.ninder.NinderApplication;
 import io.nemesis.ninder.R;
 import io.nemesis.ninder.fragment.AccountFragment;
+import io.nemesis.ninder.fragment.LocatorFragment;
 import io.nemesis.ninder.fragment.NinderFragment;
 import io.nemesis.ninder.fragment.RecyclerViewFragment;
 import io.nemesis.ninder.logic.ProductFacade;
@@ -44,6 +56,7 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
     private Toolbar mToolbar;
     private RecyclerViewFragment recyclerViewFragment;
     private SearchView searchView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,34 +77,23 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
         View header = navigationView.getHeaderView(0);
         TextView name = (TextView) header.findViewById(R.id.name);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        name.setText(sharedPref.getString(getString(R.string.email),getString(R.string.default_name)));
+        name.setText(sharedPref.getString(getString(R.string.email), getString(R.string.default_name)));
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                if(menuItem.getItemId()!=R.id.nav_logout)mToolbar.setTitle(menuItem.getTitle());
-                switch(menuItem.getItemId()){
+                if (menuItem.getItemId() != R.id.nav_logout) mToolbar.setTitle(menuItem.getTitle());
+                switch (menuItem.getItemId()) {
                     case R.id.nav_list:
-                        recyclerViewFragment = new RecyclerViewFragment();
-                        getSupportFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.fragment_placeholder, recyclerViewFragment)
-                                .commit();
+                        SwitchFragment(new RecyclerViewFragment());
                         break;
                     case R.id.nav_ninder:
-                        NinderFragment ninderFragment = new NinderFragment();
-                        FragmentTransaction transaction = getSupportFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.fragment_placeholder, ninderFragment);
-                        transaction.addToBackStack(null);
-                        transaction.commit();
+                        SwitchFragment(new NinderFragment());
+                        break;
+                    case R.id.nav_locator:
+                        SwitchFragment(new LocatorFragment());
                         break;
                     case R.id.nav_account:
-                        AccountFragment accountFragment = new AccountFragment();
-                        transaction = getSupportFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.fragment_placeholder, accountFragment);
-                        transaction.addToBackStack(null);
-                        transaction.commit();
+                        SwitchFragment(new AccountFragment());
                         break;
                     case R.id.nav_logout:
                         new AlertDialog.Builder(ListActivity.this)
@@ -108,7 +110,6 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
                                 .create()
                                 .show();
                         break;
-
                     default:
                         break;
                 }
@@ -117,6 +118,14 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
             }
         });
 
+    }
+
+    private void SwitchFragment(Fragment fragment){
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_placeholder, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override
@@ -229,16 +238,13 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
             case android.R.id.home:
                 mDrawer.openDrawer(GravityCompat.START);
                 return true;
-
             case R.id.action_search:
                 // User chose the "Search" action
                 return true;
-
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
-
         }
     }
 

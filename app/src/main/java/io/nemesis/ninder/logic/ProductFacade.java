@@ -83,24 +83,7 @@ public interface ProductFacade {
      *
      */
     void getAccountInfo(AsyncCallback<Product> callback);
-
-
-    /**
-     * This call is synchronous and will block. In order to retrieve items in background use {@link #getProductsAsync(int, int, AsyncCallback)}
-     *
-     * Retrieves a Product list of size up to {@code size} Products
-     * from the configured endpoint. If no products can be retrieved
-     * this method should throw {@link EndOfQueueException} containing the cause of the error
-     *
-     * @param size the maximum number of items to be retrieved
-     *
-     * @param page the range of items to retrieve. In the format:
-     *             start from {@code page} * {@code size} and get next {@code size} items
-     *
-     * @return List of retrieved items.
-     */
-    List<Product> getProducts(int size, int page);
-
+    
     /**
      * Retrieves a Product list of size up to {@code size} Products
      * from the configured endpoint at background. Once the method completes the provided
@@ -137,12 +120,6 @@ public interface ProductFacade {
      * @param product Product
      */
     void addToWishlist(ProductWrapper product);
-
-    /**
-     * retrieve additional details about a product
-     * @param product
-     */
-    ProductEntity enquire(Product product);
 
     /**
      * retrieve additional details about a product
