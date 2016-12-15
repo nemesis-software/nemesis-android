@@ -64,7 +64,7 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
-        startService(new Intent(this,LocationService.class));
+        //startService(new Intent(this,LocationService.class));
         if (savedInstanceState == null) {
             recyclerViewFragment = new RecyclerViewFragment();
             getSupportFragmentManager()
@@ -72,10 +72,15 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
                     .replace(R.id.fragment_placeholder, recyclerViewFragment)
                     .commit();
         }
+        InitializeToolbar();
+        InitializeDrawer();
+    }
+    private void InitializeToolbar(){
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setNavigationIcon(R.drawable.icon_burger);
         setSupportActionBar(mToolbar);
-
+    }
+    private void InitializeDrawer(){
         mDrawer = (DrawerLayout) findViewById(R.id.activity_list);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         View header = navigationView.getHeaderView(0);
@@ -117,7 +122,7 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
                                     .setNegativeButton("Go Back", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialogInterface, int i) {
-                                            stopService(new Intent(ListActivity.this,LocationService.class));
+                                            //stopService(new Intent(ListActivity.this,LocationService.class));
                                         }
                                     })
                                     .create()
@@ -131,7 +136,6 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
                 return false;
             }
         });
-
     }
 
     private void SwitchFragment(Fragment fragment){
@@ -255,7 +259,6 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
         super.onBackPressed();
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -274,6 +277,5 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-
     }
 }

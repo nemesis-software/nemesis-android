@@ -1,5 +1,9 @@
 package io.nemesis.ninder.logic.rest;
 
+import com.google.gson.JsonObject;
+
+import org.json.JSONArray;
+
 import java.util.List;
 import java.util.Map;
 
@@ -7,6 +11,7 @@ import io.nemesis.ninder.logic.ProductWrapper;
 import io.nemesis.ninder.logic.model.AutoCompleteItem;
 import io.nemesis.ninder.logic.model.Product;
 import io.nemesis.ninder.logic.model.ProductEntity;
+import retrofit.http.Body;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
@@ -53,7 +58,7 @@ public interface RestApi {
             "Content-Type: application/json;charset=UTF-8"
     })
     @POST("/api/checkout/createPaymentDetails")
-    void savePaymentDetails(@Header("X-Auth-Token") String token, retrofit.Callback<Void> callback);
+    void savePaymentDetails(@Header("X-Auth-Token") String token, @Body JsonObject json, retrofit.Callback<Void> callback);
 
 
     @GET("/api{productURL}")
@@ -64,10 +69,7 @@ public interface RestApi {
     // 'void retrofit.Callback.failure(retrofit.RetrofitError)' on a null object reference
     // async methods cannot set null callbacks if the caller does not care about the result of the call
     //@FormUrlEncoded
-    @Headers({
-            "Accept: application/json;charset=UTF-8",
-            "Content-Type: application/json;charset=UTF-8"
-    })
+    @FormUrlEncoded
     @POST("/wishlist/entry/add")
     void addToWishlistAsync(@Header("X-Auth-Token") String token, @Field("productCode") String productCode, @Field("userId") String userId, retrofit.Callback<Void> callback);
 }

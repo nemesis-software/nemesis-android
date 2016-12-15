@@ -1,5 +1,7 @@
 package io.nemesis.ninder.logic;
 
+import com.google.gson.JsonObject;
+
 import java.util.List;
 
 import io.nemesis.ninder.logic.model.AutoCompleteItem;
@@ -98,7 +100,6 @@ public interface ProductFacade {
      *             start from {@code page} * {@code size} and get next {@code size} items
      */
     void getProductsAsync(int size, int page, AsyncCallback<ProductWrapper> callback);
-
     /**
      * The user approved your product! Take advantage of his interests...
      *
@@ -126,4 +127,7 @@ public interface ProductFacade {
      * @param product
      */
     void enquireAsync(Product product, EnquiryCallback callback);
+
+    void savePaymentDetails(JsonObject object);
+
 }

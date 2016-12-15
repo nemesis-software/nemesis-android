@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.crashlytics.android.answers.AddToCartEvent;
 import com.crashlytics.android.answers.Answers;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,7 +37,7 @@ public class NemesisFacadeImpl implements ProductFacade {
 
     private static final String QUERY_PAGE_INDEX = "page";
     private static final String QUERY_PAGE_SIZE = "size";
-
+    private static final String TAG = "RestApi";
     private final String testUserId;
 
     private final ConcurrentHashMap<String, ProductWrapper.ProductState> enquiries;
@@ -309,6 +310,20 @@ public class NemesisFacadeImpl implements ProductFacade {
                     productState.onDetailsFetchFailed(error);
                 } else {
                 }
+            }
+        });
+    }
+    @Override
+    public void savePaymentDetails(JsonObject json){
+        retrofitRestClient.getApiService().savePaymentDetails(ReadToken(),json, new Callback<Void>() {
+            @Override
+            public void success(Void aVoid, Response response) {
+                Log.d(TAG,response.toString());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                error.printStackTrace();
             }
         });
     }

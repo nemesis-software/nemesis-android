@@ -103,8 +103,10 @@ public class RecyclerViewFragment extends Fragment {
         BaseAttacher attacher = Mugen.with(recyclerView, new MugenCallbacks() {
             @Override
             public void onLoadMore() {
-                    OFFSET++;
-                    getData();
+                    if(!endOfQueueReached){
+                        OFFSET++;
+                        getData();
+                    }
             }
 
             @Override
@@ -139,11 +141,13 @@ public class RecyclerViewFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        if (new_products != null) {
                         products.addAll(new_products);
                         endOfQueueReached = products.isEmpty();
                         adapter.notifyDataSetChanged();
                         if(mProgressBar!=null)
                             mProgressBar.setVisibility(View.GONE);
+                        }
                     }
                 });
             }

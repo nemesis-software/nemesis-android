@@ -9,11 +9,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.gson.JsonObject;
+
 import java.util.Random;
 
 import io.card.payment.CardIOActivity;
 import io.card.payment.CreditCard;
+import io.nemesis.ninder.NinderApplication;
 import io.nemesis.ninder.R;
+import io.nemesis.ninder.logic.NemesisFacadeImpl;
 import io.nemesis.ninder.util.Util;
 
 public class TabPayment extends Fragment {
@@ -110,7 +114,12 @@ public class TabPayment extends Fragment {
     private void SaveDetails(){
         if(Util.isTextValid(getContext(),field_name_on_card)&&(Util.isTextValid(getContext(),field_card_number))&&(Util.isTextValid(getContext(),field_expiry_date))&&(Util.isTextValid(getContext(),field_security_code))){
             showProgress(true);
-            //Send request
+            JsonObject json = new JsonObject();
+            json.addProperty("nameOnCard",field_name_on_card.getText().toString());
+            json.addProperty("cardNumber",field_card_number.getText().toString());
+            json.addProperty("expiryDate",field_expiry_date.getText().toString());
+            json.addProperty("issueNumber",field_security_code.getText().toString());
+            ((NinderApplication) getActivity().getApplication()).getProductFacade().savePaymentDetails(json);
             field_name_on_card.setText("");
             field_card_number.setText("");
             field_expiry_date.setText("");

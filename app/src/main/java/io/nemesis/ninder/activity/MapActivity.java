@@ -77,10 +77,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_map);
         mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.mapFragment);
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
-        mToolbar.setTitle("Store Locator ");
-        setSupportActionBar(mToolbar);
+        InitializeToolbar();
         buildGoogleApiClient();
         mGoogleApiClient.connect();
     }
@@ -88,6 +85,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public void onDestroy(){
         super.onDestroy();
 
+    }
+    private void InitializeToolbar(){
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.setNavigationIcon(R.drawable.icon_burger);
+        mToolbar.setTitle("Store Locator");
+        setSupportActionBar(mToolbar);
     }
 
     @Override
