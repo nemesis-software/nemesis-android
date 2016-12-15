@@ -37,21 +37,24 @@ public interface RestApi {
 
     @GET("/api/my-account")
     void getAccountInfo(@Header("X-Auth-Token") String token, retrofit.Callback<Void> callback);
-
-    @GET("/api/c/womens")
-    List<Product> getProductList();
-
-    @GET("/api/c/womens")
-    List<Product> getProductList(@QueryMap Map<String, String> query);
-
-    @GET("/api/c/womens")
-    void getProductListAsync(retrofit.Callback<List<Product>> callback);
+    @Headers({
+            "Accept: application/json;charset=UTF-8",
+            "Content-Type: application/json;charset=UTF-8"
+    })
 
     @GET("/api/c/womens")
     void getProductListAsync(@QueryMap Map<String, String> query, retrofit.Callback<List<Product>> callback);
 
-    @GET("/api/{productURL}")
-    ProductEntity getProductDetail(@Path(value="productURL", encode=false) String url);
+
+    @POST("/api/checkout/createDeliveryAddress ")
+    void saveDeliveryAddress(@Header("X-Auth-Token") String token, retrofit.Callback<Void> callback);
+    @Headers({
+            "Accept: application/json;charset=UTF-8",
+            "Content-Type: application/json;charset=UTF-8"
+    })
+    @POST("/api/checkout/createPaymentDetails")
+    void savePaymentDetails(@Header("X-Auth-Token") String token, retrofit.Callback<Void> callback);
+
 
     @GET("/api{productURL}")
     void getProductDetailAsync(@Path(value="productURL", encode=false) String url, retrofit.Callback<ProductEntity> callback);
@@ -60,7 +63,11 @@ public interface RestApi {
     // XXX java.lang.NullPointerException: Attempt to invoke interface method
     // 'void retrofit.Callback.failure(retrofit.RetrofitError)' on a null object reference
     // async methods cannot set null callbacks if the caller does not care about the result of the call
-    @FormUrlEncoded
+    //@FormUrlEncoded
+    @Headers({
+            "Accept: application/json;charset=UTF-8",
+            "Content-Type: application/json;charset=UTF-8"
+    })
     @POST("/wishlist/entry/add")
     void addToWishlistAsync(@Header("X-Auth-Token") String token, @Field("productCode") String productCode, @Field("userId") String userId, retrofit.Callback<Void> callback);
 }

@@ -6,9 +6,15 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-    <uses-feature android:name="android.hardware.camera" android:required="false" />
-    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
-    <uses-feature android:name="android.hardware.camera.flash" android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.flash"
+        android:required="false" />
     <uses-feature android:name="android.hardware.location.gps" />
 
     <application
@@ -24,13 +30,12 @@
             android:value="c53add6925a454295d9a893f18c9880fa4ed6af6" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBk5cf63b67ieX6EUfRS6Rjs1yu-DAcZkg"/>
+            android:value="AIzaSyBk5cf63b67ieX6EUfRS6Rjs1yu-DAcZkg" />
+
         <activity
             android:name=".activity.LoginActivity"
             android:noHistory="true"
-            android:windowSoftInputMode="adjustPan">
-
-        </activity>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activity.ListActivity"
             android:theme="@style/AppTheme">
@@ -47,12 +52,19 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-        <activity android:name=".activity.TextActivity">
+        <activity android:name=".activity.TextActivity" />
+        <activity
+            android:name="io.card.payment.CardIOActivity"
+            android:configChanges="keyboardHidden|orientation" />
+        <activity
+            android:name=".activity.ProductActivity"
+            android:configChanges="keyboardHidden|orientation" />
+        <activity android:name=".activity.StreetViewActivity" />
+        <activity android:name=".activity.MapActivity" />
 
-        </activity>
-        <activity android:name="io.card.payment.CardIOActivity" android:configChanges="keyboardHidden|orientation" />
-        <activity android:name=".activity.ProductActivity" android:configChanges="keyboardHidden|orientation" />
-
+        <service
+            android:name=".services.LocationService"
+            android:enabled="true" />
     </application>
 
 </manifest>

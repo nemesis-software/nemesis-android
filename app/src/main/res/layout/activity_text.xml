@@ -37,7 +37,7 @@
                 android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:textSize="@dimen/text_view_16_text_size"
                 android:textColor="@color/black"
-                android:id="@+id/textView2" />
+                android:id="@+id/body" />
         </LinearLayout>
     </ScrollView>
 

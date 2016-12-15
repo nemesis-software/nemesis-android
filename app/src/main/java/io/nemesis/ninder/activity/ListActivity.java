@@ -16,6 +16,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.CursorAdapter;
@@ -44,11 +45,11 @@ import java.util.List;
 import io.nemesis.ninder.NinderApplication;
 import io.nemesis.ninder.R;
 import io.nemesis.ninder.fragment.AccountFragment;
-import io.nemesis.ninder.fragment.LocatorFragment;
 import io.nemesis.ninder.fragment.NinderFragment;
 import io.nemesis.ninder.fragment.RecyclerViewFragment;
 import io.nemesis.ninder.logic.ProductFacade;
 import io.nemesis.ninder.logic.model.Product;
+import io.nemesis.ninder.services.LocationService;
 
 public class ListActivity extends AppCompatActivity implements RecyclerViewFragment.OnFragmentInteractionListener {
     private DrawerLayout mDrawer;
@@ -56,11 +57,14 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
     private Toolbar mToolbar;
     private RecyclerViewFragment recyclerViewFragment;
     private SearchView searchView;
+    private static final String MENU_ITEM = "MENU_ITEM";
+    private int menuItemId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
+        startService(new Intent(this,LocationService.class));
         if (savedInstanceState == null) {
             recyclerViewFragment = new RecyclerViewFragment();
             getSupportFragmentManager()
@@ -81,37 +85,47 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                if (menuItem.getItemId() != R.id.nav_logout) mToolbar.setTitle(menuItem.getTitle());
-                switch (menuItem.getItemId()) {
-                    case R.id.nav_list:
-                        SwitchFragment(new RecyclerViewFragment());
-                        break;
-                    case R.id.nav_ninder:
-                        SwitchFragment(new NinderFragment());
-                        break;
-                    case R.id.nav_locator:
-                        SwitchFragment(new LocatorFragment());
-                        break;
-                    case R.id.nav_account:
-                        SwitchFragment(new AccountFragment());
-                        break;
-                    case R.id.nav_logout:
-                        new AlertDialog.Builder(ListActivity.this)
-                                .setTitle("Logout")
-                                .setMessage("Are you sure you want to logout?")
-                                .setPositiveButton("Logout", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        startActivity(new Intent(ListActivity.this,LoginActivity.class));
-                                        finish();
-                                    }
-                                })
-                                .setNegativeButton("Go Back",null)
-                                .create()
-                                .show();
-                        break;
-                    default:
-                        break;
+                if(menuItemId!=menuItem.getItemId()) {
+                    menuItemId = menuItem.getItemId();
+                    if (menuItemId != R.id.nav_logout)
+                        mToolbar.setTitle(menuItem.getTitle());
+
+                    switch (menuItem.getItemId()) {
+                        case R.id.nav_list:
+                            SwitchFragment(new RecyclerViewFragment());
+                            break;
+                        case R.id.nav_ninder:
+                            SwitchFragment(new NinderFragment());
+                            break;
+                        case R.id.nav_locator:
+                            startActivity(new Intent(ListActivity.this,MapActivity.class));
+                            break;
+                        case R.id.nav_account:
+                            SwitchFragment(new AccountFragment());
+                            break;
+                        case R.id.nav_logout:
+                            new AlertDialog.Builder(ListActivity.this)
+                                    .setTitle("Logout")
+                                    .setMessage("Are you sure you want to logout?")
+                                    .setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            startActivity(new Intent(ListActivity.this, LoginActivity.class));
+                                            finish();
+                                        }
+                                    })
+                                    .setNegativeButton("Go Back", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            stopService(new Intent(ListActivity.this,LocationService.class));
+                                        }
+                                    })
+                                    .create()
+                                    .show();
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 mDrawer.closeDrawers();
                 return false;
@@ -121,13 +135,23 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
     }
 
     private void SwitchFragment(Fragment fragment){
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_placeholder, fragment)
-                .addToBackStack(null)
-                .commit();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_placeholder, fragment)
+                    .addToBackStack(null)
+                    .commit();
+    }
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(MENU_ITEM, menuItemId);
     }
 
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        this.menuItemId = savedInstanceState.getInt(MENU_ITEM);
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_activity_list, menu);
