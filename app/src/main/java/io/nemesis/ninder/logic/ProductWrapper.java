@@ -3,13 +3,13 @@ package io.nemesis.ninder.logic;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.nemesis.ninder.logic.model.Category;
-import io.nemesis.ninder.logic.model.Image;
-import io.nemesis.ninder.logic.model.Price;
-import io.nemesis.ninder.logic.model.Product;
-import io.nemesis.ninder.logic.model.ProductEntity;
-import io.nemesis.ninder.logic.model.VariantOption;
-import io.nemesis.ninder.logic.model.Variation;
+import io.nemesis.ninder.model.Category;
+import io.nemesis.ninder.model.Image;
+import io.nemesis.ninder.model.Price;
+import io.nemesis.ninder.model.Product;
+import io.nemesis.ninder.model.ProductEntity;
+import io.nemesis.ninder.model.VariantOption;
+import io.nemesis.ninder.model.Variation;
 
 /**
  * @author ivanpetkov

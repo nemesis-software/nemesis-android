@@ -14,7 +14,8 @@ import io.nemesis.ninder.R;
 
 public class StreetViewActivity extends AppCompatActivity {
     public static String STREET_VIEW_LOCATION;
-    SupportStreetViewPanoramaFragment mStreetView;
+
+    private SupportStreetViewPanoramaFragment mStreetView;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {

@@ -2,6 +2,7 @@ package io.nemesis.ninder.activity;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,6 +14,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -21,8 +26,13 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceLikelihood;
 import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
+import com.google.android.gms.location.places.PlacePhotoMetadata;
+import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
+import com.google.android.gms.location.places.PlacePhotoMetadataResult;
+import com.google.android.gms.location.places.PlacePhotoResult;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -33,36 +43,38 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.HashMap;
 
 import io.nemesis.ninder.R;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, LocationListener {
     private static final String TAG = MapActivity.class.getSimpleName();
-    private boolean mLocationPermissionGranted;
+    //UI References
+    private Toolbar mToolbar;
+    private MapFragment mapFragment;
+    //Map related objects
     private GoogleApiClient mGoogleApiClient;
     private GoogleMap mMap;
     private CameraPosition mCameraPosition;
     private LocationRequest mLocationRequest;
     private Location mCurrentLocation;
-    Toolbar mToolbar;
-    private MapFragment mapFragment;
 
+    private boolean mLocationPermissionGranted;
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-
     // The desired interval for location updates. Inexact. Updates may be more or less frequent.
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
     // The fastest rate for active location updates. Exact. Updates will never be more frequent
     // than this value.
     private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
             UPDATE_INTERVAL_IN_MILLISECONDS / 2;
-
     // A default location (Sydney, Australia) and default zoom to use when location permission is
     // not granted.
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
     private static final int DEFAULT_ZOOM = 15;
-
     // Keys for storing activity state.
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
@@ -88,8 +100,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
     private void InitializeToolbar(){
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mToolbar.setNavigationIcon(R.drawable.icon_burger);
-        mToolbar.setTitle("Store Locator");
+        mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+        mToolbar.setTitle(R.string.nav_locator);
         setSupportActionBar(mToolbar);
     }
 
@@ -103,47 +115,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mMap.getUiSettings().setCompassEnabled(true);
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setMapToolbarEnabled(false);
-        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
-            public void onMapLongClick(LatLng latLng) {
+            public void onInfoWindowClick(Marker marker) {
                 Intent new_intent = new Intent(MapActivity.this, StreetViewActivity.class);
-                new_intent.putExtra(StreetViewActivity.STREET_VIEW_LOCATION, latLng);
+                new_intent.putExtra(StreetViewActivity.STREET_VIEW_LOCATION, marker.getPosition());
                 startActivity(new_intent);
             }
         });
-        // Use a custom info window adapter to handle multiple lines of text in the
-        // info window contents.
-//        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-//
-//            @Override
-//            // Return null here, so that getInfoContents() is called next.
-//            public View getInfoWindow(Marker arg0) {
-//                return null;
-//            }
-//
-//            @Override
-//            public View getInfoContents(final Marker marker) {
-//                // Inflate the layouts for the info window, title and snippet.
-//                View infoWindow = getActivity().getLayoutInflater().inflate(R.layout.map_custom_info, null);
-//
-//                TextView title = ((TextView) infoWindow.findViewById(R.id.title));
-//                title.setText(marker.getTitle());
-//
-//                TextView snippet = ((TextView) infoWindow.findViewById(R.id.body));
-//                snippet.setText(marker.getSnippet());
-//                ImageButton streetViewButton = (ImageButton) infoWindow.findViewById(R.id.streetViewButton);
-//                streetViewButton.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        Intent new_intent = new Intent(this, StreetViewActivity.class);
-//                        new_intent.putExtra(StreetViewActivity.STREET_VIEW_LOCATION, marker.getPosition());
-//                        this.startActivity(new_intent);
-//                    }
-//                });
-//
-//                return infoWindow;
-//            }
-//        });
         /*
          * Set the map's camera position to the current location of the device.
          * If the previous state was saved, set the position to the saved state.
@@ -163,7 +142,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
 
-    private synchronized void buildGoogleApiClient() {
+    private void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this,this)
                 .addConnectionCallbacks(this)
@@ -247,7 +226,30 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
+    private void addPhotoToMarker(final HashMap<String,Bitmap> marker_images){
+        if(mMap!=null)
+        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
+            @Override
+            // Return null here, so that getInfoContents() is called next.
+            public View getInfoWindow(Marker arg0) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(final Marker marker) {
+                // Inflate the layouts for the info window, title and snippet.
+                View infoWindow = getLayoutInflater().inflate(R.layout.map_custom_info, null);
+                TextView title = ((TextView) infoWindow.findViewById(R.id.title));
+                title.setText(marker.getTitle());
+                ImageView place_image = (ImageView) infoWindow.findViewById(R.id.place_image);
+                place_image.setImageBitmap(marker_images.get(marker.getTag().toString()));
+                TextView snippet = ((TextView) infoWindow.findViewById(R.id.body));
+                snippet.setText(marker.getSnippet());
+                return infoWindow;
+            }
+        });
+    }
     private void updateMarkers() {
         if (mMap == null) {
             return;
@@ -262,6 +264,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
                 @Override
                 public void onResult(@NonNull PlaceLikelihoodBuffer likelyPlaces) {
+                    final HashMap<String,Bitmap> marker_images = new HashMap<>();
                     for (PlaceLikelihood placeLikelihood : likelyPlaces) {
                         // Add a marker for each place near the device's current location, with an
                         // info window showing place information.
@@ -270,14 +273,37 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         if (attributions != null) {
                             snippet = snippet + "\n" + attributions;
                         }
+                        final String id = placeLikelihood.getPlace().getId();
+                        Places.GeoDataApi.getPlacePhotos(mGoogleApiClient,id).setResultCallback(new ResultCallback<PlacePhotoMetadataResult>() {
+                            @Override
+                            public void onResult(@NonNull PlacePhotoMetadataResult placePhotoMetadataResult) {
+                                if(placePhotoMetadataResult.getStatus().isSuccess()) {
+                                    PlacePhotoMetadataBuffer buffer = placePhotoMetadataResult.getPhotoMetadata();
+                                    if(buffer.getCount()>0){
+                                            buffer.get(0).getScaledPhoto(mGoogleApiClient,200,200).setResultCallback(new ResultCallback<PlacePhotoResult>() {
+                                                @Override
+                                                public void onResult(@NonNull PlacePhotoResult placePhotoResult) {
+                                                    if(placePhotoResult.getStatus().isSuccess())
+                                                        marker_images.put(id,placePhotoResult.getBitmap());
+                                                    else Log.d(TAG,placePhotoResult.getStatus().getStatusMessage());
+                                                }
+                                            });
+
+                                    }
+                                    buffer.release();
+                                }
+                                else Log.d(TAG,placePhotoMetadataResult.getStatus().getStatusMessage());
+                            }
+                        });
                         mMap.addMarker(new MarkerOptions()
                                 .position(placeLikelihood.getPlace().getLatLng())
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_map_marker_main))
                                 .title((String) placeLikelihood.getPlace().getName())
-                                .snippet(snippet));
+                                .snippet(snippet)).setTag(id);
                     }
                     // Release the place likelihood buffer.
                     likelyPlaces.release();
+                    addPhotoToMarker(marker_images);
                 }
             });
         } else {
@@ -347,7 +373,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         // Refer to the reference doc for ConnectionResult to see what error codes might
         // be returned in onConnectionFailed.
-        Log.d(TAG, "Play services connection failed: ConnectionResult.getErrorCode() = "
+        Log.d(TAG, "Play services connection failed: "
                 + connectionResult.getErrorCode());
     }
 }

@@ -20,14 +20,14 @@ import io.nemesis.ninder.logger.TLog;
 import io.nemesis.ninder.logic.NemesisFacadeImpl;
 import io.nemesis.ninder.logic.ProductFacade;
 import io.nemesis.ninder.logic.ProductWrapper;
-import io.nemesis.ninder.logic.model.Image;
-import io.nemesis.ninder.logic.model.Product;
-import io.nemesis.ninder.logic.model.ProductEntity;
+import io.nemesis.ninder.model.Image;
+import io.nemesis.ninder.model.Product;
+import io.nemesis.ninder.model.ProductEntity;
 
 public class ProductActivity extends AppCompatActivity {
 
     public static final String EXTRA_ITEM;
-    Toolbar mToolbar;
+    private Toolbar mToolbar;
 
     static {
         String paramPrefix = ProductActivity.class.getName();
@@ -38,11 +38,15 @@ public class ProductActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product);
+        InitializeToolbar();
+    }
+    private void InitializeToolbar(){
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
-        mToolbar.setTitle("Product Details");
+        mToolbar.setTitle(R.string.product_details);
         setSupportActionBar(mToolbar);
     }
+
     @Override
     public void onStart() {
         super.onStart();

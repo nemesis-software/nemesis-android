@@ -18,12 +18,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import io.nemesis.ninder.R;
 import io.nemesis.ninder.logger.TLog;
-import io.nemesis.ninder.logic.model.AutoCompleteItem;
-import io.nemesis.ninder.logic.model.Product;
-import io.nemesis.ninder.logic.model.ProductEntity;
-import io.nemesis.ninder.logic.model.VariantOption;
-import io.nemesis.ninder.logic.model.Variation;
-import io.nemesis.ninder.logic.rest.NemesisRetrofitRestClient;
+import io.nemesis.ninder.model.Product;
+import io.nemesis.ninder.model.ProductEntity;
+import io.nemesis.ninder.model.VariantOption;
+import io.nemesis.ninder.model.Variation;
+import io.nemesis.ninder.rest.NemesisRetrofitRestClient;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Header;
@@ -314,16 +313,18 @@ public class NemesisFacadeImpl implements ProductFacade {
         });
     }
     @Override
-    public void savePaymentDetails(JsonObject json){
+    public void savePaymentDetails(JsonObject json, final AsyncCallback<Void> callback){
         retrofitRestClient.getApiService().savePaymentDetails(ReadToken(),json, new Callback<Void>() {
             @Override
             public void success(Void aVoid, Response response) {
                 Log.d(TAG,response.toString());
+                callback.onSuccess(null);
             }
 
             @Override
             public void failure(RetrofitError error) {
                 error.printStackTrace();
+                callback.onFail(null);
             }
         });
     }

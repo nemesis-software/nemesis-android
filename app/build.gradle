@@ -26,7 +26,7 @@ android {
         applicationId "io.nemesis.ninder"
         minSdkVersion 21
         targetSdkVersion 25
-        versionName "1.0.2-localdev"
+        versionName "1.0.3-localdev"
     }
 
     signingConfigs {

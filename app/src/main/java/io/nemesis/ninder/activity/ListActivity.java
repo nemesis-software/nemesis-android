@@ -1,22 +1,17 @@
 package io.nemesis.ninder.activity;
 
-import android.Manifest;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.database.MatrixCursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.CursorAdapter;
@@ -32,14 +27,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-
 import java.util.List;
 
 import io.nemesis.ninder.NinderApplication;
@@ -48,15 +35,17 @@ import io.nemesis.ninder.fragment.AccountFragment;
 import io.nemesis.ninder.fragment.NinderFragment;
 import io.nemesis.ninder.fragment.RecyclerViewFragment;
 import io.nemesis.ninder.logic.ProductFacade;
-import io.nemesis.ninder.logic.model.Product;
-import io.nemesis.ninder.services.LocationService;
+import io.nemesis.ninder.model.Product;
 
-public class ListActivity extends AppCompatActivity implements RecyclerViewFragment.OnFragmentInteractionListener {
+public class ListActivity extends AppCompatActivity {
+    //UI References
     private DrawerLayout mDrawer;
     private NavigationView navigationView;
     private Toolbar mToolbar;
     private RecyclerViewFragment recyclerViewFragment;
     private SearchView searchView;
+
+    //Navigation drawer related
     private static final String MENU_ITEM = "MENU_ITEM";
     private int menuItemId;
 
@@ -67,70 +56,76 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
         //startService(new Intent(this,LocationService.class));
         if (savedInstanceState == null) {
             recyclerViewFragment = new RecyclerViewFragment();
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_placeholder, recyclerViewFragment)
-                    .commit();
+            LoadFragment(recyclerViewFragment,false);
         }
         InitializeToolbar();
         InitializeDrawer();
     }
+
     private void InitializeToolbar(){
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setNavigationIcon(R.drawable.icon_burger);
+        mToolbar.setTitle(R.string.nav_list);
         setSupportActionBar(mToolbar);
     }
+
     private void InitializeDrawer(){
         mDrawer = (DrawerLayout) findViewById(R.id.activity_list);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
+        //init header and set user email
         View header = navigationView.getHeaderView(0);
         TextView name = (TextView) header.findViewById(R.id.name);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         name.setText(sharedPref.getString(getString(R.string.email), getString(R.string.default_name)));
+        //init menu items
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                //if same item don't reload
                 if(menuItemId!=menuItem.getItemId()) {
                     menuItemId = menuItem.getItemId();
-                    if (menuItemId != R.id.nav_logout)
-                        mToolbar.setTitle(menuItem.getTitle());
-
-                    switch (menuItem.getItemId()) {
+                    switch (menuItemId) {
                         case R.id.nav_list:
-                            SwitchFragment(new RecyclerViewFragment());
+                            mToolbar.setTitle(menuItem.getTitle());
+                            LoadFragment(new RecyclerViewFragment(),true);
                             break;
                         case R.id.nav_ninder:
-                            SwitchFragment(new NinderFragment());
-                            break;
-                        case R.id.nav_locator:
-                            startActivity(new Intent(ListActivity.this,MapActivity.class));
+                            mToolbar.setTitle(menuItem.getTitle());
+                            LoadFragment(new NinderFragment(),true);
                             break;
                         case R.id.nav_account:
-                            SwitchFragment(new AccountFragment());
-                            break;
-                        case R.id.nav_logout:
-                            new AlertDialog.Builder(ListActivity.this)
-                                    .setTitle("Logout")
-                                    .setMessage("Are you sure you want to logout?")
-                                    .setPositiveButton("Logout", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            startActivity(new Intent(ListActivity.this, LoginActivity.class));
-                                            finish();
-                                        }
-                                    })
-                                    .setNegativeButton("Go Back", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            //stopService(new Intent(ListActivity.this,LocationService.class));
-                                        }
-                                    })
-                                    .create()
-                                    .show();
+                            mToolbar.setTitle(menuItem.getTitle());
+                            LoadFragment(new AccountFragment(),true);
                             break;
                         default:
                             break;
                     }
+                }
+                //there's no drawer in maps, so if you go back the id remains the same. the logout can be reclicked many times
+                else switch (menuItemId) {
+                    case R.id.nav_locator:
+                        startActivity(new Intent(ListActivity.this, MapActivity.class));
+                        break;
+                    case R.id.nav_logout:
+                        new AlertDialog.Builder(ListActivity.this)
+                                .setTitle("Logout")
+                                .setMessage("Are you sure you want to logout?")
+                                .setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        startActivity(new Intent(ListActivity.this, LoginActivity.class));
+                                        finish();
+                                    }
+                                })
+                                .setNegativeButton("Go Back", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        //stopService(new Intent(ListActivity.this,LocationService.class));
+                                    }
+                                })
+                                .create()
+                                .show();
+                        break;
                 }
                 mDrawer.closeDrawers();
                 return false;
@@ -138,13 +133,14 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
         });
     }
 
-    private void SwitchFragment(Fragment fragment){
-        FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_placeholder, fragment)
-                    .addToBackStack(null)
-                    .commit();
+    private void LoadFragment(Fragment fragment, boolean backstackEnabled){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_placeholder, fragment);
+        if(backstackEnabled)
+            transaction.addToBackStack(null);
+        transaction.commit();
     }
+
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -156,11 +152,13 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
         super.onRestoreInstanceState(savedInstanceState);
         this.menuItemId = savedInstanceState.getInt(MENU_ITEM);
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_activity_list, menu);
         searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         SearchManager searchManager = (SearchManager)getSystemService(Context.SEARCH_SERVICE);
+        //init search view
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
         searchView.setSuggestionsAdapter(new SimpleCursorAdapter(
@@ -168,7 +166,6 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
                 new String[] { SearchManager.SUGGEST_COLUMN_TEXT_1 },
                 new int[] { android.R.id.text1 },CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER));
         searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
-
             @Override
             public boolean onSuggestionSelect(int position) {
                 MatrixCursor cursor = (MatrixCursor) searchView.getSuggestionsAdapter().getItem(position);
@@ -181,7 +178,6 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
 
             @Override
             public boolean onSuggestionClick(int position) {
-
                 return onSuggestionSelect(position);
             }
         });
@@ -222,15 +218,12 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
                                 Object[] row = new Object[] { i, item.getName()};
                                 cursor.addRow(row);
                             }
-                            Log.d("Test",cursor.getCount()+""+cursor.getColumnNames());
                             ListActivity.this.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     searchView.getSuggestionsAdapter().changeCursor(cursor);
                                 }
                             });
-                            if(items.size()>0)
-                            Log.d("Test",items.get(items.size()-1).getImageUrl());
                         }
                     }
 
@@ -266,16 +259,9 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewFragm
                 mDrawer.openDrawer(GravityCompat.START);
                 return true;
             case R.id.action_search:
-                // User chose the "Search" action
                 return true;
             default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
     }
 }

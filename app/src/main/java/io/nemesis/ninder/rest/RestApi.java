@@ -1,16 +1,12 @@
-package io.nemesis.ninder.logic.rest;
+package io.nemesis.ninder.rest;
 
 import com.google.gson.JsonObject;
-
-import org.json.JSONArray;
 
 import java.util.List;
 import java.util.Map;
 
-import io.nemesis.ninder.logic.ProductWrapper;
-import io.nemesis.ninder.logic.model.AutoCompleteItem;
-import io.nemesis.ninder.logic.model.Product;
-import io.nemesis.ninder.logic.model.ProductEntity;
+import io.nemesis.ninder.model.Product;
+import io.nemesis.ninder.model.ProductEntity;
 import retrofit.http.Body;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;

@@ -9,7 +9,7 @@ import java.util.List;
 
 import io.nemesis.ninder.R;
 import io.nemesis.ninder.fragment.GalleryPageFragment;
-import io.nemesis.ninder.logic.model.Image;
+import io.nemesis.ninder.model.Image;
 
 /**
  * @author ivanpetkov
@@ -25,7 +25,7 @@ public class GalleryPageAdapter extends FragmentStatePagerAdapter {
         this(fm, data, R.drawable.image_err_placeholder, R.drawable.placeholder);
     }
 
-    public GalleryPageAdapter(FragmentManager fm, List<Image> data, int imageErrorPlaceholder, int imagePlaceholder) {
+    private GalleryPageAdapter(FragmentManager fm, List<Image> data, int imageErrorPlaceholder, int imagePlaceholder) {
         super(fm);
 
         this.data = data;

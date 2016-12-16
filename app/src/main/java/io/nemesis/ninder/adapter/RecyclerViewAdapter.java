@@ -37,7 +37,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private List<ProductWrapper> products;
     private List<ProductWrapper> initial_products;
     private Context context;
-    private boolean fav_button_pressed = false;
     private ProductWrapper product;
 
     public RecyclerViewAdapter(Context context, List<ProductWrapper> products) {
@@ -73,7 +72,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             @Override
             public void onClick(View view) {
                 ImageButton fav_button = (ImageButton) view;
-                Log.d("Position",holder.getAdapterPosition()+""+products.get(holder.getAdapterPosition()).getFavourite()+"");
                 if(!products.get(holder.getAdapterPosition()).getFavourite()){
                     fav_button.setImageDrawable(context.getDrawable(R.drawable.heart_full));
                     fav_button.setImageTintList(context.getResources().getColorStateList(R.color.red));

@@ -1,4 +1,4 @@
-package io.nemesis.ninder.logic.rest;
+package io.nemesis.ninder.rest;
 
 import android.content.Context;
 
@@ -16,9 +16,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import io.nemesis.ninder.R;
-import io.nemesis.ninder.logic.model.Product;
-import retrofit.RequestInterceptor;
+import io.nemesis.ninder.model.Product;
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
 
@@ -36,7 +34,7 @@ public class NemesisRetrofitRestClient {
             final TypeAdapter<JsonElement> elementAdapter = gson.getAdapter(JsonElement.class);
 
             String s = type.toString();
-            if (Product.class.getName().equalsIgnoreCase(s) || "java.util.List<io.nemesis.ninder.logic.model.Product>".equalsIgnoreCase(s)) {
+            if (Product.class.getName().equalsIgnoreCase(s) || "java.util.List<io.nemesis.ninder.model.Product>".equalsIgnoreCase(s)) {
                 return new TypeAdapter<T>() {
 
                     public void write(JsonWriter out, T value) throws IOException {

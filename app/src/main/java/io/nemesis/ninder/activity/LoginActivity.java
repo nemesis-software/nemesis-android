@@ -3,16 +3,14 @@ package io.nemesis.ninder.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,18 +21,18 @@ import java.util.List;
 import io.nemesis.ninder.NinderApplication;
 import io.nemesis.ninder.R;
 import io.nemesis.ninder.logic.ProductFacade;
-import io.nemesis.ninder.logic.ProductWrapper;
 
 /**
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends AppCompatActivity {
 
-    // UI references.
+    //UI References
     private EditText mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,25 +152,28 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void forgotPassword(){
-        new AlertDialog.Builder(this,R.style.CustomDialog)
-                .setTitle("Forgot your password")
-                .setMessage("An email has been sent with instructions how to reset your password.")
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        dialog = new AlertDialog.Builder(this,R.style.CustomDialog)
+                .setTitle(R.string.title_forgot_password)
+                .setMessage(R.string.message_forgot_password)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.cancel();
                     }
                 })
-                .create()
-                .show();
+                .create();
+        dialog.show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dialog.dismiss();
     }
 
     private void showProgress(final boolean show) {
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
     }
-
-
-
 }
 

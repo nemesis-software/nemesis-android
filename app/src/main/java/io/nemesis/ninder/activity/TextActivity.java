@@ -13,7 +13,7 @@ import org.w3c.dom.Text;
 import io.nemesis.ninder.R;
 
 public class TextActivity extends AppCompatActivity {
-    public static final String TYPE = "NINDER";
+    public static final String TYPE = "Ninder";
     Toolbar mToolbar;
     TextView title;
     @Override

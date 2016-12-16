@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +21,7 @@ import io.nemesis.ninder.activity.ProductActivity;
 import io.nemesis.ninder.adapter.CardAdapter;
 import io.nemesis.ninder.logger.TLog;
 import io.nemesis.ninder.logic.ProductWrapper;
-import io.nemesis.ninder.logic.model.Product;
+import io.nemesis.ninder.model.Product;
 
 public class NinderFragment extends Fragment {
     private SwipeFlingAdapterView flingContainer;
@@ -231,10 +230,7 @@ public class NinderFragment extends Fragment {
             Product item = mAdapter.getItem(0).getProduct();
             Intent intent = new Intent(getContext(), ProductActivity.class);
             intent.putExtra(ProductActivity.EXTRA_ITEM, item);
-            //create transition
-            ActivityOptions options = ActivityOptions.
-                    makeSceneTransitionAnimation(getActivity(), flingContainer, getString(R.string.transition_name));
-            startActivity(intent, options.toBundle());
+            startActivity(intent);
         } else {
             TLog.d("No content available to show info");
         }

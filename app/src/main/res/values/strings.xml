@@ -108,10 +108,13 @@
     <string name="search_hint">Filter products by name</string>
 
     <string name="title_activity_settings">Settings</string>
-
+    <string name="product_details">Product Details</string>
     <!--Google Maps-->
-    <string name="default_info_title">Test Location 1337</string>
-    <string name="default_info_snippet">Ninder shop for clothes blabla</string>
+    <string name="default_info_title">Test Location</string>
+    <string name="default_info_snippet">Ninder shop for clothes</string>
+    <string name="title_forgot_password">Forgot your password</string>
+    <string name="message_forgot_password">An email has been sent with instructions how to reset your password.</string>
+    <string name="ok">OK</string>
 
 
 </resources>

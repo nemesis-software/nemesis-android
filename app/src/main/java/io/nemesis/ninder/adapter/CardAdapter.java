@@ -1,7 +1,6 @@
 package io.nemesis.ninder.adapter;
 
 import android.app.Activity;
-import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +17,7 @@ import io.nemesis.ninder.NinderApplication;
 import io.nemesis.ninder.R;
 import io.nemesis.ninder.logic.ProductFacade;
 import io.nemesis.ninder.logic.ProductWrapper;
-import io.nemesis.ninder.logic.model.Image;
+import io.nemesis.ninder.model.Image;
 
 /**
  * Created by hristo.stoyanov on 09-Dec-16.
@@ -28,7 +27,7 @@ public class CardAdapter extends BaseAdapter {
 
     private static ArrayList<ProductWrapper> list;
     private int batchNumber = 0;
-    private final int batchSize = 10;
+    private static final int BATCH_SIZE = 10;
     private volatile boolean endOfQueueReached = false;
     private Activity mActivity;
 
@@ -39,8 +38,7 @@ public class CardAdapter extends BaseAdapter {
     }
     public void addMoreData() {
 
-        //TODO update the size and the page
-        ((NinderApplication) mActivity.getApplication()).getProductFacade().getProductsAsync(batchSize, batchNumber,
+        ((NinderApplication) mActivity.getApplication()).getProductFacade().getProductsAsync(BATCH_SIZE, batchNumber,
                 new ProductFacade.AsyncCallback<ProductWrapper>() {
                     @Override
                     public void onSuccess(final List<ProductWrapper> products) {
@@ -125,7 +123,6 @@ public class CardAdapter extends BaseAdapter {
 
         // XXX from mail conversations we know the initial call
         // will return two images and the large one will be second
-        // TODO: 11/26/15 iterate the images and find the one we need in case the model changes
 
         Image photo = item.getPhoto();
         if (photo != null && !TextUtils.isEmpty(photo.getUrl())) {

@@ -1,9 +1,11 @@
 package io.nemesis.ninder.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,7 @@ import android.widget.Button;
 
 import com.google.gson.JsonObject;
 
+import java.util.List;
 import java.util.Random;
 
 import io.card.payment.CardIOActivity;
@@ -18,6 +21,7 @@ import io.card.payment.CreditCard;
 import io.nemesis.ninder.NinderApplication;
 import io.nemesis.ninder.R;
 import io.nemesis.ninder.logic.NemesisFacadeImpl;
+import io.nemesis.ninder.logic.ProductFacade;
 import io.nemesis.ninder.util.Util;
 
 public class TabPayment extends Fragment {
@@ -27,6 +31,7 @@ public class TabPayment extends Fragment {
     TextInputEditText field_security_code;
     View mPaymentView;
     View mProgressView;
+    private AlertDialog dialog;
     private int MY_SCAN_REQUEST_CODE;
     public TabPayment() {
         // Required empty public constructor
@@ -119,11 +124,41 @@ public class TabPayment extends Fragment {
             json.addProperty("cardNumber",field_card_number.getText().toString());
             json.addProperty("expiryDate",field_expiry_date.getText().toString());
             json.addProperty("issueNumber",field_security_code.getText().toString());
-            ((NinderApplication) getActivity().getApplication()).getProductFacade().savePaymentDetails(json);
+            ((NinderApplication) getActivity().getApplication()).getProductFacade().savePaymentDetails(json, new ProductFacade.AsyncCallback<Void>() {
+                @Override
+                public void onSuccess(List<Void> products) {
+                }
+
+                @Override
+                public void onFail(Exception e) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showProgress(false);
+                            dialog = new AlertDialog.Builder(getContext())
+                                    .setTitle("Success")
+                                    .setMessage("Your password has been successfully changed.")
+                                    .setPositiveButton("OK",null)
+                                    .create();
+                            dialog.show();
+                        }
+                    });
+                    e.printStackTrace();
+                }
+            });
             field_name_on_card.setText("");
             field_card_number.setText("");
             field_expiry_date.setText("");
             field_security_code.setText("");
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (dialog != null) {
+            dialog.dismiss();
+            dialog = null;
         }
     }
 

@@ -4,10 +4,9 @@ import com.google.gson.JsonObject;
 
 import java.util.List;
 
-import io.nemesis.ninder.logic.model.AutoCompleteItem;
-import io.nemesis.ninder.logic.model.Product;
-import io.nemesis.ninder.logic.model.ProductEntity;
-import io.nemesis.ninder.logic.model.VariantOption;
+import io.nemesis.ninder.model.Product;
+import io.nemesis.ninder.model.ProductEntity;
+import io.nemesis.ninder.model.VariantOption;
 
 /**
  * @author Philip
@@ -128,6 +127,6 @@ public interface ProductFacade {
      */
     void enquireAsync(Product product, EnquiryCallback callback);
 
-    void savePaymentDetails(JsonObject object);
+    void savePaymentDetails(JsonObject object,AsyncCallback<Void> callback);
 
 }

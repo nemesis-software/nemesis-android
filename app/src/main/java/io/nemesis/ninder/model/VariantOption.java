@@ -1,4 +1,4 @@
-package io.nemesis.ninder.logic.model;
+package io.nemesis.ninder.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -4,11 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -16,7 +18,7 @@ import io.nemesis.ninder.NinderApplication;
 import io.nemesis.ninder.R;
 import io.nemesis.ninder.activity.TextActivity;
 import io.nemesis.ninder.logic.ProductFacade;
-import io.nemesis.ninder.logic.model.Product;
+import io.nemesis.ninder.model.Product;
 import io.nemesis.ninder.util.Util;
 
 public class TabSettings extends Fragment {
@@ -25,6 +27,7 @@ public class TabSettings extends Fragment {
     TextInputEditText field_confirm_password;
     View mSettingsView;
     View mProgressView;
+    private AlertDialog dialog;
 
     public TabSettings() {
         // Required empty public constructor
@@ -95,7 +98,18 @@ public class TabSettings extends Fragment {
 
                 @Override
                 public void onFail(Exception e) {
-                    showProgress(false);
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showProgress(false);
+                            dialog = new AlertDialog.Builder(getContext())
+                                    .setTitle("Success")
+                                    .setMessage("Your password has been successfully changed.")
+                                    .setPositiveButton("OK",null)
+                                    .create();
+                            dialog.show();
+                        }
+                    });
                     e.printStackTrace();
                 }
             });
@@ -104,7 +118,14 @@ public class TabSettings extends Fragment {
             field_confirm_password.setText("");
         }
     }
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (dialog != null) {
+            dialog.dismiss();
+            dialog = null;
+        }
+    }
     private void showProgress(final boolean show) {
         mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
         mSettingsView.setVisibility(show ? View.GONE : View.VISIBLE);

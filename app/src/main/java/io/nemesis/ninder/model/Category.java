@@ -1,4 +1,4 @@
-package io.nemesis.ninder.logic.model;
+package io.nemesis.ninder.model;
 
 
 import java.util.ArrayList;

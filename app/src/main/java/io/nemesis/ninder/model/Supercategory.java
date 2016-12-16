@@ -1,4 +1,4 @@
-package io.nemesis.ninder.logic.model;
+package io.nemesis.ninder.model;
 
 /**
  * Created by bobi on 11/23/2015.

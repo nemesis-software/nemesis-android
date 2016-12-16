@@ -18,19 +18,23 @@ import io.nemesis.ninder.R;
 import io.nemesis.ninder.util.Util;
 
 public class TabShipping extends Fragment {
+
+    //UI References
+    private TextInputEditText field_first_name;
+    private TextInputEditText field_surname;
+    private TextInputEditText field_address_line_1;
+    private TextInputEditText field_address_line_2;
+    private TextInputEditText field_town_city;
+    private AutoCompleteTextView field_state_country;
+    private TextInputEditText field_zipcode;
+    private TextInputEditText field_phone;
+    private View mProgressView;
+    private View mShippingView;
+    //AutoComplete values
     private static final String[] COUNTRIES = new String[] {
             "Country","Bulgaria", "Germany", "Spain", "France", "UK", "Italy", "Japan", "Netherlands", "Russia", "United States"
     };
-    TextInputEditText field_first_name;
-    TextInputEditText field_surname;
-    TextInputEditText field_address_line_1;
-    TextInputEditText field_address_line_2;
-    TextInputEditText field_town_city;
-    AutoCompleteTextView field_state_country;
-    TextInputEditText field_zipcode;
-    TextInputEditText field_phone;
-    View mProgressView;
-    View mShippingView;
+
     public TabShipping() {
         // Required empty public constructor
     }
@@ -84,9 +88,7 @@ public class TabShipping extends Fragment {
         });
         return rootView;
     }
-    private void ScanCard(){
-        //Open a scanner
-    }
+
     private void SaveDetails(){
         if(Util.isTextValid(getContext(),field_first_name)&&(Util.isTextValid(getContext(),field_surname))
                 &&(Util.isTextValid(getContext(),field_address_line_1))&&(Util.isTextValid(getContext(),field_town_city))
