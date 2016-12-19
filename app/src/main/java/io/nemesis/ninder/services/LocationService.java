@@ -8,16 +8,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
 import io.nemesis.ninder.R;
-import io.nemesis.ninder.activity.ListActivity;
 import io.nemesis.ninder.activity.MapActivity;
 
 public class LocationService extends Service {
@@ -25,87 +24,27 @@ public class LocationService extends Service {
     private LocationManager mLocationManager = null;
     private static final int LOCATION_INTERVAL = 1000;
     private static final float LOCATION_DISTANCE = 0f;
+    private static final int CODE_ACCESS_FINE_LOCATION = 0;
 
-    private class LocationListener implements android.location.LocationListener
-    {
-        Location mLastLocation;
-
-        public LocationListener(String provider)
-        {
-            Log.e(TAG, "LocationListener " + provider);
-            mLastLocation = new Location(provider);
-        }
-
-        @Override
-        public void onLocationChanged(Location location)
-        {
-            Log.e(TAG, "onLocationChanged: " + location);
-            mLastLocation.set(location);
-            NotificationCompat.Builder mBuilder =
-                    new NotificationCompat.Builder(getApplicationContext())
-                            .setSmallIcon(R.drawable.ic_store_black_24dp)
-                            .setContentTitle("There's a store nearby.")
-                            .setContentText("Click to open the map.");
-            // Creates an explicit intent for an Activity in your app
-            Intent resultIntent = new Intent(getApplicationContext(), MapActivity.class);
-            TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
-// Adds the back stack for the Intent (but not the Intent itself)
-            stackBuilder.addParentStack(MapActivity.class);
-// Adds the Intent that starts the Activity to the top of the stack
-            stackBuilder.addNextIntent(resultIntent);
-            PendingIntent resultPendingIntent =
-                    stackBuilder.getPendingIntent(
-                            0,
-                            PendingIntent.FLAG_UPDATE_CURRENT
-                    );
-            mBuilder.setContentIntent(resultPendingIntent);
-            NotificationManager mNotificationManager =
-                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-// mId allows you to update the notification later on.
-            mNotificationManager.notify(TAG,0,mBuilder.build());
-        }
-
-        @Override
-        public void onProviderDisabled(String provider)
-        {
-            Log.e(TAG, "onProviderDisabled: " + provider);
-        }
-
-        @Override
-        public void onProviderEnabled(String provider)
-        {
-            Log.e(TAG, "onProviderEnabled: " + provider);
-        }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras)
-        {
-            Log.e(TAG, "onStatusChanged: " + provider);
-        }
-    }
-
-    LocationListener[] mLocationListeners = new LocationListener[] {
+    LocationListener[] mLocationListeners = new LocationListener[]{
             new LocationListener(LocationManager.GPS_PROVIDER),
             new LocationListener(LocationManager.NETWORK_PROVIDER)
     };
 
     @Override
-    public IBinder onBind(Intent arg0)
-    {
+    public IBinder onBind(Intent arg0) {
         return null;
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId)
-    {
+    public int onStartCommand(Intent intent, int flags, int startId) {
         Log.e(TAG, "onStartCommand");
         super.onStartCommand(intent, flags, startId);
         return START_STICKY;
     }
 
     @Override
-    public void onCreate()
-    {
+    public void onCreate() {
         Log.e(TAG, "onCreate");
         initializeLocationManager();
         try {
@@ -134,9 +73,9 @@ public class LocationService extends Service {
         Log.e(TAG, "onDestroy");
         super.onDestroy();
         if (mLocationManager != null) {
-            for (int i = 0; i < mLocationListeners.length; i++) {
+            for (LocationListener mLocationListener : mLocationListeners) {
                 try {
-                    mLocationManager.removeUpdates(mLocationListeners[i]);
+                    mLocationManager.removeUpdates(mLocationListener);
                 } catch (SecurityException ex) {
                     Log.i(TAG, "fail to remove location listners, ignore", ex);
                 }
@@ -150,5 +89,69 @@ public class LocationService extends Service {
             mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         }
     }
+
+    private class LocationListener implements android.location.LocationListener {
+        Location mLastLocation;
+
+        LocationListener(String provider) {
+            Log.e(TAG, "LocationListener " + provider);
+            mLastLocation = new Location(provider);
+        }
+
+        @Override
+        public void onLocationChanged(Location location) {
+            Log.e(TAG, "onLocationChanged: " + location);
+            mLastLocation.set(location);
+            Location default_location = new Location("Default");
+            default_location.setLatitude(42.647165);
+            default_location.setLongitude(23.3956775);
+            float distance = location.distanceTo(default_location);
+            Log.d(TAG, distance + " meters away from store.");
+            if (distance < 50) {
+                setNotification();
+            }
+        }
+
+        private void setNotification() {
+            NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(getApplicationContext())
+                            .setSmallIcon(R.drawable.ic_store_black_24dp)
+                            .setContentTitle(getString(R.string.notification_title))
+                            .setContentText(getString(R.string.notification_message));
+            // Creates an explicit intent
+            Intent resultIntent = new Intent(getApplicationContext(), MapActivity.class);
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+            // Adds the back stack for the Intent (but not the Intent itself)
+            stackBuilder.addParentStack(MapActivity.class);
+            // Adds the Intent that starts the Activity to the top of the stack
+            stackBuilder.addNextIntent(resultIntent);
+            PendingIntent resultPendingIntent =
+                    stackBuilder.getPendingIntent(
+                            0,
+                            PendingIntent.FLAG_UPDATE_CURRENT
+                    );
+            mBuilder.setContentIntent(resultPendingIntent);
+            NotificationManager mNotificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            // mId allows you to update the notification later on.
+            mNotificationManager.notify(TAG, 0, mBuilder.build());
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+            Log.e(TAG, "onProviderDisabled: " + provider);
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+            Log.e(TAG, "onProviderEnabled: " + provider);
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+            Log.e(TAG, "onStatusChanged: " + provider);
+        }
+    }
+
 }
 

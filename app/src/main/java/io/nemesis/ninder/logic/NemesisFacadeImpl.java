@@ -324,7 +324,7 @@ public class NemesisFacadeImpl implements ProductFacade {
             @Override
             public void failure(RetrofitError error) {
                 error.printStackTrace();
-                callback.onFail(null);
+                callback.onFail(error);
             }
         });
     }

@@ -54,27 +54,11 @@ public class TabShipping extends Fragment {
         field_state_country = (AutoCompleteTextView)
                 rootView.findViewById(R.id.field_state_country);
         field_state_country.setAdapter(adapter);
-//        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-//                    if(position > 0){
-//                        // get spinner value
-//                    }else{
-//                        // show toast select gender
-//                    }
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//            }
-//        });
         field_first_name = (TextInputEditText) rootView.findViewById(R.id.field_first_name);
         field_surname = (TextInputEditText) rootView.findViewById(R.id.field_surname);
         field_address_line_1 = (TextInputEditText) rootView.findViewById(R.id.field_address_line_1);
         field_address_line_2 = (TextInputEditText) rootView.findViewById(R.id.field_address_line_2);
         field_town_city = (TextInputEditText) rootView.findViewById(R.id.field_town_city);
-        //field_state_country = (TextInputEditText) rootView.findViewById(R.id.field_state_country);
         field_zipcode = (TextInputEditText) rootView.findViewById(R.id.field_zipcode);
         field_phone = (TextInputEditText) rootView.findViewById(R.id.field_phone);
         mShippingView = rootView.findViewById(R.id.mShippingView);

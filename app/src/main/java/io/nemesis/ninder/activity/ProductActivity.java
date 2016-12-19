@@ -4,11 +4,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.crashlytics.android.answers.Answers;
-import com.crashlytics.android.answers.ContentViewEvent;
 import com.robohorse.pagerbullet.PagerBullet;
 
 import java.util.List;
@@ -52,10 +51,10 @@ public class ProductActivity extends AppCompatActivity {
         super.onStart();
         Product product = getIntent().getParcelableExtra(EXTRA_ITEM);
         if (product != null) {
-            Answers.getInstance().logContentView(new ContentViewEvent()
-                    .putContentName(product.getName())
-                    .putContentId(product.getUrl())
-            );
+//            Answers.getInstance().logContentView(new ContentViewEvent()
+//                    .putContentName(product.getName())
+//                    .putContentId(product.getUrl())
+//            );
 
             ProductFacade productFacade = ((NinderApplication) getApplication()).getProductFacade();
             if (productFacade instanceof NemesisFacadeImpl) {
@@ -101,7 +100,6 @@ public class ProductActivity extends AppCompatActivity {
     // init activity_product with selected product
     private void initProductView(ProductWrapper product) {
         List<Image> galleryImages = product.getGalleryImages();
-        TLog.d("initProductView:galleryImages.size(): " + galleryImages.size());
         GalleryPageAdapter galleryPageAdapter = new GalleryPageAdapter(getSupportFragmentManager(), product.getGalleryImages());
         PagerBullet productViewPager = (PagerBullet) findViewById(R.id.pager);
         productViewPager.setAdapter(galleryPageAdapter);

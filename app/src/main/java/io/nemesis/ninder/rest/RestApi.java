@@ -36,7 +36,7 @@ public interface RestApi {
     @GET("/api/search/autocomplete")
     void autoComplete(@Query("term") String term, retrofit.Callback<List<Product>> callback);
 
-    @GET("/api/my-account")
+    @GET("/api/my-account/profile")
     void getAccountInfo(@Header("X-Auth-Token") String token, retrofit.Callback<Void> callback);
     @Headers({
             "Accept: application/json;charset=UTF-8",

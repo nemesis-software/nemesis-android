@@ -1,18 +1,22 @@
 package io.nemesis.ninder.activity;
 
+import android.Manifest;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.DrawerLayout;
@@ -36,6 +40,7 @@ import io.nemesis.ninder.fragment.NinderFragment;
 import io.nemesis.ninder.fragment.RecyclerViewFragment;
 import io.nemesis.ninder.logic.ProductFacade;
 import io.nemesis.ninder.model.Product;
+import io.nemesis.ninder.services.LocationService;
 
 public class ListActivity extends AppCompatActivity {
     //UI References
@@ -49,17 +54,33 @@ public class ListActivity extends AppCompatActivity {
     private static final String MENU_ITEM = "MENU_ITEM";
     private int menuItemId;
 
+    private static final int CODE_ACCESS_FINE_LOCATION = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
-        //startService(new Intent(this,LocationService.class));
         if (savedInstanceState == null) {
             recyclerViewFragment = new RecyclerViewFragment();
             LoadFragment(recyclerViewFragment,false);
         }
+        InitLocationService();
         InitializeToolbar();
         InitializeDrawer();
+    }
+
+    private void InitLocationService(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, CODE_ACCESS_FINE_LOCATION);
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[],@NonNull int[] grantResults) {
+        if(requestCode == CODE_ACCESS_FINE_LOCATION && grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            startService(new Intent(this,LocationService.class));
+        }
     }
 
     private void InitializeToolbar(){
@@ -81,43 +102,38 @@ public class ListActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                //if same item don't reload
-                if(menuItemId!=menuItem.getItemId()) {
+                if (menuItemId != menuItem.getItemId()) {
                     menuItemId = menuItem.getItemId();
                     switch (menuItemId) {
                         case R.id.nav_list:
                             mToolbar.setTitle(menuItem.getTitle());
-                            LoadFragment(new RecyclerViewFragment(),true);
-                            break;
-                        case R.id.nav_ninder:
+                            LoadFragment(new RecyclerViewFragment(), true);
+                    break;
+                    case R.id.nav_ninder:
                             mToolbar.setTitle(menuItem.getTitle());
-                            LoadFragment(new NinderFragment(),true);
-                            break;
-                        case R.id.nav_account:
+                            LoadFragment(new NinderFragment(), true);
+                        break;
+                    case R.id.nav_account:
                             mToolbar.setTitle(menuItem.getTitle());
-                            LoadFragment(new AccountFragment(),true);
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                //there's no drawer in maps, so if you go back the id remains the same. the logout can be reclicked many times
-                else switch (menuItemId) {
+                            LoadFragment(new AccountFragment(), true);
+                        break;
                     case R.id.nav_locator:
+                        menuItemId = 0;
                         startActivity(new Intent(ListActivity.this, MapActivity.class));
                         break;
                     case R.id.nav_logout:
+                        menuItemId = 0;
                         new AlertDialog.Builder(ListActivity.this)
-                                .setTitle("Logout")
-                                .setMessage("Are you sure you want to logout?")
-                                .setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+                                .setTitle(R.string.title_logout)
+                                .setMessage(R.string.message_logout)
+                                .setPositiveButton(R.string.title_logout, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         startActivity(new Intent(ListActivity.this, LoginActivity.class));
                                         finish();
                                     }
                                 })
-                                .setNegativeButton("Go Back", new DialogInterface.OnClickListener() {
+                                .setNegativeButton(R.string.goback, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         //stopService(new Intent(ListActivity.this,LocationService.class));
@@ -125,8 +141,10 @@ public class ListActivity extends AppCompatActivity {
                                 })
                                 .create()
                                 .show();
+                    default:
                         break;
                 }
+            }
                 mDrawer.closeDrawers();
                 return false;
             }

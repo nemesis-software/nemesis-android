@@ -45,7 +45,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="@dimen/activity_horizontal_margin"
             android:id="@+id/button_scan_card" />
-        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@id/button_scan_card"
@@ -130,6 +130,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/field_security_code"
+                android:imeOptions="actionDone"
                 android:inputType="numberPassword"
                 android:maxLength="3"
                 android:hint="@string/hint_security_code" />

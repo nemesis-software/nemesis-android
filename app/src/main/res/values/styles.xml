@@ -3,10 +3,10 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="windowNoTitle">true</item>
-        <item name="windowActionBar">false</item>
+        <!--<item name="windowNoTitle">true</item>-->
+        <!--<item name="windowActionBar">false</item>-->
         <item name="android:windowFullscreen">true</item>
-        <item name="android:windowContentOverlay">@null</item>
+        <!--<item name="android:windowContentOverlay">@null</item>-->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -100,11 +100,5 @@
         <item name="android:textAllCaps">true</item>
         <item name="android:layout_centerVertical">true</item>
     </style>
-
-    <style name="WindowAnimationTransition">
-        <item name="android:windowEnterTransition">@transition/activity_transition</item>
-        <item name="android:windowExitTransition">@transition/activity_transition</item>
-    </style>
-
 
 </resources>

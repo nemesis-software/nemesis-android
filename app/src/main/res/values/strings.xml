@@ -19,7 +19,7 @@
     <string name="label_description">Description</string>
     <string name="product_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sollicitudin, magna et bibendum lobortis, tellus purus iaculis augue, nec gravida orci nibh quis orci. Maecenas efficitur dignissim velit et tristique. Vestibulum tempus arcu mi, nec convallis augue accumsan scelerisque. Suspendisse potenti. </string>
     <string name="end_of_product_queue_notification_text">No products to show</string>
-    <string name="loading_products">Loading...</string>
+    <string name="loading_products">Loading&#8230;</string>
     <string name="cd_product_gallery_image">Product Gallery Image</string>
     <string name="cd_product_photo">Product Photo</string>
     <string name="cd_like_btn">Like</string>
@@ -115,6 +115,11 @@
     <string name="title_forgot_password">Forgot your password</string>
     <string name="message_forgot_password">An email has been sent with instructions how to reset your password.</string>
     <string name="ok">OK</string>
+    <string name="notification_title">There\'s a store nearby.</string>
+    <string name="notification_message">Click to open the map.</string>
+    <string name="title_logout">Logout</string>
+    <string name="message_logout">Are you sure you want to logout?</string>
+    <string name="goback">Go Back</string>
 
 
 </resources>

@@ -137,7 +137,7 @@ public class CardAdapter extends BaseAdapter {
         return rowView;
     }
 
-    class ViewHolder {
+    private class ViewHolder {
         public ImageView image;
     }
 }

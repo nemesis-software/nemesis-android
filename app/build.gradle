@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'io.fabric.tools:gradle:1.+'
+        classpath 'io.fabric.tools:gradle:1.22.0'
     }
 }
 apply plugin: 'com.android.application'
@@ -41,7 +41,7 @@ android {
     buildTypes {
         debug {
             // disable crashlytics
-//            ext.enableCrashlytics = false
+            ext.enableCrashlytics = false
         }
 
         release {
@@ -50,7 +50,8 @@ android {
             // enable crashlytics
             ext.enableCrashlytics = true
 
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
