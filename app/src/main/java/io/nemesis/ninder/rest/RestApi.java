@@ -1,5 +1,6 @@
 package io.nemesis.ninder.rest;
 
+
 import com.google.gson.JsonObject;
 
 import java.util.List;
@@ -7,16 +8,18 @@ import java.util.Map;
 
 import io.nemesis.ninder.model.Product;
 import io.nemesis.ninder.model.ProductEntity;
-import retrofit.http.Body;
-import retrofit.http.Field;
-import retrofit.http.FormUrlEncoded;
-import retrofit.http.GET;
-import retrofit.http.Header;
-import retrofit.http.Headers;
-import retrofit.http.POST;
-import retrofit.http.Path;
-import retrofit.http.Query;
-import retrofit.http.QueryMap;
+import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
+import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 
 /**
  * @author Philip
@@ -30,42 +33,56 @@ public interface RestApi {
             "Accept: application/json;charset=UTF-8",
             "Content-Type: application/json;charset=UTF-8"
     })
-    @GET("/api/login")
-    void loginAsync(@Header("X-Nemesis-Username") String email, @Header("X-Nemesis-Password") String password, retrofit.Callback<Void> callback);
+    @GET("api/login")
+    Call<Void> loginAsync(@Header("X-Nemesis-Username") String email, @Header("X-Nemesis-Password") String password);
 
-    @GET("/api/search/autocomplete")
-    void autoComplete(@Query("term") String term, retrofit.Callback<List<Product>> callback);
+    @GET("api/search/autocomplete")
+    Call<List<Product>> autoComplete(@Query("term") String term);
 
-    @GET("/api/my-account/profile")
-    void getAccountInfo(@Header("X-Auth-Token") String token, retrofit.Callback<Void> callback);
+    @GET("api/my-account/profile")
+    Call<Void> getAccountInfo(@Header("X-Auth-Token") String token);
     @Headers({
             "Accept: application/json;charset=UTF-8",
             "Content-Type: application/json;charset=UTF-8"
     })
 
-    @GET("/api/c/womens")
-    void getProductListAsync(@QueryMap Map<String, String> query, retrofit.Callback<List<Product>> callback);
+    @GET("api/c/womens")
+    Call<List<Product>> getProductListAsync(@QueryMap Map<String, String> query);
 
+    @GET("api/cart")
+    Call<String> getCart(@Header("X-Auth-Token") String token);
 
-    @POST("/api/checkout/createDeliveryAddress ")
-    void saveDeliveryAddress(@Header("X-Auth-Token") String token, retrofit.Callback<Void> callback);
     @Headers({
             "Accept: application/json;charset=UTF-8",
             "Content-Type: application/json;charset=UTF-8"
     })
-    @POST("/api/checkout/createPaymentDetails")
-    void savePaymentDetails(@Header("X-Auth-Token") String token, @Body JsonObject json, retrofit.Callback<Void> callback);
+    @POST("api/checkout/createDeliveryAddress")
+    Call<String> saveDeliveryAddress(@Header("X-Auth-Token") String token, @Body JsonObject json);
+
+    @Headers({
+            "Accept: application/json;charset=UTF-8",
+            "Content-Type: application/json;charset=UTF-8"
+    })
+    @POST("api/checkout/createPaymentDetails")
+    Call<String> savePaymentDetails(@Header("X-Auth-Token") String token, @Body JsonObject json);
 
 
-    @GET("/api{productURL}")
-    void getProductDetailAsync(@Path(value="productURL", encode=false) String url, retrofit.Callback<ProductEntity> callback);
+    @GET("api{productURL}")
+    Call<ProductEntity> getProductDetailAsync(@Path(value="productURL", encoded=false) String url);
 
-    // XXX service methods: Must have either a return type or Callback as last argument.
+    // XXX service methods: Must have either a return type or Call as last argument.
     // XXX java.lang.NullPointerException: Attempt to invoke interface method
-    // 'void retrofit.Callback.failure(retrofit.RetrofitError)' on a null object reference
-    // async methods cannot set null callbacks if the caller does not care about the result of the call
+    // 'void retrofit2.Call.failure(retrofit2.RetrofitError)' on a null object reference
+    // asys if the caller does not care about the result of the call
     //@FormUrlEncoded
     @FormUrlEncoded
-    @POST("/wishlist/entry/add")
-    void addToWishlistAsync(@Header("X-Auth-Token") String token, @Field("productCode") String productCode, @Field("userId") String userId, retrofit.Callback<Void> callback);
+    @POST("wishlist/entry/add")
+    Call<Void> addToWishlistAsync(@Header("X-Auth-Token") String token, @Field("productCode") String productCode, @Field("userId") String userId);
+
+    @Headers({
+            "Accept: application/json;charset=UTF-8",
+            "Content-Type: application/json;charset=UTF-8"
+    })
+    @PUT("api/my-account/update-password")
+    Call<String> updatePassword(@Header("X-Auth-Token") String token,@Body JsonObject json);
 }

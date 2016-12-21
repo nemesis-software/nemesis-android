@@ -15,7 +15,7 @@ import io.nemesis.ninder.model.VariantOption;
 public interface ProductFacade {
 
     class EndOfQueueException extends Exception {
-        public EndOfQueueException(String details) {
+        EndOfQueueException(String details) {
             super(details);
         }
     }
@@ -23,17 +23,17 @@ public interface ProductFacade {
     interface AsyncCallback<T> {
         /**
          * only called when {@link #getProductsAsync} fetched new data
-         * @param products data retrieved by the call
+         * @param items data retrieved by the call
          */
-        void onSuccess(List<T> products);
+        void onSuccess(T items);
 
         /**
          * called when {@link #getProductsAsync} fetched no data, regardless the cause
-         * @param e Exception object containing the cause of the fail.
+         * @param t Throwable object containing the cause of the fail.
          *          if this is instance of EndOfQueueException, callers exceeded the range of items they can view
          *          and going further incrementing the starting index will never return new content.
          */
-        void onFail(Exception e);
+        void onFail(Throwable t);
     }
 
     interface EnquiryCallback {
@@ -72,7 +72,7 @@ public interface ProductFacade {
      *
      * @param term term
      */
-    void autoComplete(String term, AsyncCallback<Product> callback);
+    void autoComplete(String term, AsyncCallback<List<Product>> callback);
 
 
     /**
@@ -83,7 +83,7 @@ public interface ProductFacade {
      *                 this should be called on the main thread
      *
      */
-    void getAccountInfo(AsyncCallback<Product> callback);
+    void getAccountInfo(AsyncCallback<Void> callback);
     
     /**
      * Retrieves a Product list of size up to {@code size} Products
@@ -98,7 +98,7 @@ public interface ProductFacade {
      * @param page the range of items to retrieve. In the format:
      *             start from {@code page} * {@code size} and get next {@code size} items
      */
-    void getProductsAsync(int size, int page, AsyncCallback<ProductWrapper> callback);
+    void getProductsAsync(int size, int page, AsyncCallback<List<ProductWrapper>> callback);
     /**
      * The user approved your product! Take advantage of his interests...
      *
@@ -127,6 +127,8 @@ public interface ProductFacade {
      */
     void enquireAsync(Product product, EnquiryCallback callback);
 
-    void savePaymentDetails(JsonObject object,AsyncCallback<Void> callback);
-
+    void savePaymentDetails(JsonObject object,AsyncCallback<String> callback);
+    void saveDeliveryAddress(JsonObject object,AsyncCallback<String> callback);
+    void getCart(AsyncCallback<String> callback);
+    void updatePassword(JsonObject object, AsyncCallback<String> callback);
 }

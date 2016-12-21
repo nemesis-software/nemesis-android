@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,13 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Spinner;
 
+import com.google.gson.JsonObject;
+
+import java.util.List;
+
+import io.nemesis.ninder.NinderApplication;
 import io.nemesis.ninder.R;
+import io.nemesis.ninder.logic.ProductFacade;
 import io.nemesis.ninder.util.Util;
 
 public class TabShipping extends Fragment {
@@ -30,6 +37,7 @@ public class TabShipping extends Fragment {
     private TextInputEditText field_phone;
     private View mProgressView;
     private View mShippingView;
+    private AlertDialog dialog;
     //AutoComplete values
     private static final String[] COUNTRIES = new String[] {
             "Country","Bulgaria", "Germany", "Spain", "France", "UK", "Italy", "Japan", "Netherlands", "Russia", "United States"
@@ -78,7 +86,37 @@ public class TabShipping extends Fragment {
                 &&(Util.isTextValid(getContext(),field_address_line_1))&&(Util.isTextValid(getContext(),field_town_city))
                 &&(Util.isTextValid(getContext(),field_zipcode)) &&(Util.isTextValid(getContext(),field_phone))){
             showProgress(true);
-            //Send request
+            JsonObject json = new JsonObject();
+            json.addProperty("firstName",field_first_name.getText().toString());
+            json.addProperty("lastName",field_surname.getText().toString());
+            json.addProperty("townCity",field_town_city.getText().toString());
+            json.addProperty("countryCode",field_state_country.getText().toString());
+            json.addProperty("regionCode",field_zipcode.getText().toString());
+            json.addProperty("regionCode",field_town_city.getText().toString());
+            json.addProperty("phone",field_phone.getText().toString());
+            json.addProperty("line1",field_address_line_1.getText().toString());
+            ((NinderApplication) getActivity().getApplication()).getProductFacade().saveDeliveryAddress(json, new ProductFacade.AsyncCallback<String>() {
+                @Override
+                public void onSuccess(String products) {
+                }
+
+                @Override
+                public void onFail(Throwable t) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showProgress(false);
+                            dialog = new AlertDialog.Builder(getContext())
+                                    .setTitle("Success")
+                                    .setMessage("Your details has been successfully saved.")
+                                    .setPositiveButton("OK",null)
+                                    .create();
+                            dialog.show();
+                        }
+                    });
+                    t.printStackTrace();
+                }
+            });
             field_first_name.setText("");
             field_surname.setText("");
             field_address_line_1.setText("");
@@ -87,6 +125,14 @@ public class TabShipping extends Fragment {
             field_state_country.setText("");
             field_zipcode.setText("");
             field_phone.setText("");
+        }
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (dialog != null) {
+            dialog.dismiss();
+            dialog = null;
         }
     }
 

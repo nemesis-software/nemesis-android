@@ -31,6 +31,7 @@ public class Product implements Parcelable {
     private String url;
     private String uid;
     private List<Category> categories = new ArrayList<Category>();
+    private boolean is_favourite;
 //    private Boolean purchasable;
 //    private Stock stock;
 //    private Object potentialPromotions;
@@ -402,5 +403,10 @@ public class Product implements Parcelable {
     public String getUid() {
         return uid;
     }
-
+    public boolean getFavourite() {
+        return is_favourite;
+    }
+    public void setFavourite(boolean is_favourite) {
+        this.is_favourite = is_favourite;
+    }
 }

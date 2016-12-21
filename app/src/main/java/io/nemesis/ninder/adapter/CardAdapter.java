@@ -39,7 +39,7 @@ public class CardAdapter extends BaseAdapter {
     public void addMoreData() {
 
         ((NinderApplication) mActivity.getApplication()).getProductFacade().getProductsAsync(BATCH_SIZE, batchNumber,
-                new ProductFacade.AsyncCallback<ProductWrapper>() {
+                new ProductFacade.AsyncCallback<List<ProductWrapper>>() {
                     @Override
                     public void onSuccess(final List<ProductWrapper> products) {
                         mActivity.runOnUiThread(new Runnable() {
@@ -59,7 +59,7 @@ public class CardAdapter extends BaseAdapter {
                     }
 
                     @Override
-                    public void onFail(final Exception e) {
+                    public void onFail(Throwable t) {
                         // on any exception show, no data message -> handles connectivity errors
                         endOfQueueReached = true;
                         if (list.isEmpty()) {

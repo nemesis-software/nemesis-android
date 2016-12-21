@@ -17,8 +17,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import io.nemesis.ninder.model.Product;
-import retrofit.RestAdapter;
-import retrofit.converter.GsonConverter;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * @author ivanpetkov
@@ -91,15 +93,17 @@ public class NemesisRetrofitRestClient {
                 .registerTypeAdapterFactory(new ItemTypeAdapterFactory())
                 .create();
 
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-        ExecutorService executorService = Executors.newFixedThreadPool(6);
-        ExecutorService executorService1 = Executors.newFixedThreadPool(1);
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        httpClient.addInterceptor(logging);
 
-        RestAdapter adapter = new RestAdapter.Builder()
-                .setLogLevel(RestAdapter.LogLevel.FULL)
-                .setEndpoint(baseUrl)
-                .setConverter(new GsonConverter(gson))
-                .setExecutors(executorService, executorService1)
+        Retrofit adapter = new Retrofit.Builder()
+                //.setLogLevel(RestAdapter.LogLevel.HEADERS)
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .client(httpClient.build())
                 .build();
 
         apiService = adapter.create(RestApi.class);

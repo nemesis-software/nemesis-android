@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.gson.JsonObject;
+
 import java.util.List;
 
 import io.nemesis.ninder.NinderApplication;
@@ -22,6 +24,8 @@ import io.nemesis.ninder.model.Product;
 import io.nemesis.ninder.util.Util;
 
 public class TabSettings extends Fragment {
+    private static final String TAG = TabSettings.class.getSimpleName();
+
     TextInputEditText field_current_password;
     TextInputEditText field_new_password;
     TextInputEditText field_confirm_password;
@@ -90,29 +94,51 @@ public class TabSettings extends Fragment {
     private void SaveDetails(){
         if(Util.isPasswordValid(getContext(),field_current_password)&&(Util.isPasswordValid(getContext(),field_new_password))&&(Util.isPasswordValid(getContext(),field_confirm_password))){
             showProgress(true);
-            ((NinderApplication) getActivity().getApplication()).getProductFacade().getAccountInfo(new ProductFacade.AsyncCallback<Product>() {
+//            ((NinderApplication) getActivity().getApplication()).getProductFacade().getAccountInfo(new ProductFacade.AsyncCallback<Product>() {
+//                @Override
+//                public void onSuccess(List<Product> products) {
+//                    Log.d("Success","");
+//                }
+//
+//                @Override
+//                public void onFail(Exception e) {
+//                    getActivity().runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            showProgress(false);
+//                            dialog = new AlertDialog.Builder(getContext())
+//                                    .setTitle("Success")
+//                                    .setMessage("Your password has been successfully changed.")
+//                                    .setPositiveButton("OK",null)
+//                                    .create();
+//                            dialog.show();
+//                        }
+//                    });
+//                    e.printStackTrace();
+//                }
+//            });
+            JsonObject json = new JsonObject();
+            json.addProperty("currentPassword",field_current_password.getText().toString());
+            json.addProperty("newPassword",field_new_password.getText().toString());
+            json.addProperty("checkNewPassword",field_confirm_password.getText().toString());
+            ((NinderApplication) getActivity().getApplication()).getProductFacade().updatePassword(json, new ProductFacade.AsyncCallback<String>() {
                 @Override
-                public void onSuccess(List<Product> products) {
-                    Log.d("Success","");
+                public void onSuccess(String items) {
+                    Log.d(TAG,items);
                 }
 
                 @Override
-                public void onFail(Exception e) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            showProgress(false);
+                public void onFail(Throwable t) {
+
+                }
+            });
+            showProgress(false);
                             dialog = new AlertDialog.Builder(getContext())
                                     .setTitle("Success")
                                     .setMessage("Your password has been successfully changed.")
                                     .setPositiveButton("OK",null)
                                     .create();
                             dialog.show();
-                        }
-                    });
-                    e.printStackTrace();
-                }
-            });
             field_current_password.setText("");
             field_new_password.setText("");
             field_confirm_password.setText("");

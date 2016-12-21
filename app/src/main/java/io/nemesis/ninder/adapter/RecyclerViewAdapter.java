@@ -3,14 +3,10 @@ package io.nemesis.ninder.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
-import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageButton;
@@ -24,10 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.nemesis.ninder.R;
-import io.nemesis.ninder.activity.ListActivity;
 import io.nemesis.ninder.activity.ProductActivity;
-import io.nemesis.ninder.activity.TextActivity;
 import io.nemesis.ninder.logic.ProductWrapper;
+import io.nemesis.ninder.model.Product;
 
 /**
  * Created by hristo.stoyanov on 02-Dec-16.
@@ -52,7 +47,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     @Override
-    public void onBindViewHolder(final CustomViewHolder holder, int position) {
+    public void onBindViewHolder(final CustomViewHolder holder,int position) {
         //holder.setIsRecyclable(false);
         product = products.get(position);
         if(product.getDiscountedPrice()!=null) {
@@ -68,24 +63,30 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
         if(product.getPhoto()!=null)
         Picasso.with(context).load(product.getPhoto().getUrl()).into(holder.productImage);
+        ToggleFavImage(holder.product_fav_button,product.getProduct().getFavourite());
+
         holder.product_fav_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ImageButton fav_button = (ImageButton) view;
-                if(!products.get(holder.getAdapterPosition()).getFavourite()){
-                    fav_button.setImageDrawable(context.getDrawable(R.drawable.heart_full));
-                    fav_button.setImageTintList(context.getResources().getColorStateList(R.color.red));
-                }
-                else {
-                    fav_button.setImageDrawable(context.getDrawable(R.drawable.icon_heart));
-                    fav_button.setImageTintList(null);
-                }
-                product.setFavourite(!product.getFavourite());
+                Product current = products.get(holder.getAdapterPosition()).getProduct();
+                boolean fav = current.getFavourite();
+                ToggleFavImage(fav_button, !fav);
+                current.setFavourite(!fav);
             }
         });
 
     }
-
+    private void ToggleFavImage(ImageButton fav_button, boolean is_fav){
+        if(is_fav){
+            fav_button.setImageDrawable(context.getDrawable(R.drawable.heart_full));
+            fav_button.setImageTintList(context.getResources().getColorStateList(R.color.red));
+        }
+        else {
+            fav_button.setImageDrawable(context.getDrawable(R.drawable.icon_heart));
+            fav_button.setImageTintList(null);
+        }
+    }
 
     @Override
     public int getItemCount() {
@@ -116,9 +117,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 products = (List<ProductWrapper>)results.values;
                 notifyDataSetChanged();
-
             }
         };
+    }
+    public void ClearFilter(){
+        products = initial_products;
+        notifyDataSetChanged();
     }
 
     class CustomViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

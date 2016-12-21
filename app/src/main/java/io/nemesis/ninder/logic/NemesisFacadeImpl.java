@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.crashlytics.android.answers.AddToCartEvent;
 import com.crashlytics.android.answers.Answers;
@@ -23,10 +22,9 @@ import io.nemesis.ninder.model.ProductEntity;
 import io.nemesis.ninder.model.VariantOption;
 import io.nemesis.ninder.model.Variation;
 import io.nemesis.ninder.rest.NemesisRetrofitRestClient;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Header;
-import retrofit.client.Response;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * @author Philip
@@ -54,90 +52,78 @@ public class NemesisFacadeImpl implements ProductFacade {
     }
 
     @Override
-    public void loginAsync(String email, String password, final AsyncCallback callback) {
-        retrofitRestClient.getApiService().loginAsync(email, password, new Callback<Void>() {
+    public void loginAsync(String email, String password, final AsyncCallback<Void> callback) {
+        retrofitRestClient.getApiService().loginAsync(email, password).enqueue(new Callback<Void>() {
             @Override
-            public void success(Void aVoid, Response response) {
-                if (response.getStatus() == 200) {
-                    if (null != callback) {
-                        try{
-                        List<Header> headers = response.getHeaders();
-                            for (Header header : headers) {
-                                String name = header.getName();
-                                if(name!=null)
-                                if (name.equals("x-auth-token"))
-                                    StoreToken(header.getValue());
-                            }
-                        }
-                        catch(Exception ex){
-                            ex.printStackTrace();
-                        }
-                            callback.onSuccess(null);
-                        }
-                } else {
-                    if (null != callback) {
-                        callback.onFail(new RuntimeException("bad response: " + response.getStatus()));
-                    }
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    storeToken(response.headers().get("x-auth-token"));
+                    callback.onSuccess(response.body());
                 }
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                if (null != callback) {
-                    callback.onFail(error);
-                }
+            public void onFailure(Call<Void> call, Throwable t) {
+                callback.onFail(t);
             }
         });
     }
 
     @Override
-    public void autoComplete(String term, final AsyncCallback callback) {
-        retrofitRestClient.getApiService().autoComplete(term, new Callback<List<Product>>() {
+    public void autoComplete(String term, final AsyncCallback<List<Product>> callback) {
+        retrofitRestClient.getApiService().autoComplete(term).enqueue(new Callback<List<Product>>() {
             @Override
-            public void success(List<Product> items, Response response) {
-                if (response.getStatus() == 200) {
-                    if (null != callback) {
-                        callback.onSuccess(items);
-                    }
+            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+                if (response.isSuccessful()) {
+                    callback.onSuccess(response.body());
                 } else {
-                    if (null != callback) {
-                        callback.onFail(new RuntimeException("bad response: " + response.getStatus()));
-                    }
+                    callback.onFail(new Exception(response.code()+response.message()));
                 }
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                if (null != callback) {
-                    callback.onFail(error);
-                }
+            public void onFailure(Call<List<Product>> call, Throwable t) {
+                callback.onFail(t);
             }
         });
     }
 
 
     @Override
-    public void getAccountInfo(final AsyncCallback<Product> callback) {
-        String token = ReadToken();
-        retrofitRestClient.getApiService().getAccountInfo(token, new Callback<Void>() {
+    public void getAccountInfo(final AsyncCallback<Void> callback) {
+        String token = readToken();
+        retrofitRestClient.getApiService().getAccountInfo(token).enqueue(new Callback<Void>() {
             @Override
-            public void success(Void products, Response response) {
-                if (response.getStatus() == 200) {
-                    if (null != callback) {
-                        callback.onSuccess(null);
-                    }
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    callback.onSuccess(response.body());
                 } else {
-                    if (null != callback) {
-                        callback.onFail(new RuntimeException("bad response: " + response.getStatus()));
-                    }
+                    callback.onFail(new Exception(response.code() + response.message()));
                 }
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                if (null != callback) {
-                    callback.onFail(error);
+            public void onFailure(Call<Void> call, Throwable t) {
+                callback.onFail(t);
+            }
+        });
+    }
+
+    @Override
+    public void getCart(final AsyncCallback<String> callback){
+        retrofitRestClient.getApiService().getCart(readToken()).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+                    callback.onSuccess(response.body());
+                } else {
+                    callback.onFail(new Exception(response.code() + response.message()));
                 }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                callback.onFail(t);
             }
         });
     }
@@ -151,16 +137,16 @@ public class NemesisFacadeImpl implements ProductFacade {
         query.put(QUERY_PAGE_INDEX, String.valueOf(page));
         query.put(QUERY_PAGE_SIZE, String.valueOf(size));
 
-        retrofitRestClient.getApiService().getProductListAsync(query, new Callback<List<Product>>() {
+        retrofitRestClient.getApiService().getProductListAsync(query).enqueue( new Callback<List<Product>>() {
             @Override
-            public void success(List<Product> products, Response response) {
-                if (response.getStatus() == 200) {
+            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+                if (response.isSuccessful()) {
                     if (null != callback) {
-                        if (products.size() == 0) {
+                        if (response.body().size() == 0) {
                             callback.onFail(new EndOfQueueException("End of queue reached"));
                         } else {
                             ArrayList<ProductWrapper> arrayList = new ArrayList<>();
-                            for (Product p : products) {
+                            for (Product p : response.body()) {
                                 arrayList.add(new ProductWrapper(p, NemesisFacadeImpl.this));
                             }
                             callback.onSuccess(arrayList);
@@ -168,15 +154,15 @@ public class NemesisFacadeImpl implements ProductFacade {
                     }
                 } else {
                     if (null != callback) {
-                        callback.onFail(new RuntimeException("bad response: " + response.getStatus()));
+                        callback.onFail(new RuntimeException("bad response: " + response.message()));
                     }
                 }
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(Call<List<Product>> call, Throwable t) {
                 if (null != callback) {
-                    callback.onFail(error);
+                    callback.onFail(t);
                 }
             }
         });
@@ -250,11 +236,11 @@ public class NemesisFacadeImpl implements ProductFacade {
             TLog.w("variant code isEmpty. variant=" + variant);
             return;
         }
-        String token = ReadToken();
+        String token = readToken();
 
-        retrofitRestClient.getApiService().addToWishlistAsync(token,code,testUserId, new Callback<Void>() {
+        retrofitRestClient.getApiService().addToWishlistAsync(token,code,testUserId).enqueue(new Callback<Void>() {
             @Override
-            public void success(Void aVoid, Response response) {
+            public void onResponse(Call<Void> call, Response<Void> response) {
                 TLog.d("added to wishlist");
                 Answers.getInstance().logAddToCart(new AddToCartEvent()
                         .putItemId(variant.getCode())
@@ -262,9 +248,9 @@ public class NemesisFacadeImpl implements ProductFacade {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                // notify
-                TLog.e("cannot add to wishlist:", error);
+            public void onFailure(Call<Void> call, Throwable t) {
+                TLog.e("cannot add to wishlist:", t);
+
             }
         });
     }
@@ -288,55 +274,93 @@ public class NemesisFacadeImpl implements ProductFacade {
         }
 
         state.onEnquiry();
-        retrofitRestClient.getApiService().getProductDetailAsync(product.getUrl(), new Callback<ProductEntity>() {
+        retrofitRestClient.getApiService().getProductDetailAsync(product.getUrl()).enqueue(new Callback<ProductEntity>() {
             @Override
-            public void success(ProductEntity prod, Response response) {
+            public void onResponse(Call<ProductEntity> call, Response<ProductEntity> response) {
                 ProductWrapper.ProductState productState = enquiries.get(product.getCode());
                 if (null != productState) {
-                    if (response.getStatus() == 200) {
-                        productState.onDetailsFetched(prod);
+                    if (response.isSuccessful()) {
+                        productState.onDetailsFetched(response.body());
                     } else {
-                        productState.onDetailsFetchFailed(new Exception("Bad response code:" + response.getStatus()));
+                        productState.onDetailsFetchFailed(new Exception("Bad response code:" + response.message()));
                     }
                 } else {
                 }
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(Call<ProductEntity> call,Throwable t) {
                 ProductWrapper.ProductState productState = enquiries.get(product.getCode());
                 if (null != productState) {
-                    productState.onDetailsFetchFailed(error);
+                    productState.onDetailsFetchFailed(new Exception(t));
                 } else {
                 }
             }
         });
     }
     @Override
-    public void savePaymentDetails(JsonObject json, final AsyncCallback<Void> callback){
-        retrofitRestClient.getApiService().savePaymentDetails(ReadToken(),json, new Callback<Void>() {
+    public void savePaymentDetails(JsonObject json, final AsyncCallback<String> callback){
+        retrofitRestClient.getApiService().savePaymentDetails(readToken(),json).enqueue(new Callback<String>() {
             @Override
-            public void success(Void aVoid, Response response) {
-                Log.d(TAG,response.toString());
-                callback.onSuccess(null);
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+                    callback.onSuccess(response.body());
+                } else {
+                    callback.onFail(new Exception(response.code() + response.message()));
+                }
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                error.printStackTrace();
-                callback.onFail(error);
+            public void onFailure(Call<String> call, Throwable t) {
+                callback.onFail(t);
+            }
+        });
+    }
+    @Override
+    public void saveDeliveryAddress(JsonObject json, final AsyncCallback<String> callback){
+        retrofitRestClient.getApiService().saveDeliveryAddress(readToken(),json).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+                    callback.onSuccess(response.body());
+                } else {
+                    callback.onFail(new Exception(response.code() + response.message()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                callback.onFail(t);
+            }
+        });
+    }
+    @Override
+    public void updatePassword(JsonObject json, final AsyncCallback<String> callback){
+        retrofitRestClient.getApiService().updatePassword(readToken(),json).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+                    callback.onSuccess(response.body());
+                } else {
+                    callback.onFail(new Exception(response.code() + response.message()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                callback.onFail(t);
             }
         });
     }
 
-    private void StoreToken(String token){
+    private void storeToken(String token){
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(mContext.getString(R.string.token), token);
         editor.apply();
     }
 
-    private String ReadToken(){
+    private String readToken(){
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
         return sharedPref.getString(mContext.getString(R.string.token),null);
     }

@@ -1,12 +1,20 @@
 package io.nemesis.ninder.fragment;
 
+import android.app.SearchManager;
+import android.content.Context;
+import android.database.MatrixCursor;
 import android.os.Bundle;
+import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -23,20 +31,21 @@ import io.nemesis.ninder.R;
 import io.nemesis.ninder.adapter.RecyclerViewAdapter;
 import io.nemesis.ninder.logic.ProductFacade;
 import io.nemesis.ninder.logic.ProductWrapper;
+import io.nemesis.ninder.model.Product;
 
 
 public class RecyclerViewFragment extends Fragment {
     private static final int PAGE_SIZE = 12;
     private static final int PRODUCTS_PER_PAGE = 2;
-    private static int OFFSET = 0;
-    private boolean endOfQueueReached = false;
+    private static int OFFSET;
+    private boolean endOfQueueReached;
 
     private ProgressBar mProgressBar;
 
     protected RecyclerView recyclerView;
     protected RecyclerViewAdapter adapter;
     protected StaggeredGridLayoutManager layoutManager;
-
+    private SearchView searchView;
 
     private static List<ProductWrapper> products;
 
@@ -48,7 +57,10 @@ public class RecyclerViewFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        setHasOptionsMenu(true);
         products = new ArrayList<>();
+        OFFSET = 0;
+        endOfQueueReached = false;
     }
 
     @Override
@@ -90,11 +102,103 @@ public class RecyclerViewFragment extends Fragment {
         return rootView;
     }
 
-    public RecyclerViewAdapter getAdapter(){
-        return adapter;
+    @Override
+    public void  onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main_activity_list, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        SearchManager searchManager = (SearchManager)getContext().getSystemService(Context.SEARCH_SERVICE);
+        //init search view
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getActivity().getComponentName()));
+        searchView.setSuggestionsAdapter(new SimpleCursorAdapter(
+                getContext(), android.R.layout.simple_list_item_1, null,
+                new String[] { SearchManager.SUGGEST_COLUMN_TEXT_1 },
+                new int[] { android.R.id.text1 }, 0));
+        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+            @Override
+            public boolean onSuggestionSelect(int position) {
+                MatrixCursor cursor = (MatrixCursor) searchView.getSuggestionsAdapter().getItem(position);
+                String term = cursor.getString(cursor.getColumnIndex(SearchManager.SUGGEST_COLUMN_TEXT_1));
+                cursor.close();
+                searchView.setQuery(term,true);
+                //recyclerViewFragment.getAdapter().getFilter().filter(term);
+                return true;
+            }
+
+            @Override
+            public boolean onSuggestionClick(int position) {
+                return onSuggestionSelect(position);
+            }
+        });
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                adapter.getFilter().filter("");
+                adapter.ClearFilter();
+                return false;
+            }
+        });
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.getFilter().filter(query);
+                searchView.clearFocus();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                 adapter.getFilter().filter("");
+                ((NinderApplication) getActivity().getApplication()).getProductFacade().autoComplete(newText, new ProductFacade.AsyncCallback<List<Product>>() {
+                    @Override
+                    public void onSuccess(List<Product> items) {
+                        if(items!=null){
+                            String[] sAutocompleteColNames = new String[] {
+                                    BaseColumns._ID,                         // necessary for adapter
+                                    SearchManager.SUGGEST_COLUMN_TEXT_1      // the full search term
+                            };
+                            final MatrixCursor cursor = new MatrixCursor(sAutocompleteColNames);
+                            for (int i = 0; i < items.size(); i++) {
+                                Product item = items.get(i);
+
+                                Object[] row = new Object[] { i, item.getName()};
+                                cursor.addRow(row);
+                            }
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    searchView.getSuggestionsAdapter().changeCursor(cursor);
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onFail(Throwable t) {
+                        t.printStackTrace();
+                    }
+                });
+
+                return false;
+            }
+        });
+//        searchView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+//            @Override
+//            public void onViewAttachedToWindow(View view) {
+//
+//            }
+//
+//            @Override
+//            public void onViewDetachedFromWindow(View view) {
+//                if(recyclerViewFragment!=null)
+//                    recyclerViewFragment.getAdapter().getFilter().filter("");
+//            }
+//        });
     }
+
     private void getData(){
-        ((NinderApplication) getActivity().getApplication()).getProductFacade().getProductsAsync(PAGE_SIZE, OFFSET, new ProductFacade.AsyncCallback<ProductWrapper>() {
+        ((NinderApplication) getActivity().getApplication()).getProductFacade().getProductsAsync(PAGE_SIZE, OFFSET, new ProductFacade.AsyncCallback<List<ProductWrapper>>() {
             @Override
             public void onSuccess(final List<ProductWrapper> new_products) {
                 FragmentActivity activity = getActivity();
@@ -113,9 +217,9 @@ public class RecyclerViewFragment extends Fragment {
                 });
             }
             @Override
-            public void onFail(Exception e) {
+            public void onFail(Throwable t) {
                 endOfQueueReached = true;
-                e.printStackTrace();
+                t.printStackTrace();
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

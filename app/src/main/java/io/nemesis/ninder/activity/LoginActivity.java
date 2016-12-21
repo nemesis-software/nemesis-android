@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,6 +28,7 @@ import io.nemesis.ninder.logic.ProductFacade;
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends AppCompatActivity {
+    private static final String TAG = LoginActivity.class.getSimpleName();
 
     //UI References
     private EditText mEmailView;
@@ -116,7 +118,7 @@ public class LoginActivity extends AppCompatActivity {
             showProgress(true);
             ((NinderApplication) getApplication()).getProductFacade().loginAsync(email, password, new ProductFacade.AsyncCallback<Void>() {
                 @Override
-                public void onSuccess(List<Void> voids) {
+                public void onSuccess(Void response) {
                     LoginActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -130,14 +132,14 @@ public class LoginActivity extends AppCompatActivity {
                     });
                 }
                 @Override
-                public void onFail(final Exception e) {
+                public void onFail(Throwable t ) {
+                    t.printStackTrace();
                     LoginActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             showProgress(false);
                             mPasswordView.setError(getString(R.string.error_incorrect_password));
                             mPasswordView.requestFocus();
-                            e.printStackTrace();
                         }
                     });
                 }

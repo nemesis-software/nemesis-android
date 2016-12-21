@@ -124,26 +124,26 @@ public class TabPayment extends Fragment {
             json.addProperty("cardNumber",field_card_number.getText().toString());
             json.addProperty("expiryDate",field_expiry_date.getText().toString());
             json.addProperty("issueNumber",field_security_code.getText().toString());
-            ((NinderApplication) getActivity().getApplication()).getProductFacade().savePaymentDetails(json, new ProductFacade.AsyncCallback<Void>() {
+            ((NinderApplication) getActivity().getApplication()).getProductFacade().savePaymentDetails(json, new ProductFacade.AsyncCallback<String>() {
                 @Override
-                public void onSuccess(List<Void> products) {
+                public void onSuccess(String products) {
                 }
 
                 @Override
-                public void onFail(Exception e) {
+                public void onFail(Throwable t) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             showProgress(false);
                             dialog = new AlertDialog.Builder(getContext())
                                     .setTitle("Success")
-                                    .setMessage("Your password has been successfully changed.")
+                                    .setMessage("Your details has been successfully saved.")
                                     .setPositiveButton("OK",null)
                                     .create();
                             dialog.show();
                         }
                     });
-                    e.printStackTrace();
+                    t.printStackTrace();
                 }
             });
             field_name_on_card.setText("");
