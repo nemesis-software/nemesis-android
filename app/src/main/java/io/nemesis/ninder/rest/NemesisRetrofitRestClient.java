@@ -94,7 +94,7 @@ public class NemesisRetrofitRestClient {
                 .create();
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        logging.setLevel(HttpLoggingInterceptor.Level.HEADERS);
 
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
         httpClient.addInterceptor(logging);

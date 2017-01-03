@@ -18,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.mugen.Mugen;
 import com.mugen.MugenCallbacks;
@@ -47,7 +48,7 @@ public class RecyclerViewFragment extends Fragment {
     protected StaggeredGridLayoutManager layoutManager;
     private SearchView searchView;
 
-    private static List<ProductWrapper> products;
+    private List<ProductWrapper> products;
 
     public RecyclerViewFragment() {
         // Required empty public constructor
@@ -131,14 +132,14 @@ public class RecyclerViewFragment extends Fragment {
                 return onSuggestionSelect(position);
             }
         });
-        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                adapter.getFilter().filter("");
-                adapter.ClearFilter();
-                return false;
-            }
-        });
+//        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+//            @Override
+//            public boolean onClose() {
+//                adapter.getFilter().filter("");
+//                adapter.ClearFilter();
+//                return false;
+//            }
+//        });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -149,7 +150,6 @@ public class RecyclerViewFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                 adapter.getFilter().filter("");
                 ((NinderApplication) getActivity().getApplication()).getProductFacade().autoComplete(newText, new ProductFacade.AsyncCallback<List<Product>>() {
                     @Override
                     public void onSuccess(List<Product> items) {
@@ -183,22 +183,23 @@ public class RecyclerViewFragment extends Fragment {
                 return false;
             }
         });
-//        searchView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-//            @Override
-//            public void onViewAttachedToWindow(View view) {
-//
-//            }
-//
-//            @Override
-//            public void onViewDetachedFromWindow(View view) {
-//                if(recyclerViewFragment!=null)
-//                    recyclerViewFragment.getAdapter().getFilter().filter("");
-//            }
-//        });
+        searchView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View view) {
+
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View view) {
+                adapter.ClearFilter();
+            }
+        });
     }
 
+
     private void getData(){
-        ((NinderApplication) getActivity().getApplication()).getProductFacade().getProductsAsync(PAGE_SIZE, OFFSET, new ProductFacade.AsyncCallback<List<ProductWrapper>>() {
+        ((NinderApplication) getActivity().getApplication()).getProductFacade()
+                .getProductsAsync(PAGE_SIZE, OFFSET, new ProductFacade.AsyncCallback<List<ProductWrapper>>() {
             @Override
             public void onSuccess(final List<ProductWrapper> new_products) {
                 FragmentActivity activity = getActivity();
@@ -207,11 +208,10 @@ public class RecyclerViewFragment extends Fragment {
                     @Override
                     public void run() {
                         if (new_products != null) {
-                        products.addAll(new_products);
-                        endOfQueueReached = products.isEmpty();
-                        adapter.notifyDataSetChanged();
-                        if(mProgressBar!=null)
-                            mProgressBar.setVisibility(View.GONE);
+                            products.addAll(new_products);
+                            endOfQueueReached = products.isEmpty();
+                            adapter.notifyDataSetChanged();
+                            if(mProgressBar!=null) mProgressBar.setVisibility(View.GONE);
                         }
                     }
                 });
@@ -220,7 +220,7 @@ public class RecyclerViewFragment extends Fragment {
             public void onFail(Throwable t) {
                 endOfQueueReached = true;
                 t.printStackTrace();
-                getActivity().runOnUiThread(new Runnable() {
+            getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         if(mProgressBar!=null)

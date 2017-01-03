@@ -90,7 +90,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public int getItemCount() {
+        if(products!=null)
         return products.size();
+        else return 0;
     }
 
 
@@ -102,7 +104,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 final FilterResults oReturn = new FilterResults();
                 final List<ProductWrapper> filtered_results = new ArrayList<>();
                 if (constraint != null){
-                    if(initial_products !=null & initial_products.size()>0 ){
+                    assert initial_products != null;
+                    if(initial_products.size()>0 ){
                         for ( final ProductWrapper p :initial_products) {
                             if (p.getName().toLowerCase().contains(constraint.toString().toLowerCase()))filtered_results.add(p);
                         }

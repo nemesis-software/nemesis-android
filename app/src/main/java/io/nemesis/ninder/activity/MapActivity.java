@@ -220,6 +220,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private void addPhotoToMarker(final HashMap<String,Bitmap> marker_images){
         if(mMap!=null)
+            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker) {
+                    return false;
+                }
+            });
         mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
             @Override

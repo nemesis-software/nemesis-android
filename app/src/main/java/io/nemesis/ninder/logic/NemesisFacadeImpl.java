@@ -60,6 +60,7 @@ public class NemesisFacadeImpl implements ProductFacade {
                     storeToken(response.headers().get("x-auth-token"));
                     callback.onSuccess(response.body());
                 }
+                else callback.onFail(new Throwable(response.message()));
             }
 
             @Override
