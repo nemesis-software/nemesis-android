@@ -92,6 +92,7 @@ public class LocationService extends Service {
 
     private class LocationListener implements android.location.LocationListener {
         Location mLastLocation;
+        private boolean notification_sent = false;
 
         LocationListener(String provider) {
             Log.e(TAG, "LocationListener " + provider);
@@ -108,8 +109,12 @@ public class LocationService extends Service {
             float distance = location.distanceTo(default_location);
             Log.d(TAG, distance + " meters away from store.");
             if (distance < 50) {
-                setNotification();
+                if(!notification_sent) {
+                    setNotification();
+                    notification_sent = true;
+                }
             }
+            else notification_sent = false;
         }
 
         private void setNotification() {

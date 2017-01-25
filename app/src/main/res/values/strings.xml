@@ -120,6 +120,7 @@
     <string name="title_logout">Logout</string>
     <string name="message_logout">Are you sure you want to logout?</string>
     <string name="goback">Go Back</string>
+    <string name="error_text">No Products available yet.</string>
 
 
 </resources>

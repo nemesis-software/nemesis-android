@@ -18,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mugen.Mugen;
@@ -47,7 +48,7 @@ public class RecyclerViewFragment extends Fragment {
     protected RecyclerViewAdapter adapter;
     protected StaggeredGridLayoutManager layoutManager;
     private SearchView searchView;
-
+    private TextView error_text;
     private List<ProductWrapper> products;
 
     public RecyclerViewFragment() {
@@ -72,6 +73,7 @@ public class RecyclerViewFragment extends Fragment {
         recyclerView = (RecyclerView)rootView.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
+        error_text = (TextView) rootView.findViewById(R.id.error_text);
 
         layoutManager = new StaggeredGridLayoutManager(PRODUCTS_PER_PAGE, OrientationHelper.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
@@ -207,6 +209,7 @@ public class RecyclerViewFragment extends Fragment {
                     activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        error_text.setVisibility(View.INVISIBLE);
                         if (new_products != null) {
                             products.addAll(new_products);
                             endOfQueueReached = products.isEmpty();
@@ -225,6 +228,7 @@ public class RecyclerViewFragment extends Fragment {
                     public void run() {
                         if(mProgressBar!=null)
                         mProgressBar.setVisibility(View.GONE);
+                        error_text.setVisibility(View.VISIBLE);
                     }
                 });
             }

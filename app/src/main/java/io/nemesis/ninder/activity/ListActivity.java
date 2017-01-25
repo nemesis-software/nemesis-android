@@ -47,19 +47,19 @@ public class ListActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             LoadFragment(new RecyclerViewFragment(),false);
         }
-        InitLocationService();
         InitializeToolbar();
         InitializeDrawer();
+        initLocationService();
     }
 
-    private void InitLocationService(){
+    private void initLocationService(){
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, CODE_ACCESS_FINE_LOCATION);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, CODE_ACCESS_FINE_LOCATION);
         }
     }
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[],@NonNull int[] grantResults) {
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
         if(requestCode == CODE_ACCESS_FINE_LOCATION && grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
             startService(new Intent(this,LocationService.class));

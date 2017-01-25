@@ -1,7 +1,12 @@
 package io.nemesis.ninder;
 
+import android.Manifest;
 import android.app.Application;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
@@ -26,10 +31,10 @@ public class NinderApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Crashlytics crashlyticsKit = new Crashlytics.Builder()
-                .core(new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
-                .build();
-        Fabric.with(this, crashlyticsKit);
+//        Crashlytics crashlyticsKit = new Crashlytics.Builder()
+//                .core(new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
+//                .build();
+        Fabric.with(this, new Crashlytics());
 
         initLogger();
 
@@ -76,4 +81,5 @@ public class NinderApplication extends Application {
                 )
         );
     }
+
 }
