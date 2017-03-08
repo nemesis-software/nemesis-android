@@ -102,19 +102,20 @@ public class LocationService extends Service {
         @Override
         public void onLocationChanged(Location location) {
             Log.e(TAG, "onLocationChanged: " + location);
-            mLastLocation.set(location);
-            Location default_location = new Location("Default");
-            default_location.setLatitude(42.647165);
-            default_location.setLongitude(23.3956775);
-            float distance = location.distanceTo(default_location);
-            Log.d(TAG, distance + " meters away from store.");
-            if (distance < 50) {
-                if(!notification_sent) {
-                    setNotification();
-                    notification_sent = true;
-                }
+            if(location.getAccuracy()<100.0f) {
+                mLastLocation.set(location);
+                Location default_location = new Location("Default");
+                default_location.setLatitude(42.647165);
+                default_location.setLongitude(23.3956775);
+                float distance = location.distanceTo(default_location);
+                Log.d(TAG, distance + " meters away from store.");
+                if (distance < 200) {
+                    if (!notification_sent) {
+                        setNotification();
+                        notification_sent = true;
+                    }
+                } else notification_sent = false;
             }
-            else notification_sent = false;
         }
 
         private void setNotification() {
