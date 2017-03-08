@@ -9,16 +9,17 @@
     <string name="label_sale">Sale</string>
 
     <!--base url-->
-    <string name="rest_api_base_url">http://www.solarapparel.com/en/GB</string>
+    <string name="rest_api_base_url">https://www.solarapparel.com/en/GB/</string>
 
-    <string name="rest_api_test_user">paranoiabla@gmail.com</string>
+    <!--<string name="rest_api_test_user">paranoiabla@gmail.com</string>-->
+    <string name="rest_api_test_user">hristo.stoyanov@scalefocus.com</string>
     <!--<string name="rest_api_test_user">ipetkov@insitex.com</string>-->
 
     <!--initial list of items to display-->
     <string name="label_description">Description</string>
     <string name="product_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sollicitudin, magna et bibendum lobortis, tellus purus iaculis augue, nec gravida orci nibh quis orci. Maecenas efficitur dignissim velit et tristique. Vestibulum tempus arcu mi, nec convallis augue accumsan scelerisque. Suspendisse potenti. </string>
     <string name="end_of_product_queue_notification_text">No products to show</string>
-    <string name="loading_products">Loading...</string>
+    <string name="loading_products">Loading&#8230;</string>
     <string name="cd_product_gallery_image">Product Gallery Image</string>
     <string name="cd_product_photo">Product Photo</string>
     <string name="cd_like_btn">Like</string>
@@ -26,4 +27,100 @@
     <string name="cd_dislike_btn">Dislike</string>
     <string name="cd_done_btn">Done</string>
     <string name="transition_name">images</string>
+    <string name="title_activity_login">Ninder</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_log_in">Log In</string>
+    <string name="action_forgot_password">Forgot your password?</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="token">x_auth_token</string>
+    <string name="email">email</string>
+    <string name="default_name">john.doe@solarapparel.com</string>
+
+    <!--Toolbar-->
+    <string name="action_search">Search</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Navigation Drawer menu labels -->
+    <string name="nav_list">Products</string>
+    <string name="nav_ninder">Ninder</string>
+    <string name="nav_locator">Store Locator</string>
+    <string name="nav_account">My Account</string>
+    <string name="nav_logout">Logout</string>
+
+    <string-array name="nav_item_activity_titles">
+        <item>List of Products</item>
+        <item>Ninder</item>
+        <item>Store Locator</item>
+        <item>My Account</item>
+        <item>Logout</item>
+    </string-array>
+
+    <!-- Tab Items -->
+    <string name="tab_settings">Settings</string>
+    <string name="tab_payment">Payment</string>
+    <string name="tab_shipping">Shipping</string>
+
+    <!--Settings Tab-->
+    <string name="hint_current_password">Current Password</string>
+    <string name="hint_new_password">New Password</string>
+    <string name="hint_confirm_password">Confirm Password</string>
+    <string name="button_save_details">Save Details</string>
+    <string name="label_policies">Policies</string>
+    <string name="button_privacy">Privacy</string>
+    <string name="button_terms">Terms of Use</string>
+    <string name="button_returns">Returns</string>
+
+    <!--Payment Tab-->
+    <string name="label_tap_to_edit">Tap to edit your payment details</string>
+    <string name="hint_name_on_card">Name On Card</string>
+    <string name="hint_card_number">Card Number</string>
+    <string name="hint_expiry_date">Expiry Date</string>
+    <string name="hint_security_code">Security Code</string>
+    <string name="button_scan_card">Scan your card</string>
+    <string name="error_invalid_field">Please fill in this field.</string>
+    <string name="label_checkbox_address">Billing address is the same as shipping address</string>
+    <string name="label_or">or</string>
+
+    <!--Shipping Tab-->
+    <string name="hint_first_name">Name</string>
+    <string name="hint_surname">Surname</string>
+    <string name="hint_address_line_1">Address line 1</string>
+    <string name="hint_address_line_2">Address line 2</string>
+    <string name="hint_town_city">Town/City</string>
+    <string name="hint_state_country">State/Country</string>
+    <string name="hint_zipcode">Zipcode/Postcode</string>
+    <string name="hint_phone">Phone</string>
+
+    <string name="text_type">TEXT_TYPE</string>
+    <string name="dummy_terms">
+        Aenean lacinia bibendum nulla sed consectetur. Nullam quis risus eget urna mollis ornare vel eu leo. Aenean lacinia bibendum nulla sed consectetur. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Curabitur blandit tempus porttitor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor link.
+        \n\nMorbi leo risus, porta ac consectetur ac, vestibulum at eros. Maecenas faucibus mollis interdum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh.
+        \n\nDuis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Maecenas faucibus mollis interdum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam quis risus eget urna mollis ornare vel eu leo.
+        \n\nLorem ipsum dolor sit amet, labore sed sem orci. Ante mauris nisl odio faucibus, duis molestie, sed leo sit ac lacus, arcu et eu maecenas massa, id dictum fringilla a quis. Auctor ultrices turpis enim vel nec. Mauris amet. Mattis nec fames accumsan commodo. Dolor nam in a, sed nam non gravida orci erat blandit.
+        \n\nProin id tellus ut vulputate, lacinia nam wisi nibh tempor ullamcorper, eros turpis justo, eget nunc orci ut vel, at libero sit. Varius sed ligula iusto morbi tempor eget. Sollicitudin nam tristique nec, ultrices lorem ligula porttitor dolor a duis. Etiam sapien, ullamcorper suspendisse amet ornare dignissim vestibulum. Vulputate mattis accusantium, ac eos sapien tortor ante nibh condimentum, placerat curabitur pellentesque et, sociis odio curabitur praesent facilisi, tortor posuere volutpat porttitor rutrum felis.
+    </string>
+    <string name="search_hint">Filter products by name</string>
+
+    <string name="title_activity_settings">Settings</string>
+    <string name="product_details">Product Details</string>
+    <!--Google Maps-->
+    <string name="default_info_title">Test Location</string>
+    <string name="default_info_snippet">Ninder shop for clothes</string>
+    <string name="title_forgot_password">Forgot your password</string>
+    <string name="message_forgot_password">An email has been sent with instructions how to reset your password.</string>
+    <string name="ok">OK</string>
+    <string name="notification_title">There\'s a store nearby.</string>
+    <string name="notification_message">Click to open the map.</string>
+    <string name="title_logout">Logout</string>
+    <string name="message_logout">Are you sure you want to logout?</string>
+    <string name="goback">Go Back</string>
+    <string name="error_text">No Products available yet.</string>
+
+
 </resources>

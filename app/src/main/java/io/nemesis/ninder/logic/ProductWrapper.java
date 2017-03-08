@@ -1,17 +1,15 @@
 package io.nemesis.ninder.logic;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import io.nemesis.ninder.logic.model.Category;
-import io.nemesis.ninder.logic.model.Image;
-import io.nemesis.ninder.logic.model.Price;
-import io.nemesis.ninder.logic.model.Product;
-import io.nemesis.ninder.logic.model.ProductEntity;
-import io.nemesis.ninder.logic.model.VariantOption;
-import io.nemesis.ninder.logic.model.Variation;
+import io.nemesis.ninder.model.Category;
+import io.nemesis.ninder.model.Image;
+import io.nemesis.ninder.model.Price;
+import io.nemesis.ninder.model.Product;
+import io.nemesis.ninder.model.ProductEntity;
+import io.nemesis.ninder.model.VariantOption;
+import io.nemesis.ninder.model.Variation;
 
 /**
  * @author ivanpetkov
@@ -99,6 +97,7 @@ public class ProductWrapper {
     private List<Variation> variations;
     private volatile List<Image> galleryImages;
     private volatile Image photo;
+    private boolean is_favourite = false;
 
     private Object lock = new Object();
 
@@ -107,10 +106,11 @@ public class ProductWrapper {
         this.api = api;
 
         this.galleryImages = new ArrayList<>();
-        int size = pojo.getImages().size();
+        if(pojo.getImages()!=null) {
+            int size = pojo.getImages().size();
 
-        this.photo = (0 != size) ? pojo.getImages().get(size -1) : null;
-
+            this.photo = (0 != size) ? pojo.getImages().get(size - 1) : null;
+        }
         if (!hasDetails()) {
             enquireDetails(null);
         } else {
@@ -124,6 +124,12 @@ public class ProductWrapper {
         }
     }
 
+    public boolean getFavourite() {
+        return is_favourite;
+    }
+    public void setFavourite(boolean is_favourite) {
+        this.is_favourite = is_favourite;
+    }
     public Image getPhoto() {
         return photo;
     }

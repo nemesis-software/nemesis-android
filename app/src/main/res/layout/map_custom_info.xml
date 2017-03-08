@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:focusable="false"
+    android:focusableInTouchMode="false">
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/place_image"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"/>
+    <TextView
+        android:text="@string/title_activity_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_toEndOf="@id/place_image"
+        android:textSize="20sp"
+        android:id="@+id/title" />
+
+    <TextView
+        android:text=""
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:textSize="14sp"
+        android:layout_below="@id/title"
+        android:layout_toEndOf="@id/place_image"
+        android:textColor="@color/grey_dark"
+        android:id="@+id/body" />
+</RelativeLayout>

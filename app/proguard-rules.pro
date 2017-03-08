@@ -9,6 +9,16 @@
 
 # Add any project specific keep options here:
 
+#Retrofit
+-dontwarn retrofit.**
+-keep class retrofit.** { *; }
+-keepclasseswithmembers class * {
+    @retrofit2.http.* <methods>;
+}
+
+#Picasso
+-dontwarn com.squareup.okhttp.**
+
 # If your project uses WebView with JS, uncomment the following
 # and specify the fully qualified class name to the JavaScript interface
 # class:

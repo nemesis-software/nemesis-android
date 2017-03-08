@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'io.fabric.tools:gradle:1.+'
+        classpath 'io.fabric.tools:gradle:1.22.0'
     }
 }
 apply plugin: 'com.android.application'
@@ -16,19 +16,18 @@ repositories {
 
 
 android {
-	compileSdkVersion 23
-	buildToolsVersion "23.0.2"
+    compileSdkVersion 25
+    buildToolsVersion "24.0.3"
 
-	def buildNumber = getBuildNumber()
-	def versionNameString = getVersionName(buildNumber)
+//    def buildNumber = getBuildNumber()
+//    def versionNameString = getVersionName(buildNumber)
 
-	defaultConfig {
-		applicationId "io.nemesis.ninder"
-		minSdkVersion 21
-		targetSdkVersion 23
-        versionCode buildNumber
-        versionName versionNameString
-	}
+    defaultConfig {
+        applicationId "io.nemesis.ninder"
+        minSdkVersion 21
+        targetSdkVersion 25
+        versionName "1.0.5-localdev"
+    }
 
     signingConfigs {
         release {
@@ -39,22 +38,23 @@ android {
         }
     }
 
-	buildTypes {
+    buildTypes {
         debug {
             // disable crashlytics
-//            ext.enableCrashlytics = false
+            //ext.enableCrashlytics = true
         }
 
-		release {
+        release {
             signingConfig signingConfigs.release
 
             // enable crashlytics
             ext.enableCrashlytics = true
 
-			minifyEnabled false
-			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-		}
-	}
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
 
     lintOptions {
         abortOnError false
@@ -62,62 +62,77 @@ android {
 }
 
 dependencies {
-	compile fileTree(dir: 'libs', include: ['*.jar'])
-	testCompile 'junit:junit:4.12'
-	compile 'com.squareup.retrofit:retrofit:1.9.0'
-	compile 'com.squareup.picasso:picasso:2.5.2'
-	compile 'com.lorentzos.swipecards:library:1.0.8@aar' //https://github.com/Diolor/Swipecards
-	compile 'com.android.support:support-v13:23.1.1'
-    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    //https://github.com/Diolor/Swipecards
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.6@aar') {
         transitive = true;
     }
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.3.1'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.vinaysshenoy:mugen:1.0.2'
+    compile 'com.lorentzos.swipecards:library:1.0.9@aar'
+    compile 'com.android.support:support-v13:25.0.1'
+    compile 'com.android.support:design:25.0.1'
+    compile 'com.android.support:appcompat-v7:25.0.1'
+    compile 'com.android.support:recyclerview-v7:25.0.1'
+    compile 'com.android.support:cardview-v7:25.0.1'
+    compile 'com.android.support:support-v4:25.0.1'
+    compile 'com.robohorse.pagerbullet:pagerbullet:1.0.7'
+    compile 'io.card:android-sdk:5.4.0'
+    testCompile 'junit:junit:4.12'
+    compile 'com.google.android.gms:play-services-maps:10.0.1'
+    compile 'com.google.android.gms:play-services-location:10.0.1'
+    compile 'com.google.android.gms:play-services-places:10.0.1'
+
 }
 
-def getBuildNumber() {
-    def circleBranch = System.getenv("CIRCLE_BUILD_NUM")
-    if (circleBranch != null && circleBranch.length() > 0) {
-        // CircleCI build number
-        return circleBranch.toInteger();
-    }
-
-    // fallback mechanism
-    return 1
-}
-
-def getBranchName() {
-    def branch = System.getenv("CIRCLE_BRANCH");
-    if (branch != null && branch.length() > 0) {
-        branch = branch.trim();
-    } else {
-        // fallback for local dev
-        branch = "localdev";
-    }
-
-    return branch;
-}
-
-def getBuildNameSuffix() {
-    def branch = getBranchName();
-
-    if ("master".equalsIgnoreCase(branch)) {
-        branch = "";
-    }
-
-    if (branch != null && branch.length() > 0) {
-        return "-$branch";
-    }
-
-    return "";
-}
-
-def getVersionName(def buildNumber) {
-    def nameSuffix = getBuildNameSuffix();
-
-    def versionName = "1.0";
-    if (!("".equalsIgnoreCase(nameSuffix))) {
-        // no name suffix and build number on master branch build
-        versionName = "$versionName.$buildNumber$nameSuffix";
-    }
-
-    return versionName;
-}
+//def getBuildNumber() {
+//    def circleBranch = System.getenv("CIRCLE_BUILD_NUM")
+//    if (circleBranch != null && circleBranch.length() > 0) {
+//        // CircleCI build number
+//        return circleBranch.toInteger();
+//    }
+//
+//    // fallback mechanism
+//    return 1
+//}
+//
+//def getBranchName() {
+//    def branch = System.getenv("CIRCLE_BRANCH");
+//    if (branch != null && branch.length() > 0) {
+//        branch = branch.trim();
+//    } else {
+//        // fallback for local dev
+//        branch = "localdev";
+//    }
+//
+//    return branch;
+//}
+//
+//def getBuildNameSuffix() {
+//    def branch = getBranchName();
+//
+//    if ("master".equalsIgnoreCase(branch)) {
+//        branch = "";
+//    }
+//
+//    if (branch != null && branch.length() > 0) {
+//        return "-$branch";
+//    }
+//
+//    return "";
+//}
+//
+//def getVersionName(def buildNumber) {
+//    def nameSuffix = getBuildNameSuffix();
+//
+//    def versionName = "1.0";
+//    if (!("".equalsIgnoreCase(nameSuffix))) {
+//        // no name suffix and build number on master branch build
+//        versionName = "$versionName.$buildNumber$nameSuffix";
+//    }
+//
+//    return versionName;
+//}

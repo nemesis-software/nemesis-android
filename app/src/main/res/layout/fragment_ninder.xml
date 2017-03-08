@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:swipecards="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/container"
+    tools:context="io.nemesis.ninder.fragment.NinderFragment"
+    android:gravity="center_horizontal">
+
+    <RelativeLayout
+        android:id="@+id/buttons_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_alignParentBottom="true">
+
+        <ImageButton
+            android:id="@+id/button_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/CustomImageButton"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/info_button"
+            android:layout_marginEnd="40dp"
+            android:layout_marginStart="40dp"
+            android:contentDescription="@string/cd_info_btn"
+            />
+
+        <ImageButton
+            android:id="@+id/button_nope"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/CustomImageButton"
+            android:layout_toStartOf="@id/button_info"
+            android:src="@drawable/nope_button"
+            android:layout_centerVertical="true"
+            android:contentDescription="@string/cd_dislike_btn"
+            />
+
+        <ImageButton
+            android:id="@+id/button_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/CustomImageButton"
+            android:layout_toEndOf="@id/button_info"
+            android:contentDescription="@string/cd_like_btn"
+            android:layout_centerVertical="true"
+            android:src="@drawable/like_button"/>
+    </RelativeLayout>
+
+        <TextView
+            android:id="@+id/product_item_sub_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/buttons_container"
+            android:gravity="center"
+            android:textAllCaps="true"
+            android:layout_marginTop="@dimen/text_view_margin"
+            />
+
+        <TextView
+            android:id="@+id/product_item_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_above="@id/product_item_sub_name"
+            style="@style/ProductTitleTextView"
+            android:alpha="100"
+            />
+    <TextView
+        android:id="@+id/noDataTextViewId"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/product_item_name"
+        android:background="@drawable/rounded_rectangle_light"
+        android:text="@string/end_of_product_queue_notification_text"
+        android:gravity="center"
+        android:textAppearance="@style/TextAppearance.Header.Large"
+        android:layout_margin="@dimen/activity_vertical_margin_x2"
+        android:visibility="invisible"
+        />
+
+    <com.lorentzos.flingswipe.SwipeFlingAdapterView
+        android:id="@+id/swipecards"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        swipecards:rotation_degrees="16"
+        swipecards:max_visible="2"
+        swipecards:min_adapter_stack="6"
+        android:paddingBottom="160dp"
+        android:transitionName="@string/transition_name"
+        android:background="@android:color/transparent"
+        android:visibility="visible"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        />
+
+</RelativeLayout>

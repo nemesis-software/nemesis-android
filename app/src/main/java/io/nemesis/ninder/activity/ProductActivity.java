@@ -1,17 +1,14 @@
 package io.nemesis.ninder.activity;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.crashlytics.android.answers.Answers;
-import com.crashlytics.android.answers.ContentViewEvent;
+import com.robohorse.pagerbullet.PagerBullet;
 
 import java.util.List;
 
@@ -22,46 +19,42 @@ import io.nemesis.ninder.logger.TLog;
 import io.nemesis.ninder.logic.NemesisFacadeImpl;
 import io.nemesis.ninder.logic.ProductFacade;
 import io.nemesis.ninder.logic.ProductWrapper;
-import io.nemesis.ninder.logic.model.Image;
-import io.nemesis.ninder.logic.model.Product;
-import io.nemesis.ninder.logic.model.ProductEntity;
+import io.nemesis.ninder.model.Image;
+import io.nemesis.ninder.model.Product;
+import io.nemesis.ninder.model.ProductEntity;
 
-public class ProductActivity extends Activity {
+public class ProductActivity extends AppCompatActivity {
+
     public static final String EXTRA_ITEM;
+    private Toolbar mToolbar;
 
     static {
         String paramPrefix = ProductActivity.class.getName();
-
         EXTRA_ITEM = String.format("%s:%s", paramPrefix, Product.class.getSimpleName()).toUpperCase();
     }
 
-    private ImageButton btnCheckmark;
-    private GalleryPageAdapter galleryPageAdapter;
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product);
-
-        btnCheckmark = (ImageButton) findViewById(R.id.button_checkmark);
-        btnCheckmark.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finishAfterTransition();
-            }
-        });
+        InitializeToolbar();
+    }
+    private void InitializeToolbar(){
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+        mToolbar.setTitle(R.string.product_details);
+        setSupportActionBar(mToolbar);
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
-
         Product product = getIntent().getParcelableExtra(EXTRA_ITEM);
         if (product != null) {
-            Answers.getInstance().logContentView(new ContentViewEvent()
-                    .putContentName(product.getName())
-                    .putContentId(product.getUrl())
-            );
+//            Answers.getInstance().logContentView(new ContentViewEvent()
+//                    .putContentName(product.getName())
+//                    .putContentId(product.getUrl())
+//            );
 
             ProductFacade productFacade = ((NinderApplication) getApplication()).getProductFacade();
             if (productFacade instanceof NemesisFacadeImpl) {
@@ -89,13 +82,15 @@ public class ProductActivity extends Activity {
             }
         }
     }
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                // app icon in action bar clicked; goto parent activity.
-                this.finishAfterTransition();
+                onBackPressed();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -105,11 +100,12 @@ public class ProductActivity extends Activity {
     // init activity_product with selected product
     private void initProductView(ProductWrapper product) {
         List<Image> galleryImages = product.getGalleryImages();
-        TLog.d("initProductView:galleryImages.size(): " + galleryImages.size());
-        galleryPageAdapter = new GalleryPageAdapter(getFragmentManager(), product.getGalleryImages());
-
-        ViewPager productViewPager = (ViewPager) findViewById(R.id.pager);
+        GalleryPageAdapter galleryPageAdapter = new GalleryPageAdapter(getSupportFragmentManager(), product.getGalleryImages());
+        PagerBullet productViewPager = (PagerBullet) findViewById(R.id.pager);
         productViewPager.setAdapter(galleryPageAdapter);
+        productViewPager.setTextSeparatorOffset(5);
+        productViewPager.setIndicatorTintColorScheme(getResources().getColor(R.color.red), getResources().getColor(R.color.grey));
+        if(galleryPageAdapter.getCount()<2) productViewPager.setIndicatorVisibility(false);
 
         TextView productNameView = (TextView) findViewById(R.id.product_name);
         productNameView.setText(product.getName());

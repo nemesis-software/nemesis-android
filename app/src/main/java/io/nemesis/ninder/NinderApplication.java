@@ -1,16 +1,24 @@
 package io.nemesis.ninder;
 
+import android.Manifest;
 import android.app.Application;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.core.CrashlyticsCore;
 import com.squareup.picasso.Picasso;
 
 import io.fabric.sdk.android.Fabric;
 import io.nemesis.ninder.logger.TLog;
 import io.nemesis.ninder.logic.NemesisFacadeImpl;
 import io.nemesis.ninder.logic.ProductFacade;
+import io.nemesis.ninder.services.LocationService;
 
 /**
  * @author Philip
@@ -23,13 +31,17 @@ public class NinderApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+//        Crashlytics crashlyticsKit = new Crashlytics.Builder()
+//                .core(new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
+//                .build();
         Fabric.with(this, new Crashlytics());
 
         initLogger();
 
-        //init stuff here
+        startService(new Intent(this,LocationService.class));
+
         Picasso.Builder builder = new Picasso.Builder(this);
-        builder.loggingEnabled(true);
+        builder.loggingEnabled(false);
         Picasso.setSingletonInstance(builder.build());
 
         mProductFacade = new NemesisFacadeImpl(this);
@@ -69,4 +81,5 @@ public class NinderApplication extends Application {
                 )
         );
     }
+
 }

@@ -4,22 +4,28 @@
     <color name="white">#ffffff</color>
     <color name="white_dusty">#feffff</color>
     <color name="white_dirty">#f5f4f4</color>
-    <color name="grey_light">#dedddc</color>
+    <color name="grey_light">#dadada</color>
     <color name="grey">#aaa9a9</color>
     <color name="grey_dark">#8b8b8b</color>
     <color name="shadow_grey">#a0dedddc</color>
     <color name="black">#000000</color>
     <color name="purple_dark">#181226</color>
     <color name="red">#e61a0f</color>
+    <color name="dark_grey">#515658</color>
+    <color name="purple">#FF4081</color>
+    <color name="dark_tan">#bc8d48</color>
+    <color name="pink">#FB0025</color>
 
     <!-- Material overwrite -->
     <color name="colorPrimary">@color/white_dusty</color>
     <color name="colorPrimaryDark">@color/grey</color>
     <color name="colorBackground">@color/white_dusty</color>
     <color name="colorAccent">@color/red</color>
-    <color name="textColorPrimary">@color/purple_dark</color>
+    <color name="textColorPrimary">@color/white</color>
     <color name="textColorSecondary">@color/grey_dark</color>
 
     <color name="indicator_dot_selected">@color/black</color>
     <color name="indicator_dot_unselected_stroke">@color/grey_light</color>
+    <color name="divider_color">@color/grey_light</color>
+    <color name="discount_color">@color/dark_tan</color>
 </resources>

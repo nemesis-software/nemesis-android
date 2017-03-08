@@ -1,10 +1,13 @@
 package io.nemesis.ninder.logic;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
 import com.crashlytics.android.answers.AddToCartEvent;
 import com.crashlytics.android.answers.Answers;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,14 +17,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import io.nemesis.ninder.R;
 import io.nemesis.ninder.logger.TLog;
-import io.nemesis.ninder.logic.model.Product;
-import io.nemesis.ninder.logic.model.ProductEntity;
-import io.nemesis.ninder.logic.model.VariantOption;
-import io.nemesis.ninder.logic.model.Variation;
-import io.nemesis.ninder.logic.rest.NemesisRetrofitRestClient;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import io.nemesis.ninder.model.Product;
+import io.nemesis.ninder.model.ProductEntity;
+import io.nemesis.ninder.model.VariantOption;
+import io.nemesis.ninder.model.Variation;
+import io.nemesis.ninder.rest.NemesisRetrofitRestClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * @author Philip
@@ -31,7 +34,7 @@ public class NemesisFacadeImpl implements ProductFacade {
 
     private static final String QUERY_PAGE_INDEX = "page";
     private static final String QUERY_PAGE_SIZE = "size";
-
+    private static final String TAG = "RestApi";
     private final String testUserId;
 
     private final ConcurrentHashMap<String, ProductWrapper.ProductState> enquiries;
@@ -48,20 +51,82 @@ public class NemesisFacadeImpl implements ProductFacade {
         enquiries = new ConcurrentHashMap<>();
     }
 
-    @Deprecated
-    /**
-     * only Use {@link #getProductsAsync(int, int, AsyncCallback)}
-     *
-     * {@inheritDoc}
-     */
     @Override
-    public List<Product> getProducts(int size, int page) {
+    public void loginAsync(String email, String password, final AsyncCallback<Void> callback) {
+        retrofitRestClient.getApiService().loginAsync(email, password).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    storeToken(response.headers().get("x-auth-token"));
+                    callback.onSuccess(response.body());
+                }
+                else callback.onFail(new Throwable(response.message()));
+            }
 
-        Map<String, String> query = new HashMap<>();
-        query.put(QUERY_PAGE_INDEX, String.valueOf(page));
-        query.put(QUERY_PAGE_SIZE, String.valueOf(size));
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                callback.onFail(t);
+            }
+        });
+    }
 
-        return retrofitRestClient.getApiService().getProductList(query);
+    @Override
+    public void autoComplete(String term, final AsyncCallback<List<Product>> callback) {
+        retrofitRestClient.getApiService().autoComplete(term).enqueue(new Callback<List<Product>>() {
+            @Override
+            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+                if (response.isSuccessful()) {
+                    callback.onSuccess(response.body());
+                } else {
+                    callback.onFail(new Exception(response.code()+response.message()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Product>> call, Throwable t) {
+                callback.onFail(t);
+            }
+        });
+    }
+
+
+    @Override
+    public void getAccountInfo(final AsyncCallback<Void> callback) {
+        String token = readToken();
+        retrofitRestClient.getApiService().getAccountInfo(token).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    callback.onSuccess(response.body());
+                } else {
+                    callback.onFail(new Exception(response.code() + response.message()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                callback.onFail(t);
+            }
+        });
+    }
+
+    @Override
+    public void getCart(final AsyncCallback<String> callback){
+        retrofitRestClient.getApiService().getCart(readToken()).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+                    callback.onSuccess(response.body());
+                } else {
+                    callback.onFail(new Exception(response.code() + response.message()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                callback.onFail(t);
+            }
+        });
     }
 
     /**
@@ -73,16 +138,16 @@ public class NemesisFacadeImpl implements ProductFacade {
         query.put(QUERY_PAGE_INDEX, String.valueOf(page));
         query.put(QUERY_PAGE_SIZE, String.valueOf(size));
 
-        retrofitRestClient.getApiService().getProductListAsync(query, new Callback<List<Product>>() {
+        retrofitRestClient.getApiService().getProductListAsync(query).enqueue( new Callback<List<Product>>() {
             @Override
-            public void success(List<Product> products, Response response) {
-                if (response.getStatus() == 200) {
+            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+                if (response.isSuccessful()) {
                     if (null != callback) {
-                        if (products.size() == 0) {
+                        if (response.body().size() == 0) {
                             callback.onFail(new EndOfQueueException("End of queue reached"));
                         } else {
                             ArrayList<ProductWrapper> arrayList = new ArrayList<>();
-                            for (Product p : products) {
+                            for (Product p : response.body()) {
                                 arrayList.add(new ProductWrapper(p, NemesisFacadeImpl.this));
                             }
                             callback.onSuccess(arrayList);
@@ -90,15 +155,15 @@ public class NemesisFacadeImpl implements ProductFacade {
                     }
                 } else {
                     if (null != callback) {
-                        callback.onFail(new RuntimeException("bad response: " + response.getStatus()));
+                        callback.onFail(new RuntimeException("bad response: " + response.message()));
                     }
                 }
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(Call<List<Product>> call, Throwable t) {
                 if (null != callback) {
-                    callback.onFail(error);
+                    callback.onFail(t);
                 }
             }
         });
@@ -118,8 +183,8 @@ public class NemesisFacadeImpl implements ProductFacade {
      */
     @Override
     public void dislike(ProductWrapper product, VariantOption variant) {
-        if (null == product || null == product.getProduct() || null == product.getProduct().getUid()) return;
-            enquiries.remove(product.getProduct().getUid());
+        if (null == product || null == product.getProduct() || null == product.getProduct().getCode()) return;
+            enquiries.remove(product.getProduct().getCode());
     }
 
     /**
@@ -167,42 +232,28 @@ public class NemesisFacadeImpl implements ProductFacade {
             throw new IllegalArgumentException();
         }
 
-        final String code = variant.getUid();
+        final String code = variant.getCode();
         if (TextUtils.isEmpty(code)) {
             TLog.w("variant code isEmpty. variant=" + variant);
             return;
         }
+        String token = readToken();
 
-        retrofitRestClient.getApiService().addToWishlistAsync(code, testUserId, new Callback<Void>() {
+        retrofitRestClient.getApiService().addToWishlistAsync(token,code,testUserId).enqueue(new Callback<Void>() {
             @Override
-            public void success(Void aVoid, Response response) {
+            public void onResponse(Call<Void> call, Response<Void> response) {
                 TLog.d("added to wishlist");
                 Answers.getInstance().logAddToCart(new AddToCartEvent()
-                        .putItemId(variant.getUid())
+                        .putItemId(variant.getCode())
                 );
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                // notify
-                TLog.e("cannot add to wishlist:", error);
+            public void onFailure(Call<Void> call, Throwable t) {
+                TLog.e("cannot add to wishlist:", t);
+
             }
         });
-    }
-
-    @Deprecated
-    /**
-     * only Use {@link #enquireAsync(Product, EnquiryCallback)}
-     *
-     * {@inheritDoc}
-     */
-    @Override
-    public ProductEntity enquire(Product product) {
-        // TODO verify that product.uid and productDetail.uid mach
-        // TODO verify that product does have uid value
-        ProductEntity productDetail = retrofitRestClient.getApiService().getProductDetail(product.getUrl());
-//        enquiries.put(product.getUid(), productDetail);
-        return productDetail;
     }
 
     /**
@@ -210,11 +261,11 @@ public class NemesisFacadeImpl implements ProductFacade {
      */
     @Override
     public void enquireAsync(final Product product, final EnquiryCallback callback) {
-        ProductWrapper.ProductState state = enquiries.get(product.getUid());
+        ProductWrapper.ProductState state = enquiries.get(product.getCode());
         if (null == state) {
             // create state and add
             state = new ProductWrapper.ProductState();
-            enquiries.put(product.getUid(), state);
+            enquiries.put(product.getCode(), state);
         } else {
             if (null != callback) {
                 state.addCallback(callback);
@@ -224,29 +275,95 @@ public class NemesisFacadeImpl implements ProductFacade {
         }
 
         state.onEnquiry();
-        retrofitRestClient.getApiService().getProductDetailAsync(product.getUrl(), new Callback<ProductEntity>() {
+        retrofitRestClient.getApiService().getProductDetailAsync(product.getUrl()).enqueue(new Callback<ProductEntity>() {
             @Override
-            public void success(ProductEntity prod, Response response) {
-                ProductWrapper.ProductState productState = enquiries.get(product.getUid());
+            public void onResponse(Call<ProductEntity> call, Response<ProductEntity> response) {
+                ProductWrapper.ProductState productState = enquiries.get(product.getCode());
                 if (null != productState) {
-                    if (response.getStatus() == 200) {
-                        productState.onDetailsFetched(prod);
+                    if (response.isSuccessful()) {
+                        productState.onDetailsFetched(response.body());
                     } else {
-                        productState.onDetailsFetchFailed(new Exception("Bad response code:" + response.getStatus()));
+                        productState.onDetailsFetchFailed(new Exception("Bad response code:" + response.message()));
                     }
                 } else {
                 }
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                ProductWrapper.ProductState productState = enquiries.get(product.getUid());
+            public void onFailure(Call<ProductEntity> call,Throwable t) {
+                ProductWrapper.ProductState productState = enquiries.get(product.getCode());
                 if (null != productState) {
-                    productState.onDetailsFetchFailed(error);
+                    productState.onDetailsFetchFailed(new Exception(t));
                 } else {
                 }
             }
         });
+    }
+    @Override
+    public void savePaymentDetails(JsonObject json, final AsyncCallback<String> callback){
+        retrofitRestClient.getApiService().savePaymentDetails(readToken(),json).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+                    callback.onSuccess(response.body());
+                } else {
+                    callback.onFail(new Exception(response.code() + response.message()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                callback.onFail(t);
+            }
+        });
+    }
+    @Override
+    public void saveDeliveryAddress(JsonObject json, final AsyncCallback<String> callback){
+        retrofitRestClient.getApiService().saveDeliveryAddress(readToken(),json).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+                    callback.onSuccess(response.body());
+                } else {
+                    callback.onFail(new Exception(response.code() + response.message()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                callback.onFail(t);
+            }
+        });
+    }
+    @Override
+    public void updatePassword(JsonObject json, final AsyncCallback<String> callback){
+        retrofitRestClient.getApiService().updatePassword(readToken(),json).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+                    callback.onSuccess(response.body());
+                } else {
+                    callback.onFail(new Exception(response.code() + response.message()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                callback.onFail(t);
+            }
+        });
+    }
+
+    private void storeToken(String token){
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(mContext.getString(R.string.token), token);
+        editor.apply();
+    }
+
+    private String readToken(){
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        return sharedPref.getString(mContext.getString(R.string.token),null);
     }
 
     public ProductWrapper wrap(Product product) {

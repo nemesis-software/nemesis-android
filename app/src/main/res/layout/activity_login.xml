@@ -1,0 +1,95 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context="io.nemesis.ninder.activity.LoginActivity"
+    android:theme="@style/AppTheme"
+    android:background="@drawable/login_background_new"
+    >
+
+    <!--<ImageView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:src="@drawable/login_shadow"-->
+    <!--android:scaleType="fitXY"/>-->
+
+    <!-- Login progress -->
+    <ProgressBar
+        android:id="@+id/login_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+    <ScrollView
+        android:id="@+id/login_form"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="50dp"
+        >
+        <LinearLayout
+            android:id="@+id/email_login_form"
+            android:layout_width="match_parent"
+            android:layout_gravity="bottom"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/EditTextHint"
+                app:errorTextAppearance="@style/MyErrorText">
+            <EditText
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/prompt_email"
+                android:textColor="@color/white"
+                android:padding="10dp"
+                android:inputType="textEmailAddress"
+                android:maxLines="1" />
+            </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/EditTextHint"
+                app:errorTextAppearance="@style/MyErrorText"
+                >
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/prompt_password"
+                android:textColor="@color/white"
+                android:padding="10dp"
+                android:imeActionId="@+id/login"
+                android:imeActionLabel="@string/action_log_in"
+                android:imeOptions="actionUnspecified"
+                android:inputType="textPassword"
+                android:maxLines="1"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <Button
+                android:id="@+id/email_sign_in_button"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/login_button"
+                android:text="@string/action_log_in"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+            <Button
+                android:id="@+id/forgot_password_button"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="@null"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:text="@string/action_forgot_password"
+                android:textSize="15sp"
+                android:textColor="@color/white" />
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
