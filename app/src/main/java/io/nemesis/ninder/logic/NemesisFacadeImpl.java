@@ -233,7 +233,7 @@ public class NemesisFacadeImpl implements ProductFacade {
         }
         String token = readToken();
 
-        NemesisRetrofitRestClient.getApiService().addToWishlistAsync(token,code,testUserId).enqueue(new Callback<Void>() {
+        NemesisRetrofitRestClient.getApiService().addToWishlistAsync(token,code,testUserId,1,"").enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 TLog.d("added to wishlist");
@@ -330,8 +330,8 @@ public class NemesisFacadeImpl implements ProductFacade {
         });
     }
     @Override
-    public void updatePassword(JsonObject json, final AsyncCallback<String> callback){
-        NemesisRetrofitRestClient.getApiService().updatePassword(readToken(),json).enqueue(new Callback<String>() {
+    public void updatePassword(String newPassword, final AsyncCallback<String> callback){
+        NemesisRetrofitRestClient.getApiService().updatePassword(readToken(), newPassword).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()) {

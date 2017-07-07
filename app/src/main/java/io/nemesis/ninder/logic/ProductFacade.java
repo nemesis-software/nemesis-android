@@ -130,5 +130,5 @@ public interface ProductFacade {
     void savePaymentDetails(JsonObject object,AsyncCallback<String> callback);
     void saveDeliveryAddress(JsonObject object,AsyncCallback<String> callback);
     void getCart(AsyncCallback<String> callback);
-    void updatePassword(JsonObject object, AsyncCallback<String> callback);
+    void updatePassword(String newPassword, AsyncCallback<String> callback);
 }

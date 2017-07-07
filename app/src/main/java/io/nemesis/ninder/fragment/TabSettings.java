@@ -121,7 +121,7 @@ public class TabSettings extends Fragment {
             json.addProperty("currentPassword",field_current_password.getText().toString());
             json.addProperty("newPassword",field_new_password.getText().toString());
             json.addProperty("checkNewPassword",field_confirm_password.getText().toString());
-            ((NinderApplication) getActivity().getApplication()).getProductFacade().updatePassword(json, new ProductFacade.AsyncCallback<String>() {
+            ((NinderApplication) getActivity().getApplication()).getProductFacade().updatePassword(field_new_password.getText().toString(), new ProductFacade.AsyncCallback<String>() {
                 @Override
                 public void onSuccess(String items) {
                     Log.d(TAG,items);
