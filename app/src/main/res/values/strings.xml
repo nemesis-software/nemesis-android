@@ -8,9 +8,6 @@
     <string name="label_like">Like</string>
     <string name="label_sale">Sale</string>
 
-    <!--base url-->
-    <string name="rest_api_base_url">https://www.solarapparel.com/en/GB/</string>
-
     <!--<string name="rest_api_test_user">paranoiabla@gmail.com</string>-->
     <string name="rest_api_test_user">hristo.stoyanov@scalefocus.com</string>
     <!--<string name="rest_api_test_user">ipetkov@insitex.com</string>-->

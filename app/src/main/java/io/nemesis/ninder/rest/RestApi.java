@@ -21,10 +21,6 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 
-/**
- * @author Philip
- * @since 2015-11-24
- */
 public interface RestApi {
     // XXX Retrofit supports synchronous and asynchronous request execution.
     // Users define the concrete execution by setting a return type (synchronous) or not (asynchronous) to service methods.

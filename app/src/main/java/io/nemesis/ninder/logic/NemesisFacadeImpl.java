@@ -34,26 +34,20 @@ public class NemesisFacadeImpl implements ProductFacade {
 
     private static final String QUERY_PAGE_INDEX = "page";
     private static final String QUERY_PAGE_SIZE = "size";
-    private static final String TAG = "RestApi";
     private final String testUserId;
 
     private final ConcurrentHashMap<String, ProductWrapper.ProductState> enquiries;
-
     private final Context mContext;
-    // TODO will i need to create 2 instances. One for retrieving data and one to add to wishlist in order not to block execution queues?
-    private final NemesisRetrofitRestClient retrofitRestClient;
 
     public NemesisFacadeImpl(Context context) {
         mContext = context.getApplicationContext();
         testUserId = context.getString(R.string.rest_api_test_user);
-
-        retrofitRestClient = new NemesisRetrofitRestClient(mContext, mContext.getString(R.string.rest_api_base_url));
         enquiries = new ConcurrentHashMap<>();
     }
 
     @Override
     public void loginAsync(String email, String password, final AsyncCallback<Void> callback) {
-        retrofitRestClient.getApiService().loginAsync(email, password).enqueue(new Callback<Void>() {
+        NemesisRetrofitRestClient.getApiService().loginAsync(email, password).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
@@ -72,7 +66,7 @@ public class NemesisFacadeImpl implements ProductFacade {
 
     @Override
     public void autoComplete(String term, final AsyncCallback<List<Product>> callback) {
-        retrofitRestClient.getApiService().autoComplete(term).enqueue(new Callback<List<Product>>() {
+        NemesisRetrofitRestClient.getApiService().autoComplete(term).enqueue(new Callback<List<Product>>() {
             @Override
             public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
                 if (response.isSuccessful()) {
@@ -93,7 +87,7 @@ public class NemesisFacadeImpl implements ProductFacade {
     @Override
     public void getAccountInfo(final AsyncCallback<Void> callback) {
         String token = readToken();
-        retrofitRestClient.getApiService().getAccountInfo(token).enqueue(new Callback<Void>() {
+        NemesisRetrofitRestClient.getApiService().getAccountInfo(token).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
@@ -112,7 +106,7 @@ public class NemesisFacadeImpl implements ProductFacade {
 
     @Override
     public void getCart(final AsyncCallback<String> callback){
-        retrofitRestClient.getApiService().getCart(readToken()).enqueue(new Callback<String>() {
+        NemesisRetrofitRestClient.getApiService().getCart(readToken()).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()) {
@@ -138,7 +132,7 @@ public class NemesisFacadeImpl implements ProductFacade {
         query.put(QUERY_PAGE_INDEX, String.valueOf(page));
         query.put(QUERY_PAGE_SIZE, String.valueOf(size));
 
-        retrofitRestClient.getApiService().getProductListAsync(query).enqueue( new Callback<List<Product>>() {
+        NemesisRetrofitRestClient.getApiService().getProductListAsync(query).enqueue( new Callback<List<Product>>() {
             @Override
             public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
                 if (response.isSuccessful()) {
@@ -239,7 +233,7 @@ public class NemesisFacadeImpl implements ProductFacade {
         }
         String token = readToken();
 
-        retrofitRestClient.getApiService().addToWishlistAsync(token,code,testUserId).enqueue(new Callback<Void>() {
+        NemesisRetrofitRestClient.getApiService().addToWishlistAsync(token,code,testUserId).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 TLog.d("added to wishlist");
@@ -275,7 +269,7 @@ public class NemesisFacadeImpl implements ProductFacade {
         }
 
         state.onEnquiry();
-        retrofitRestClient.getApiService().getProductDetailAsync(product.getUrl()).enqueue(new Callback<ProductEntity>() {
+        NemesisRetrofitRestClient.getApiService().getProductDetailAsync(product.getUrl()).enqueue(new Callback<ProductEntity>() {
             @Override
             public void onResponse(Call<ProductEntity> call, Response<ProductEntity> response) {
                 ProductWrapper.ProductState productState = enquiries.get(product.getCode());
@@ -301,7 +295,7 @@ public class NemesisFacadeImpl implements ProductFacade {
     }
     @Override
     public void savePaymentDetails(JsonObject json, final AsyncCallback<String> callback){
-        retrofitRestClient.getApiService().savePaymentDetails(readToken(),json).enqueue(new Callback<String>() {
+        NemesisRetrofitRestClient.getApiService().savePaymentDetails(readToken(),json).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()) {
@@ -319,7 +313,7 @@ public class NemesisFacadeImpl implements ProductFacade {
     }
     @Override
     public void saveDeliveryAddress(JsonObject json, final AsyncCallback<String> callback){
-        retrofitRestClient.getApiService().saveDeliveryAddress(readToken(),json).enqueue(new Callback<String>() {
+        NemesisRetrofitRestClient.getApiService().saveDeliveryAddress(readToken(),json).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()) {
@@ -337,7 +331,7 @@ public class NemesisFacadeImpl implements ProductFacade {
     }
     @Override
     public void updatePassword(JsonObject json, final AsyncCallback<String> callback){
-        retrofitRestClient.getApiService().updatePassword(readToken(),json).enqueue(new Callback<String>() {
+        NemesisRetrofitRestClient.getApiService().updatePassword(readToken(),json).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()) {
