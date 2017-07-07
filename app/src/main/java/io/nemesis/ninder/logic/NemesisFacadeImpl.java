@@ -34,6 +34,7 @@ public class NemesisFacadeImpl implements ProductFacade {
 
     private static final String QUERY_PAGE_INDEX = "page";
     private static final String QUERY_PAGE_SIZE = "size";
+    private static final String HEADER_TOKEN = "X-Nemesis-Token";
     private final String testUserId;
 
     private final ConcurrentHashMap<String, ProductWrapper.ProductState> enquiries;
@@ -51,7 +52,7 @@ public class NemesisFacadeImpl implements ProductFacade {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    storeToken(response.headers().get("x-auth-token"));
+                    storeToken(response.headers().get(HEADER_TOKEN));
                     callback.onSuccess(response.body());
                 }
                 else callback.onFail(new Throwable(response.message()));
@@ -231,9 +232,7 @@ public class NemesisFacadeImpl implements ProductFacade {
             TLog.w("variant code isEmpty. variant=" + variant);
             return;
         }
-        String token = readToken();
-
-        NemesisRetrofitRestClient.getApiService().addToWishlistAsync(token,code,testUserId,1,"").enqueue(new Callback<Void>() {
+        NemesisRetrofitRestClient.getApiService().addToWishlistAsync(code,testUserId,1,"").enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 TLog.d("added to wishlist");
@@ -331,7 +330,8 @@ public class NemesisFacadeImpl implements ProductFacade {
     }
     @Override
     public void updatePassword(String newPassword, final AsyncCallback<String> callback){
-        NemesisRetrofitRestClient.getApiService().updatePassword(readToken(), newPassword).enqueue(new Callback<String>() {
+        String token = readToken();
+        NemesisRetrofitRestClient.getApiService().updatePassword(token, newPassword).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()) {
@@ -351,13 +351,13 @@ public class NemesisFacadeImpl implements ProductFacade {
     private void storeToken(String token){
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(mContext.getString(R.string.token), token);
+        editor.putString(HEADER_TOKEN, token);
         editor.apply();
     }
 
     private String readToken(){
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
-        return sharedPref.getString(mContext.getString(R.string.token),null);
+        return sharedPref.getString(HEADER_TOKEN, null);
     }
 
     public ProductWrapper wrap(Product product) {

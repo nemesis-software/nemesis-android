@@ -51,13 +51,12 @@ public interface RestApi {
 
     @FormUrlEncoded
     @POST("facade/wishlist/entry/add")
-    Call<Void> addToWishlistAsync(@Header("X-Auth-Token") String token,
-                                  @Field("wishlistCode") String wishlistCode,
+    Call<Void> addToWishlistAsync(@Field("wishlistCode") String wishlistCode,
                                   @Field("productCode") String productCode,
                                   @Field("desired") int desired,
                                   @Field("comment") String comment);
 
     @FormUrlEncoded
     @POST("facade/customer/updatePassword")
-    Call<String> updatePassword(@Header("X-Auth-Token") String token, @Field("newPassword") String newPassword);
+    Call<String> updatePassword(@Field("token") String token, @Field("newPassword") String newPassword);
 }

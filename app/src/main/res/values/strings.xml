@@ -35,7 +35,6 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="token">x_auth_token</string>
     <string name="email">email</string>
     <string name="default_name">john.doe@solarapparel.com</string>
 
