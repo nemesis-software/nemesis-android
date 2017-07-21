@@ -8,6 +8,8 @@ import java.util.Map;
 
 import io.nemesis.ninder.model.Product;
 import io.nemesis.ninder.model.ProductEntity;
+import io.nemesis.ninder.rest.data.UpdatePasswordData;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
@@ -56,7 +58,9 @@ public interface RestApi {
                                   @Field("desired") int desired,
                                   @Field("comment") String comment);
 
-    @FormUrlEncoded
     @POST("facade/customer/updatePassword")
-    Call<String> updatePassword(@Field("token") String token, @Field("newPassword") String newPassword);
+    @Headers({"Content-Type: application/json;charset=UTF-8",
+            "Accept: application/json;charset=UTF-8"})
+    Call<String> updatePassword(@Body UpdatePasswordData data);
+
 }

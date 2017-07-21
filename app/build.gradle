@@ -1,6 +1,8 @@
 buildscript {
     repositories {
-        maven { url 'https://maven.fabric.io/public' }
+        maven {
+            url 'https://maven.fabric.io/public'
+        }
     }
 
     dependencies {
@@ -9,9 +11,11 @@ buildscript {
 }
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
+apply plugin: 'maven'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
+    maven { url "https://jitpack.io" }
 }
 
 
@@ -62,14 +66,41 @@ android {
     }
 }
 
+task writeNewPom {
+    doLast {
+        pom {
+            project {
+                inceptionYear '2008'
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution 'repo'
+                    }
+                }
+            }
+        }.writeTo("$buildDir/pom.xml")
+    }
+}
+
+task mappings {
+    doLast {
+        println conf2ScopeMappings.mappings
+    }
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     //https://github.com/Diolor/Swipecards
     compile('com.crashlytics.sdk.android:crashlytics:2.6.6@aar') {
         transitive = true;
     }
+    compile 'com.github.mrmike:Ok2Curl:0.3.1'
+
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+    compile 'com.squareup.retrofit2:converter-scalars:2.3.0'
+
     compile 'com.squareup.okhttp3:logging-interceptor:3.8.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.vinaysshenoy:mugen:1.0.2'
@@ -88,6 +119,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-places:10.2.6'
 
 }
+
 
 //def getBuildNumber() {
 //    def circleBranch = System.getenv("CIRCLE_BUILD_NUM")

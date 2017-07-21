@@ -4,11 +4,18 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Base64;
 
 import com.crashlytics.android.answers.AddToCartEvent;
 import com.crashlytics.android.answers.Answers;
 import com.google.gson.JsonObject;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +29,9 @@ import io.nemesis.ninder.model.ProductEntity;
 import io.nemesis.ninder.model.VariantOption;
 import io.nemesis.ninder.model.Variation;
 import io.nemesis.ninder.rest.NemesisRetrofitRestClient;
+import io.nemesis.ninder.rest.data.UpdatePasswordData;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -331,7 +341,9 @@ public class NemesisFacadeImpl implements ProductFacade {
     @Override
     public void updatePassword(String newPassword, final AsyncCallback<String> callback){
         String token = readToken();
-        NemesisRetrofitRestClient.getApiService().updatePassword(token, newPassword).enqueue(new Callback<String>() {
+        String encodedToken = Base64.encodeToString(token.getBytes(Charset.forName("UTF-8")), Base64.NO_WRAP);
+        UpdatePasswordData data = new UpdatePasswordData(encodedToken, newPassword);
+        NemesisRetrofitRestClient.getApiService().updatePassword(data).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()) {
