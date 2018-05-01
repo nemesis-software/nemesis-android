@@ -64,7 +64,7 @@ public class ProductActivity extends AppCompatActivity {
                 } else {
                     wrapped.enquireDetails(new ProductFacade.EnquiryCallback() {
                         @Override
-                        public void onSuccess(ProductEntity products) {
+                        public void onSuccess(Product products) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {

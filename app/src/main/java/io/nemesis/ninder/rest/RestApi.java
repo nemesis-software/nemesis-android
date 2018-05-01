@@ -33,56 +33,55 @@ public interface RestApi {
             "Accept: application/json;charset=UTF-8",
             "Content-Type: application/json;charset=UTF-8"
     })
-    @GET("api/login")
+    @GET("facade/auth")
     Call<Void> loginAsync(@Header("X-Nemesis-Username") String email, @Header("X-Nemesis-Password") String password);
 
-    @GET("api/search/autocomplete")
-    Call<List<Product>> autoComplete(@Query("term") String term);
+    @GET("facade/search/autocomplete")
+    Call<List<Product>> autoComplete(@QueryMap Map<String, String> query);
 
     @GET("api/my-account/profile")
-    Call<Void> getAccountInfo(@Header("X-Auth-Token") String token);
+    Call<Void> getAccountInfo(@Header("X-Nemesis-Token") String token);
+
     @Headers({
             "Accept: application/json;charset=UTF-8",
             "Content-Type: application/json;charset=UTF-8"
     })
-
-    @GET("api/c/womens")
+    @GET("facade/search")
     Call<List<Product>> getProductListAsync(@QueryMap Map<String, String> query);
 
-    @GET("api/cart")
-    Call<String> getCart(@Header("X-Auth-Token") String token);
+    @GET("facade/bundle/cart/current")
+    Call<String> getCart(@Header("X-Nemesis-Token") String token);
 
     @Headers({
             "Accept: application/json;charset=UTF-8",
             "Content-Type: application/json;charset=UTF-8"
     })
-    @POST("api/checkout/createDeliveryAddress")
-    Call<String> saveDeliveryAddress(@Header("X-Auth-Token") String token, @Body JsonObject json);
+    @PUT("facade/checkout/deliveryAddress")
+    Call<String> saveDeliveryAddress(@Header("X-Nemesis-Token") String token, @Body JsonObject json);
 
     @Headers({
             "Accept: application/json;charset=UTF-8",
             "Content-Type: application/json;charset=UTF-8"
     })
-    @POST("api/checkout/createPaymentDetails")
-    Call<String> savePaymentDetails(@Header("X-Auth-Token") String token, @Body JsonObject json);
+    @PUT("facade/checkout/paymentDetails")
+    Call<String> savePaymentDetails(@Header("X-Nemesis-Token") String token, @Body JsonObject json);
 
 
-    @GET("api{productURL}")
-    Call<ProductEntity> getProductDetailAsync(@Path(value="productURL", encoded=false) String url);
+    @GET("facade/product/{productCode}")
+    Call<Product> getProductDetailAsync(@Path(value="productCode") String productCode, @Query("projection") String projection);
 
     // XXX service methods: Must have either a return type or Call as last argument.
     // XXX java.lang.NullPointerException: Attempt to invoke interface method
     // 'void retrofit2.Call.failure(retrofit2.RetrofitError)' on a null object reference
     // asys if the caller does not care about the result of the call
     //@FormUrlEncoded
-    @FormUrlEncoded
-    @POST("wishlist/entry/add")
-    Call<Void> addToWishlistAsync(@Header("X-Auth-Token") String token, @Field("productCode") String productCode, @Field("userId") String userId);
+    @POST("facade/wishlist/entry/add")
+    Call<Void> addToWishlistAsync(@Header("X-Nemesis-Token") String token, @Query("productCode") String productCode, @Query("wishlistCode") String wishlistCode);
 
     @Headers({
             "Accept: application/json;charset=UTF-8",
             "Content-Type: application/json;charset=UTF-8"
     })
-    @PUT("api/my-account/update-password")
-    Call<String> updatePassword(@Header("X-Auth-Token") String token,@Body JsonObject json);
+    @POST("facade/customer/update-password")
+    Call<String> updatePassword(@Header("X-Nemesis-Token") String token,@Body JsonObject json);
 }

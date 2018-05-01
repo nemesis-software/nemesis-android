@@ -3,10 +3,12 @@ package io.nemesis.ninder.logic;
 import com.google.gson.JsonObject;
 
 import java.util.List;
+import java.util.Map;
 
 import io.nemesis.ninder.model.Product;
 import io.nemesis.ninder.model.ProductEntity;
 import io.nemesis.ninder.model.VariantOption;
+import retrofit2.http.QueryMap;
 
 /**
  * @author Philip
@@ -39,9 +41,9 @@ public interface ProductFacade {
     interface EnquiryCallback {
         /**
          * only called when {@link #enquireAsync(Product, EnquiryCallback)} fetched new data
-         * @param products data retrieved by the call
+         * @param product data retrieved by the call
          */
-        void onSuccess(ProductEntity products);
+        void onSuccess(Product product);
 
         /**
          * called when {@link #enquireAsync(Product, EnquiryCallback)} fetched no data, regardless the cause
@@ -70,9 +72,9 @@ public interface ProductFacade {
      * @param callback called when method completes its execution,
      *                 this should be called on the main thread
      *
-     * @param term term
+     * @param query autocomplete query
      */
-    void autoComplete(String term, AsyncCallback<List<Product>> callback);
+    void autoComplete(String query, AsyncCallback<List<Product>> callback);
 
 
     /**

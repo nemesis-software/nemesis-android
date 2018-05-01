@@ -57,7 +57,7 @@ public class NemesisFacadeImpl implements ProductFacade {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    storeToken(response.headers().get("x-auth-token"));
+                    storeToken(response.headers().get("X-Nemesis-Token"));
                     callback.onSuccess(response.body());
                 }
                 else callback.onFail(new Throwable(response.message()));
@@ -72,7 +72,15 @@ public class NemesisFacadeImpl implements ProductFacade {
 
     @Override
     public void autoComplete(String term, final AsyncCallback<List<Product>> callback) {
-        retrofitRestClient.getApiService().autoComplete(term).enqueue(new Callback<List<Product>>() {
+
+        Map<String, String> query = new HashMap<>();
+        query.put(QUERY_PAGE_INDEX, "0");
+        query.put(QUERY_PAGE_SIZE, "10");
+        query.put("categoryCode", "womens");
+        query.put("queryName", "autocomplete");
+        query.put("q", term);
+
+        retrofitRestClient.getApiService().autoComplete(query).enqueue(new Callback<List<Product>>() {
             @Override
             public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
                 if (response.isSuccessful()) {
@@ -137,6 +145,9 @@ public class NemesisFacadeImpl implements ProductFacade {
         Map<String, String> query = new HashMap<>();
         query.put(QUERY_PAGE_INDEX, String.valueOf(page));
         query.put(QUERY_PAGE_SIZE, String.valueOf(size));
+        query.put("categoryCode", "womens");
+        query.put("queryName", "productSearch");
+        query.put("projection", "com.nemesis.platform.module.commerce.facade.search.dto.ProductFacetSearchPageDtoDefinition");
 
         retrofitRestClient.getApiService().getProductListAsync(query).enqueue( new Callback<List<Product>>() {
             @Override
@@ -199,35 +210,20 @@ public class NemesisFacadeImpl implements ProductFacade {
 
         TLog.d("addToWishlist: " + prod.getUrl());
 
-        List<Variation> variations = wrapper.getVariations();
-        Variation variation = null != variations && !variations.isEmpty() ? variations.get(0) : null;
+        enquireAsync(prod, new EnquiryCallback() {
+            @Override
+            public void onSuccess(Product entity) {
+                addToWishList(entity);
+            }
 
-        if (variation != null) {
-            addToWishList(variation);
-        } else {
-            enquireAsync(prod, new EnquiryCallback() {
-                @Override
-                public void onSuccess(ProductEntity entity) {
-                    List<Variation> variations = entity.getVariants();
-                    Variation variation = null != variations && !variations.isEmpty() ? variations.get(0) : null;
-
-                    if (variation != null) {
-                        addToWishList(variation);
-                    } else {
-                        Product product = entity.getProduct();
-                        TLog.w("missing variant for product: " + product.getUrl());
-                    }
-                }
-
-                @Override
-                public void onFail(Exception e) {
-                    TLog.e("ERROR on product details call:", e);
-                }
-            });
-        }
+            @Override
+            public void onFail(Exception e) {
+                TLog.e("ERROR on product details call:", e);
+            }
+        });
     }
 
-    private void addToWishList(final Variation variant) {
+    private void addToWishList(final Product variant) {
         if (variant == null) {
             throw new IllegalArgumentException();
         }
@@ -239,7 +235,7 @@ public class NemesisFacadeImpl implements ProductFacade {
         }
         String token = readToken();
 
-        retrofitRestClient.getApiService().addToWishlistAsync(token,code,testUserId).enqueue(new Callback<Void>() {
+        retrofitRestClient.getApiService().addToWishlistAsync(token,code,null).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 TLog.d("added to wishlist");
@@ -275,9 +271,9 @@ public class NemesisFacadeImpl implements ProductFacade {
         }
 
         state.onEnquiry();
-        retrofitRestClient.getApiService().getProductDetailAsync(product.getUrl()).enqueue(new Callback<ProductEntity>() {
+        retrofitRestClient.getApiService().getProductDetailAsync(product.getCode(), "com.nemesis.platform.module.commerce.facade.order.dto.CartEntryProductDtoDefinition").enqueue(new Callback<Product>() {
             @Override
-            public void onResponse(Call<ProductEntity> call, Response<ProductEntity> response) {
+            public void onResponse(Call<Product> call, Response<Product> response) {
                 ProductWrapper.ProductState productState = enquiries.get(product.getCode());
                 if (null != productState) {
                     if (response.isSuccessful()) {
@@ -290,7 +286,7 @@ public class NemesisFacadeImpl implements ProductFacade {
             }
 
             @Override
-            public void onFailure(Call<ProductEntity> call,Throwable t) {
+            public void onFailure(Call<Product> call,Throwable t) {
                 ProductWrapper.ProductState productState = enquiries.get(product.getCode());
                 if (null != productState) {
                     productState.onDetailsFetchFailed(new Exception(t));

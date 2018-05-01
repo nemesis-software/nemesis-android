@@ -20,7 +20,7 @@ public class ProductWrapper {
     public static class ProductState {
 
         private volatile int status;
-        private ProductEntity data;
+        private Product data;
         private final List<ProductFacade.EnquiryCallback> callbacks = new ArrayList<>();
         private Exception lastError = new Exception("unknown error");
         private Object lock = new Object();
@@ -45,7 +45,7 @@ public class ProductWrapper {
             this.status = newStatus;
         }
 
-        public synchronized void onDetailsFetched(ProductEntity entity) {
+        public synchronized void onDetailsFetched(Product entity) {
             synchronized (lock) {
                 updateStatus(1);
                 this.data = entity;
@@ -194,7 +194,7 @@ public class ProductWrapper {
 
     public boolean hasDetails() {
         return variations != null && !variations.isEmpty();
-//        return null != pojo.getVariantType() && null != pojo.getVariantOptions() && pojo.getVariantOptions().size() > 0;
+//        return null != pojo.getVariantType() && null != pojo.getVariants() && pojo.getVariants().size() > 0;
     }
 
     public List<Variation> getVariations() {
@@ -243,9 +243,9 @@ public class ProductWrapper {
     public void enquireDetails(final ProductFacade.EnquiryCallback callback) {
         api.enquireAsync(pojo, new ProductFacade.EnquiryCallback() {
             @Override
-            public void onSuccess(ProductEntity product) {
-                pojo = product.getProduct();
-                variations = product.getVariants();
+            public void onSuccess(Product product) {
+                pojo = product;
+                //variations = product.getVariants();
                 sortImages();
                 if (null != callback) {
                     callback.onSuccess(product);
