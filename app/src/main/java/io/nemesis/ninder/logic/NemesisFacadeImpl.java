@@ -76,7 +76,7 @@ public class NemesisFacadeImpl implements ProductFacade {
         Map<String, String> query = new HashMap<>();
         query.put(QUERY_PAGE_INDEX, "0");
         query.put(QUERY_PAGE_SIZE, "10");
-        query.put("categoryCode", "womens");
+        query.put("searchType", "product");
         query.put("queryName", "autocomplete");
         query.put("q", term);
 

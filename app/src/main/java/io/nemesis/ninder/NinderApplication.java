@@ -1,17 +1,10 @@
 package io.nemesis.ninder;
 
-import android.Manifest;
 import android.app.Application;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
-import com.crashlytics.android.answers.Answers;
-import com.crashlytics.android.core.CrashlyticsCore;
 import com.squareup.picasso.Picasso;
 
 import io.fabric.sdk.android.Fabric;

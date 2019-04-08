@@ -9,7 +9,7 @@
     <string name="label_sale">Sale</string>
 
     <!--base url-->
-    <string name="rest_api_base_url">http://10.51.8.44/storefront/</string>
+    <string name="rest_api_base_url">https://www.solarapparel.com/</string>
 
     <!--<string name="rest_api_test_user">paranoiabla@gmail.com</string>-->
     <string name="rest_api_test_user">hristo.stoyanov@scalefocus.com</string>
