@@ -147,7 +147,7 @@ public class NemesisFacadeImpl implements ProductFacade {
         query.put(QUERY_PAGE_SIZE, String.valueOf(size));
         query.put("categoryCode", "womens");
         query.put("queryName", "productSearch");
-        query.put("projection", "com.nemesis.platform.module.commerce.facade.search.dto.ProductFacetSearchPageDtoDefinition");
+        query.put("projection", "io.nemesis.platform.module.commerce.facade.search.dto.ProductFacetSearchPageDtoDefinition");
 
         retrofitRestClient.getApiService().getProductListAsync(query).enqueue( new Callback<List<Product>>() {
             @Override
@@ -271,7 +271,7 @@ public class NemesisFacadeImpl implements ProductFacade {
         }
 
         state.onEnquiry();
-        retrofitRestClient.getApiService().getProductDetailAsync(product.getCode(), "com.nemesis.platform.module.commerce.facade.order.dto.CartEntryProductDtoDefinition").enqueue(new Callback<Product>() {
+        retrofitRestClient.getApiService().getProductDetailAsync(product.getCode(), "io.nemesis.platform.module.commerce.facade.order.dto.CartEntryProductDtoDefinition").enqueue(new Callback<Product>() {
             @Override
             public void onResponse(Call<Product> call, Response<Product> response) {
                 ProductWrapper.ProductState productState = enquiries.get(product.getCode());
