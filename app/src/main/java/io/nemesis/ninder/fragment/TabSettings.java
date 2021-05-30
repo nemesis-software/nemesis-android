@@ -2,25 +2,21 @@ package io.nemesis.ninder.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TextInputEditText;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
+import com.google.android.material.textfield.TextInputEditText;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.google.gson.JsonObject;
-
-import java.util.List;
 
 import io.nemesis.ninder.NinderApplication;
 import io.nemesis.ninder.R;
 import io.nemesis.ninder.activity.TextActivity;
 import io.nemesis.ninder.logic.ProductFacade;
-import io.nemesis.ninder.model.Product;
 import io.nemesis.ninder.util.Util;
 
 public class TabSettings extends Fragment {

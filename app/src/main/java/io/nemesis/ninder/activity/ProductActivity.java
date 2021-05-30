@@ -1,10 +1,9 @@
 package io.nemesis.ninder.activity;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Html;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -15,13 +14,11 @@ import java.util.List;
 import io.nemesis.ninder.NinderApplication;
 import io.nemesis.ninder.R;
 import io.nemesis.ninder.adapter.GalleryPageAdapter;
-import io.nemesis.ninder.logger.TLog;
 import io.nemesis.ninder.logic.NemesisFacadeImpl;
 import io.nemesis.ninder.logic.ProductFacade;
 import io.nemesis.ninder.logic.ProductWrapper;
 import io.nemesis.ninder.model.Image;
 import io.nemesis.ninder.model.Product;
-import io.nemesis.ninder.model.ProductEntity;
 
 public class ProductActivity extends AppCompatActivity {
 

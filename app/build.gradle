@@ -25,6 +25,11 @@ repositories {
 android {
     compileSdkVersion 28
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     //buildToolsVersion "24.0.3"
 
 //    def buildNumber = getBuildNumber()
@@ -81,12 +86,12 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.vinaysshenoy:mugen:1.0.2'
     compile 'com.lorentzos.swipecards:library:1.0.9@aar'
-    compile 'com.android.support:support-v13:28.0.0'
-    compile 'com.android.support:design:28.0.0'
-    compile 'com.android.support:appcompat-v7:28.0.0'
-    compile 'com.android.support:recyclerview-v7:28.0.0'
-    compile 'com.android.support:cardview-v7:28.0.0'
-    compile 'com.android.support:support-v4:28.0.0'
+    compile 'androidx.legacy:legacy-support-v13:1.0.0'
+    compile 'com.google.android.material:material:1.0.0'
+    compile 'androidx.appcompat:appcompat:1.0.0'
+    compile 'androidx.recyclerview:recyclerview:1.0.0'
+    compile 'androidx.cardview:cardview:1.0.0'
+    compile 'androidx.legacy:legacy-support-v4:1.0.0'
     compile 'com.robohorse.pagerbullet:pagerbullet:1.0.7'
     compile 'io.card:android-sdk:5.4.0'
     testImplementation 'junit:junit:4.12'
@@ -96,8 +101,8 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:28.0.1')
     // Declare the dependencies for the Firebase Cloud Messaging and Analytics libraries
     // When using the BoM, you don't specify versions in Firebase library dependencies
-    //implementation 'com.google.firebase:firebase-messaging'
-    //implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-messaging'
+    implementation 'com.google.firebase:firebase-analytics'
 }
 
 //def getBuildNumber() {

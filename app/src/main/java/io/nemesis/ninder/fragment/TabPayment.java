@@ -1,11 +1,10 @@
 package io.nemesis.ninder.fragment;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TextInputEditText;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
+import com.google.android.material.textfield.TextInputEditText;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,14 +12,12 @@ import android.widget.Button;
 
 import com.google.gson.JsonObject;
 
-import java.util.List;
 import java.util.Random;
 
 import io.card.payment.CardIOActivity;
 import io.card.payment.CreditCard;
 import io.nemesis.ninder.NinderApplication;
 import io.nemesis.ninder.R;
-import io.nemesis.ninder.logic.NemesisFacadeImpl;
 import io.nemesis.ninder.logic.ProductFacade;
 import io.nemesis.ninder.util.Util;
 
