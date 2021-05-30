@@ -19,6 +19,8 @@ import io.nemesis.ninder.R;
 import io.nemesis.ninder.logger.TLog;
 import io.nemesis.ninder.model.Product;
 import io.nemesis.ninder.model.ProductEntity;
+import io.nemesis.ninder.model.ProductFacetSearchPageDto;
+import io.nemesis.ninder.model.SearchHit;
 import io.nemesis.ninder.model.VariantOption;
 import io.nemesis.ninder.model.Variation;
 import io.nemesis.ninder.rest.NemesisRetrofitRestClient;
@@ -71,7 +73,7 @@ public class NemesisFacadeImpl implements ProductFacade {
     }
 
     @Override
-    public void autoComplete(String term, final AsyncCallback<List<Product>> callback) {
+    public void autoComplete(String term, final AsyncCallback<ProductFacetSearchPageDto> callback) {
 
         Map<String, String> query = new HashMap<>();
         query.put(QUERY_PAGE_INDEX, "0");
@@ -80,9 +82,9 @@ public class NemesisFacadeImpl implements ProductFacade {
         query.put("queryName", "autocomplete");
         query.put("q", term);
 
-        retrofitRestClient.getApiService().autoComplete(query).enqueue(new Callback<List<Product>>() {
+        retrofitRestClient.getApiService().autoComplete(query).enqueue(new Callback<ProductFacetSearchPageDto>() {
             @Override
-            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+            public void onResponse(Call<ProductFacetSearchPageDto> call, Response<ProductFacetSearchPageDto> response) {
                 if (response.isSuccessful()) {
                     callback.onSuccess(response.body());
                 } else {
@@ -91,7 +93,7 @@ public class NemesisFacadeImpl implements ProductFacade {
             }
 
             @Override
-            public void onFailure(Call<List<Product>> call, Throwable t) {
+            public void onFailure(Call<ProductFacetSearchPageDto> call, Throwable t) {
                 callback.onFail(t);
             }
         });
@@ -149,16 +151,16 @@ public class NemesisFacadeImpl implements ProductFacade {
         query.put("queryName", "productSearch");
         query.put("projection", "io.nemesis.platform.module.commerce.facade.search.dto.ProductFacetSearchPageDtoDefinition");
 
-        retrofitRestClient.getApiService().getProductListAsync(query).enqueue( new Callback<List<Product>>() {
+        retrofitRestClient.getApiService().getProductListAsync(query).enqueue( new Callback<ProductFacetSearchPageDto>() {
             @Override
-            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+            public void onResponse(Call<ProductFacetSearchPageDto> call, Response<ProductFacetSearchPageDto> response) {
                 if (response.isSuccessful()) {
                     if (null != callback) {
-                        if (response.body().size() == 0) {
+                        if (response.body().getContent().size() == 0) {
                             callback.onFail(new EndOfQueueException("End of queue reached"));
                         } else {
                             ArrayList<ProductWrapper> arrayList = new ArrayList<>();
-                            for (Product p : response.body()) {
+                            for (SearchHit p : response.body().getContent()) {
                                 arrayList.add(new ProductWrapper(p, NemesisFacadeImpl.this));
                             }
                             callback.onSuccess(arrayList);
@@ -172,7 +174,7 @@ public class NemesisFacadeImpl implements ProductFacade {
             }
 
             @Override
-            public void onFailure(Call<List<Product>> call, Throwable t) {
+            public void onFailure(Call<ProductFacetSearchPageDto> call, Throwable t) {
                 if (null != callback) {
                     callback.onFail(t);
                 }

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import io.nemesis.ninder.model.Product;
 import io.nemesis.ninder.model.ProductEntity;
+import io.nemesis.ninder.model.ProductFacetSearchPageDto;
 import io.nemesis.ninder.model.VariantOption;
 import retrofit2.http.QueryMap;
 
@@ -74,7 +75,7 @@ public interface ProductFacade {
      *
      * @param query autocomplete query
      */
-    void autoComplete(String query, AsyncCallback<List<Product>> callback);
+    void autoComplete(String query, AsyncCallback<ProductFacetSearchPageDto> callback);
 
 
     /**

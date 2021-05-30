@@ -35,6 +35,8 @@ import io.nemesis.ninder.adapter.RecyclerViewAdapter;
 import io.nemesis.ninder.logic.ProductFacade;
 import io.nemesis.ninder.logic.ProductWrapper;
 import io.nemesis.ninder.model.Product;
+import io.nemesis.ninder.model.ProductFacetSearchPageDto;
+import io.nemesis.ninder.model.SearchHit;
 
 
 public class RecyclerViewFragment extends Fragment {
@@ -153,19 +155,19 @@ public class RecyclerViewFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                ((NinderApplication) getActivity().getApplication()).getProductFacade().autoComplete(newText, new ProductFacade.AsyncCallback<List<Product>>() {
+                ((NinderApplication) getActivity().getApplication()).getProductFacade().autoComplete(newText, new ProductFacade.AsyncCallback<ProductFacetSearchPageDto>() {
                     @Override
-                    public void onSuccess(List<Product> items) {
-                        if(items!=null){
+                    public void onSuccess(ProductFacetSearchPageDto dto) {
+                        if(dto!=null){
                             String[] sAutocompleteColNames = new String[] {
                                     BaseColumns._ID,                         // necessary for adapter
                                     SearchManager.SUGGEST_COLUMN_TEXT_1      // the full search term
                             };
                             final MatrixCursor cursor = new MatrixCursor(sAutocompleteColNames);
-                            for (int i = 0; i < items.size(); i++) {
-                                Product item = items.get(i);
+                            for (int i = 0; i < dto.getContent().size(); i++) {
+                                SearchHit item = dto.getContent().get(i);
 
-                                Object[] row = new Object[] { i, item.getName()};
+                                Object[] row = new Object[] { i, item.getProperties().get("name")};
                                 cursor.addRow(row);
                             }
                             getActivity().runOnUiThread(new Runnable() {

@@ -8,6 +8,8 @@ import java.util.Map;
 
 import io.nemesis.ninder.model.Product;
 import io.nemesis.ninder.model.ProductEntity;
+import io.nemesis.ninder.model.ProductFacetSearchPageDto;
+import io.nemesis.ninder.model.SearchHit;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
@@ -37,7 +39,7 @@ public interface RestApi {
     Call<Void> loginAsync(@Header("X-Nemesis-Username") String email, @Header("X-Nemesis-Password") String password);
 
     @GET("facade/search/autocomplete")
-    Call<List<Product>> autoComplete(@QueryMap Map<String, String> query);
+    Call<ProductFacetSearchPageDto> autoComplete(@QueryMap Map<String, String> query);
 
     @GET("api/my-account/profile")
     Call<Void> getAccountInfo(@Header("X-Nemesis-Token") String token);
@@ -47,7 +49,7 @@ public interface RestApi {
             "Content-Type: application/json;charset=UTF-8"
     })
     @GET("facade/search")
-    Call<List<Product>> getProductListAsync(@QueryMap Map<String, String> query);
+    Call<ProductFacetSearchPageDto> getProductListAsync(@QueryMap Map<String, String> query);
 
     @GET("facade/bundle/cart/current")
     Call<String> getCart(@Header("X-Nemesis-Token") String token);

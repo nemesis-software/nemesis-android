@@ -8,6 +8,7 @@ import io.nemesis.ninder.model.Image;
 import io.nemesis.ninder.model.Price;
 import io.nemesis.ninder.model.Product;
 import io.nemesis.ninder.model.ProductEntity;
+import io.nemesis.ninder.model.SearchHit;
 import io.nemesis.ninder.model.VariantOption;
 import io.nemesis.ninder.model.Variation;
 
@@ -101,15 +102,37 @@ public class ProductWrapper {
 
     private Object lock = new Object();
 
+    ProductWrapper(SearchHit searchHit, NemesisFacadeImpl api) {
+        this.pojo = new Product(searchHit);
+        this.api = api;
+        this.galleryImages = new ArrayList<>();
+        if(pojo.getImages()!=null) {
+            for (Image image : pojo.getImages()) {
+                if ("thumbnail".equals(image.getFormat())) {
+                    this.photo = image;
+                    break;
+                }
+            }
+        }
+        if (!hasDetails()) {
+            enquireDetails(null);
+        } else {
+            sortImages();
+        }
+    }
+
     ProductWrapper(Product product, NemesisFacadeImpl api) {
         this.pojo = product;
         this.api = api;
 
         this.galleryImages = new ArrayList<>();
         if(pojo.getImages()!=null) {
-            int size = pojo.getImages().size();
-
-            this.photo = (0 != size) ? pojo.getImages().get(size - 1) : null;
+            for (Image image : pojo.getImages()) {
+                if ("thumbnail".equals(image.getFormat())) {
+                    this.photo = image;
+                    break;
+                }
+            }
         }
         if (!hasDetails()) {
             enquireDetails(null);

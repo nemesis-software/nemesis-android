@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "26021312694",
+    "project_id": "nemesis-1096",
+    "storage_bucket": "nemesis-1096.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:26021312694:android:481f7e4c950f68d0cc8e17",
+        "android_client_info": {
+          "package_name": "io.nemesis.ninder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "26021312694-2se3f5kpbeomhj218vq9en196gtd2nsd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6NkWknk6dPjzmBqR8-7iFojCnGlW_p9s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "26021312694-2se3f5kpbeomhj218vq9en196gtd2nsd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -12,6 +12,12 @@ public class Price implements Parcelable {
     private double amount;
     private String formatted;
 
+    protected Price(String currency, double amount, String formatted) {
+        this.currency = currency;
+        this.amount = amount;
+        this.formatted = formatted;
+    }
+
     // start Parcelable
     protected Price(Parcel in) {
         currency = in.readString();

@@ -17,6 +17,14 @@ public class Image implements Parcelable {
     private int width;
     private int height;
 
+    protected Image(String imageType, String format, String url, int width, int height) {
+        this.imageType = imageType;
+        this.format = format;
+        this.url = url;
+        this.width = width;
+        this.height = height;
+    }
+
     // start Parcelable
     protected Image(Parcel in) {
         imageType = in.readString();

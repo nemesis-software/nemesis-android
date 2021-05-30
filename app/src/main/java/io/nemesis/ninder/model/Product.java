@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by bobi on 11/23/2015.
@@ -63,6 +64,30 @@ public class Product implements Parcelable {
 //    public void setPotentialPromotions(Object potentialPromotions) {
 //        this.potentialPromotions = potentialPromotions;
 //    }
+
+    public Product(SearchHit searchHit) {
+        this.uid = String.valueOf(searchHit.getProperties().get("id"));
+        this.code = String.valueOf(searchHit.getProperties().get("code"));
+        this.name = String.valueOf(searchHit.getProperties().get("name"));
+        this.description = String.valueOf(searchHit.getProperties().get("description"));
+
+        Map<String, Object> discountedPrice = (Map<String, Object>) searchHit.getProperties().get("discountedPrice");
+        if (discountedPrice != null) {
+            this.discountedPrice = new Price(String.valueOf(discountedPrice.get("currency")), (Double) discountedPrice.get("amount"), String.valueOf(discountedPrice.get("formatted")));
+        }
+        Map<String, Object> price = (Map<String, Object>) searchHit.getProperties().get("price");
+        if (price != null) {
+            this.price = new Price(String.valueOf(price.get("currency")), (Double) price.get("amount"), String.valueOf(price.get("formatted")));
+        }
+        this.imageUrl = String.valueOf(searchHit.getProperties().get("imgThumbnail"));
+        List<Image> images = new ArrayList<>();
+        images.add(new Image("PRIMARY", "mini", String.valueOf(searchHit.getProperties().get("imgAutocomplete")), 65, 90));
+        images.add(new Image("PRIMARY", "product", this.imageUrl, 375, 500));
+        images.add(new Image("PRIMARY", "thumbnail", this.imageUrl, 200, 280));
+
+        this.images = images;
+
+    }
 
     // start Parcelable
     protected Product(Parcel in) {
